@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd          
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.1.xsd        
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/task 
+        http://www.springframework.org/schema/task/spring-task.xsd">
+<!--
+	<context:annotation-config />
+	<context:component-scan base-package="com.epam.supply" />
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/supply" />
+		<property name="username" value="user1" />
+		<property name="password" value="123456" />
+	</bean>
+
+	<bean id="sessionFactory"
+				class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.epam.supply.beans.Role</value>
+				<value>com.epam.supply.beans.Comment</value>
+				<value>com.epam.supply.beans.Order</value>
+				<value>com.epam.supply.beans.Product</value>
+				<value>com.epam.supply.beans.ProductSort</value>
+				<value>com.epam.supply.beans.Room</value>
+				<value>com.epam.supply.beans.Status</value>
+				<value>com.epam.supply.beans.StorageType</value>
+				<value>com.epam.supply.beans.TargetRoom</value>
+				<value>com.epam.supply.beans.User</value>
+				<value>com.epam.supply.beans.MessagesActivity</value>
+				<value>com.epam.supply.beans.MailerConfig</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.hbm2ddl.auto">
+					update
+				</prop>
+				<prop key="hibernate.show_sql">
+					true
+				</prop>
+				<prop key="hibernate.format_sql">
+					true
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="baseDAO" class="com.epam.supply.hibernateDAO.BaseDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+-->
+
+</beans>
