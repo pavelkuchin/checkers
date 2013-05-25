@@ -8,6 +8,9 @@
 
     <bean id="gameService" class="com.checkers.server.services.GameServiceMockImpl"/>
 
+    <bean id="stepService" class="com.checkers.server.services.StepServiceMockImpl"/>
+
+
 	<!-- EmailNotificationService -->
 	
 	<!--

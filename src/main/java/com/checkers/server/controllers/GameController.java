@@ -1,7 +1,9 @@
 package com.checkers.server.controllers;
 
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.Step;
 import com.checkers.server.services.GameService;
+import com.checkers.server.services.StepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,9 @@ public class GameController {
 
     @Autowired
     GameService gameService;
+
+    @Autowired
+    StepService stepService;
 
     @RequestMapping(value="/{gauid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
@@ -42,5 +47,19 @@ public class GameController {
         System.out.println("Game: \"" + game.getName() + "\" created");
         gameService.newGame(game);
         return game;
+    }
+
+    @RequestMapping(value="/{gauid}/step", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    public @ResponseBody
+    List<Step> getGameSteps(@PathVariable String gauid){
+        System.out.println("All steps for game: " + gauid + " returned");
+        return stepService.getGameSteps(Long.parseLong(gauid));
+    }
+
+    @RequestMapping(value="/{gauid}/laststep", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    public @ResponseBody
+    Step getGameLastStep(@PathVariable String gauid){
+        System.out.println("Last step for game: " + gauid + " returned");
+        return stepService.getGameLastStep(Long.parseLong(gauid));
     }
 }
