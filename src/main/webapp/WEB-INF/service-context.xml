@@ -6,30 +6,10 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
+    <bean id="userService" class="com.checkers.server.services.UserServiceMockImpl"/>
+
     <bean id="gameService" class="com.checkers.server.services.GameServiceMockImpl"/>
 
     <bean id="stepService" class="com.checkers.server.services.StepServiceMockImpl"/>
 
-
-	<!-- EmailNotificationService -->
-	
-	<!--
-	<bean id="emailerVelocityConfig"
-		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
-		<property name="resourceLoaderPath" value="/WEB-INF/classes/email-templates/" />
-	</bean>
-	
-	<bean id="emailNotificationService" class="com.epam.supply.services.notification.EmailNotificationServiceImpl" />-->
-	
-	<!-- PmcClientService -->
-
-	<!--<bean id="pmcClientService" class="com.epam.supply.services.pmc.PmcClientServiceImpl" />-->
-	
-	<!-- AuthenticationService -->
-
-	<!--<bean id="authenticationService" class="com.epam.supply.services.authentication.AuthenticationServiceImpl" />-->
-	
-	<!-- UserManagementService -->
-
-	<!--<bean id="userManagementService" class="com.epam.supply.services.core.UserManagementServiceImpl" />-->
 </beans>

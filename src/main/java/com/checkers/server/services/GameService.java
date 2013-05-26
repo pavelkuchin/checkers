@@ -13,4 +13,5 @@ public interface GameService {
     Game getGame(Long gauid);
     void newGame(Game game);
     List<Game> getGames();
+    List<Game> getUserGames(Long uuid);
 }

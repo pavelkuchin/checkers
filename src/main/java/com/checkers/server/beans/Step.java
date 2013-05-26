@@ -8,10 +8,19 @@ import java.util.Date;
  * @author Pavel_Kuchin
  */
 public class Step {
+    // Step unique identifier
     private Long    suid;
+    // Game unique identifier
     private Long    gauid;
+    // User unique identifier
     private Long    uuid;
+    /**
+     * Step in checkers notation
+     * 2b-3b - Russian (8x8)
+     * 1-10  - Worldwide (10x10)
+     */
     private String  step;
+    // Date of creation
     private Date    created;
 
     public Step(){

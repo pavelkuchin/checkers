@@ -36,4 +36,17 @@ public class GameServiceMockImpl implements GameService {
     public List<Game> getGames() {
         return games;
     }
+
+    @Override
+    public List<Game> getUserGames(Long uuid) {
+        List<Game> result = new LinkedList<Game>();
+
+        for(Game g : this.games){
+            if(g.getBlack().equals(uuid) || g.getWhite().equals(uuid)){
+                result.add(g);
+            }
+        }
+
+        return result;
+    }
 }

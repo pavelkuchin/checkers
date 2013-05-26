@@ -9,20 +9,30 @@ import java.util.Date;
  */
 
 public class User {
+    // User unique identifier
     private Long    uuid;
 
+    // User login
     private String  login;
+    // First name
     private String  firstName;
+    // Last name
     private String  lastName;
 
+    // Email
     private String  email;
 
+    // Password
     private String  password;
 
+    // Enabled flag (if flag set in false then user hasn't access to system)
     private Boolean enabled;
 
+    // Date of user creation
     private Date    created;
+    // Date of user modification
     private Date    modified;
+    // Date of last user login
     private Date    lastLogin;
 
     public User(){

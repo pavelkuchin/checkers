@@ -3,27 +3,54 @@ package com.checkers.server.beans;
 import java.util.Date;
 
 /**
- *
+ * Game entity.
+ * Related with 'User' entity (white, black = UUID)
  *
  * @author Pavel_Kuchin
  */
 
 public class Game {
+    // Game unique identifier
     private Long    gauid;
 
+    // Game public name
     private String  name;
+    // Game description (too public)
     private String  description;
 
+    /**
+     * Game type:
+     *  online - During one session (minutes or hours)
+     *  offline - During many sessions (days or months)
+     */
     private String  type;
+
+    /**
+     * Board type:
+     * 8x8   - Russian checkers
+     * 10x10 - Worldwide checkers
+     */
     private String  board;
+
+    /**
+     * Game state:
+     *  open - game has been opened. Find black player.
+     *  game - game in process
+     *  close - game closed (win or dead heat)
+     */
     private String  state;
 
-    private long    white;
-    private long    black;
+    // White player uuid
+    private Long    white;
+    // Black player uuid
+    private Long    black;
 
+    // Date of game creation
     private Date    created;
+    // Date of game modification
     private Date    modified;
-    private Date    lastLogin;
+    // Date of last step
+    private Date    lastStep;
 
     public Game(){
     }
@@ -76,19 +103,19 @@ public class Game {
         this.state = state;
     }
 
-    public long getWhite() {
+    public Long getWhite() {
         return white;
     }
 
-    public void setWhite(long white) {
+    public void setWhite(Long white) {
         this.white = white;
     }
 
-    public long getBlack() {
+    public Long getBlack() {
         return black;
     }
 
-    public void setBlack(long black) {
+    public void setBlack(Long black) {
         this.black = black;
     }
 
@@ -108,11 +135,11 @@ public class Game {
         this.modified = modified;
     }
 
-    public Date getLastLogin() {
-        return lastLogin;
+    public Date getLastStep() {
+        return lastStep;
     }
 
-    public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setLastLogin(Date lastStep) {
+        this.lastStep = lastStep;
     }
 }
