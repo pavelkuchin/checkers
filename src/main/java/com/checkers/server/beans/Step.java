@@ -10,6 +10,7 @@ import java.util.Date;
 public class Step {
     private Long    suid;
     private Long    gauid;
+    private Long    uuid;
     private String  step;
     private Date    created;
 
@@ -48,6 +49,14 @@ public class Step {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Long getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(Long uuid) {
+        this.uuid = uuid;
     }
 }
 
