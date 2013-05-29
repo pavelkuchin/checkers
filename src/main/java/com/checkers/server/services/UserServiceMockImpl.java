@@ -1,6 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.User;
+import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  *
  * @author Pavel Kuchin
  */
+@Service
 public class UserServiceMockImpl implements UserService{
 
     private List<User> users;

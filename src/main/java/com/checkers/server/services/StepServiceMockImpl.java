@@ -1,6 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Step;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author Pavel_Kuchin
  */
+@Service
 public class StepServiceMockImpl implements StepService{
     List<Step> steps;
 

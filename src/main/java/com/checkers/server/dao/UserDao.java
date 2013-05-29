@@ -1,7 +1,6 @@
-package com.checkers.server.services;
+package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  *
  * @author Pavel Kuchin
  */
-public interface UserService {
+public interface UserDao {
     void newUser(User user);
 
     User getUser(Long uuid);

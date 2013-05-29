@@ -1,77 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd          
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx-3.1.xsd        
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.1.xsd
-        http://www.springframework.org/schema/task 
-        http://www.springframework.org/schema/task/spring-task.xsd">
-<!--
-	<context:annotation-config />
-	<context:component-scan base-package="com.epam.supply" />
-	
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.gjt.mm.mysql.Driver" />
-		<property name="url" value="jdbc:mysql://localhost/supply" />
-		<property name="username" value="user1" />
-		<property name="password" value="123456" />
-	</bean>
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-	<bean id="sessionFactory"
-				class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="annotatedClasses">
-			<list>
-				<value>com.epam.supply.beans.Role</value>
-				<value>com.epam.supply.beans.Comment</value>
-				<value>com.epam.supply.beans.Order</value>
-				<value>com.epam.supply.beans.Product</value>
-				<value>com.epam.supply.beans.ProductSort</value>
-				<value>com.epam.supply.beans.Room</value>
-				<value>com.epam.supply.beans.Status</value>
-				<value>com.epam.supply.beans.StorageType</value>
-				<value>com.epam.supply.beans.TargetRoom</value>
-				<value>com.epam.supply.beans.User</value>
-				<value>com.epam.supply.beans.MessagesActivity</value>
-				<value>com.epam.supply.beans.MailerConfig</value>
-			</list>
-		</property>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">
-					org.hibernate.dialect.MySQLDialect
-				</prop>
-				<prop key="hibernate.hbm2ddl.auto">
-					update
-				</prop>
-				<prop key="hibernate.show_sql">
-					true
-				</prop>
-				<prop key="hibernate.format_sql">
-					true
-				</prop>
-			</props>
-		</property>
-	</bean>
+    <!-- Embedded InMemory database for development stage -->
+    <!-- TODO: changes it on real DB -->
+    <jdbc:embedded-database id="dataSource" type="HSQL" />
 
-	<tx:annotation-driven transaction-manager="txManager" />
+    <!-- JPA Entity Manager Factory as internal container -->
 
-	<bean id="txManager"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- Hibernate HSQL Dialect has been used -->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="HSQL" />
+                <property name="databasePlatform" value="org.hibernate.dialect.HSQLDialect" />
+            </bean>
+        </property>
 
-	<bean id="baseDAO" class="com.epam.supply.hibernateDAO.BaseDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
--->
+        <!-- Updates current DB structure or creates a new from Entity Bean -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
 
+        <!-- Package with entity beans -->
+        <property name="packagesToScan">
+            <list>
+                <value>com.checkers.server.beans</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Exception processor for SQLException -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <!-- For annotations support in entity beans -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- Transactions support -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="jpaDialect">
+            <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+    </bean>
 </beans>
