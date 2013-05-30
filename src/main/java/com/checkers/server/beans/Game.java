@@ -1,5 +1,8 @@
 package com.checkers.server.beans;
 
+import com.checkers.server.beans.proxy.GameProxy;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -8,10 +11,12 @@ import java.util.Date;
  *
  * @author Pavel_Kuchin
  */
-
+@Entity
 public class Game {
-    // Game unique identifier
-    private Long    gauid;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long    gauid; // Game unique identifier
 
     // Game public name
     private String  name;
@@ -40,10 +45,10 @@ public class Game {
      */
     private String  state;
 
-    // White player uuid
-    private Long    white;
-    // Black player uuid
-    private Long    black;
+    @ManyToOne
+    private User    white; // White player uuid
+    @ManyToOne
+    private User    black; // Black player uuid
 
     // Date of game creation
     private Date    created;
@@ -53,6 +58,17 @@ public class Game {
     private Date    lastStep;
 
     public Game(){
+    }
+
+    public Game(GameProxy gameProxy){
+        this.name           = gameProxy.getName();
+        this.description    = gameProxy.getDescription();
+        this.type           = gameProxy.getType();
+        this.board          = gameProxy.getBoard();
+        this.state          = gameProxy.getState();
+        this.created        = gameProxy.getCreated();
+        this.modified       = gameProxy.getModified();
+        this.lastStep       = gameProxy.getLastStep();
     }
 
     public Long getGauid() {
@@ -103,19 +119,19 @@ public class Game {
         this.state = state;
     }
 
-    public Long getWhite() {
+    public User getWhite() {
         return white;
     }
 
-    public void setWhite(Long white) {
+    public void setWhite(User white) {
         this.white = white;
     }
 
-    public Long getBlack() {
+    public User getBlack() {
         return black;
     }
 
-    public void setBlack(Long black) {
+    public void setBlack(User black) {
         this.black = black;
     }
 

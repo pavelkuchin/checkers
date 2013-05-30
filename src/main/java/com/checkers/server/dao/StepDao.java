@@ -1,4 +1,4 @@
-package com.checkers.server.services;
+package com.checkers.server.dao;
 
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.proxy.StepProxy;
@@ -8,10 +8,11 @@ import java.util.List;
 /**
  *
  *
- * @author Pavel_Kuchin
+ * @author Pavel Kuchin
  */
-public interface StepService {
+public interface StepDao {
     Step getStep(Long suid);
+    void newStep(Step step);
     Step newStep(StepProxy stepProxy);
 
     List<Step> getGameSteps(Long gauid);

@@ -1,7 +1,9 @@
 package com.checkers.server.controllers;
 
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.proxy.GameProxy;
 import com.checkers.server.beans.Step;
+import com.checkers.server.beans.User;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.StepService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +45,11 @@ public class GameController {
 
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Game newGame(@RequestBody Game game){
+    public @ResponseBody
+    Game newGame(@RequestBody GameProxy game){
         System.out.println("Game: \"" + game.getName() + "\" created");
-        gameService.newGame(game);
-        return game;
+        Game persistGame = gameService.newGame(game);
+        return getGame(persistGame.getGauid().toString());
     }
 
     @RequestMapping(value="/{gauid}/step", method = RequestMethod.GET, headers = {"Accept=application/json"})

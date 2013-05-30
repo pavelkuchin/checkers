@@ -1,4 +1,4 @@
-package com.checkers.server.services;
+package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.proxy.GameProxy;
@@ -8,11 +8,13 @@ import java.util.List;
 /**
  *
  *
- * @author Pavel_Kuchin
+ * @author Pavel Kuchin
  */
-public interface GameService {
+public interface GameDao {
     Game getGame(Long gauid);
-    Game newGame(GameProxy game);
+    void newGame(Game game);
+    Game newGame(GameProxy gameProxy);
+
     List<Game> getGames();
     List<Game> getUserGames(Long uuid);
 }

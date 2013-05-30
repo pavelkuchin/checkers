@@ -8,8 +8,8 @@
 
     <!--<bean id="userService" class="com.checkers.server.services.UserServiceMockImpl"/>-->
 
-    <bean id="gameService" class="com.checkers.server.services.GameServiceMockImpl"/>
+    <!--<bean id="gameService" class="com.checkers.server.services.GameServiceMockImpl"/>-->
 
-    <bean id="stepService" class="com.checkers.server.services.StepServiceMockImpl"/>
+    <!--<bean id="stepService" class="com.checkers.server.services.StepServiceMockImpl"/>-->
 
 </beans>

@@ -25,7 +25,6 @@ public class UserDaoImpl implements UserDao {
 
     }
 
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void newUser(User user) {

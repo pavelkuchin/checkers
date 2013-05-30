@@ -1,5 +1,8 @@
 package com.checkers.server.beans;
 
+import com.checkers.server.beans.proxy.StepProxy;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -7,13 +10,18 @@ import java.util.Date;
  *
  * @author Pavel_Kuchin
  */
+@Entity
 public class Step {
-    // Step unique identifier
-    private Long    suid;
-    // Game unique identifier
-    private Long    gauid;
-    // User unique identifier
-    private Long    uuid;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long    suid;     // Step unique identifier
+
+    @ManyToOne
+    private Game    game;    // Game unique identifier
+
+    @ManyToOne
+    private User    user;     // User unique identifier
     /**
      * Step in checkers notation
      * 2b-3b - Russian (8x8)
@@ -27,20 +35,18 @@ public class Step {
 
     }
 
+    public Step(StepProxy stepProxy){
+        this.suid       = stepProxy.getSuid();
+        this.step       = stepProxy.getStep();
+        this.created    = stepProxy.getCreated();
+    }
+
     public Long getSuid(){
         return suid;
     }
 
     public void setSuid(Long suid){
         this.suid = suid;
-    }
-
-    public Long getGauid(){
-        return gauid;
-    }
-
-    public void setGauid(Long gauid){
-        this.gauid = gauid;
     }
 
     public String getStep(){
@@ -60,12 +66,20 @@ public class Step {
         this.created = created;
     }
 
-    public Long getUuid() {
-        return uuid;
+    public Game getGame() {
+        return game;
     }
 
-    public void setUuid(Long uuid) {
-        this.uuid = uuid;
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 
