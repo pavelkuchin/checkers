@@ -4,13 +4,18 @@
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd          
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
+
+
     <!-- Embedded InMemory database for development stage -->
     <!-- TODO: changes it on real DB -->
-    <jdbc:embedded-database id="dataSource" type="HSQL" />
+    <jdbc:embedded-database id="dataSource" type="HSQL">
+        <jdbc:script location="classpath:sql/ddl_hsql.sql"/>
+        <jdbc:script location="classpath:sql/test_data.sql"/>
+    </jdbc:embedded-database>
 
     <!-- JPA Entity Manager Factory as internal container -->
 
@@ -51,4 +56,5 @@
             <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
         </property>
     </bean>
+
 </beans>

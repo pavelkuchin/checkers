@@ -35,6 +35,9 @@ public class User {
     // Enabled flag (if flag set in false then user hasn't access to system)
     private Boolean enabled;
 
+    // User role (for Spring security)
+    private String  role;
+
     // Date of user creation
     private Date    created;
     // Date of user modification
@@ -123,6 +126,14 @@ public class User {
 
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

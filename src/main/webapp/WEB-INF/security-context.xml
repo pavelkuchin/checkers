@@ -7,15 +7,13 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-
-    <security:http auto-config="true" use-expressions="true">
-        <security:logout logout-url="/static/logout" />
+    <security:http use-expressions="true">
         <security:http-basic />
         <security:intercept-url pattern="/**" access="isFullyAuthenticated()" />
     </security:http>
 
     <security:authentication-manager>
-        <security:authentication-provider user-service-ref="mockUserService" />
+        <security:authentication-provider user-service-ref="dbUserService" />
     </security:authentication-manager>
 
     <security:user-service id="mockUserService">
@@ -28,9 +26,9 @@
     <security:jdbc-user-service id="dbUserService"
                        data-source-ref="dataSource"
                        users-by-username-query=
-                               "select login, password, enabled from user where login=?"
+                               "select login, password, enabled from User where login=?"
                        authorities-by-username-query=
-                               "select login, 'ROLE_ADMIN' from user where login=?" />
+                               "select login, role from User where login=?" />
 
     <security:global-method-security secured-annotations="enabled" />
 </beans>
