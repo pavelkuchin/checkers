@@ -56,6 +56,10 @@ public class StepDaoImpl implements StepDao {
 
     @Override
     public Step getGameLastStep(Long gauid) {
-        return (Step)em.createQuery("SELECT s FROM Step s ORDER BY s.created DESC").setMaxResults(1).getSingleResult();
+        try{
+            return (Step)em.createQuery("SELECT s FROM Step s ORDER BY s.created DESC").setMaxResults(1).getSingleResult();
+        }catch(javax.persistence.NoResultException e){
+            return null;
+        }
     }
 }
