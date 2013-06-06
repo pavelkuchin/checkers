@@ -4,3 +4,5 @@ checkers
 RESTful server for the checkers based on Spring
 
 I have used jdk1.7.0_10, apache-maven-3.0.4 and IntelliJIDEA 12.1.3 community edition
+
+Client: https://github.com/forrana/checkers-client
