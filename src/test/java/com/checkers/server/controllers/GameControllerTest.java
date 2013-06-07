@@ -26,7 +26,7 @@ public class GameControllerTest {
     private Response response;
 
     private Destination getDestination() {
-        Destination destination = new Destination( this, "http://localhost:8080/checkers/game" );
+        Destination destination = new Destination( this, "http://localhost:8080/game" );
         destination.getRequestContext().addHeader( "Content-Type", "application/json" );
         return destination;
     }

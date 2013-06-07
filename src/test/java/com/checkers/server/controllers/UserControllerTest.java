@@ -27,7 +27,7 @@ public class UserControllerTest {
     private Response response;
 
     private Destination getDestination() {
-        Destination destination = new Destination( this, "http://localhost:8080/checkers/user" );
+        Destination destination = new Destination( this, "http://localhost:8080/user" );
         destination.getRequestContext().addHeader( "Content-Type", "application/json" );
             return destination;
     }

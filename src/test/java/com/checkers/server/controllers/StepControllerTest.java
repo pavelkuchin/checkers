@@ -26,7 +26,7 @@ public class StepControllerTest {
     private Response response;
 
     private Destination getDestination() {
-        Destination destination = new Destination( this, "http://localhost:8080/checkers/step" );
+        Destination destination = new Destination( this, "http://localhost:8080/step" );
         destination.getRequestContext().addHeader( "Content-Type", "application/json" );
         return destination;
     }
