@@ -1,10 +1,12 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class UserDaoImpl implements UserDao {
 
+    static Logger log = Logger.getLogger(UserDaoImpl.class.getName());
+
     @PersistenceContext
     private EntityManager em;
 
@@ -28,16 +32,39 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void newUser(User user) {
-        em.persist(user);
+        try{
+            em.persist(user);
+        }catch (Exception e){
+            //Catch any exception
+            log.error("newUser: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public User getUser(Long uuid) {
-        return em.find(User.class, uuid);
+        User user = null;
+
+        try{
+            user = em.find(User.class, uuid);
+        }catch (Exception e){
+            //Catch any exception
+            log.error("getUser: " + e.getMessage(), e);
+        }
+
+            return user;
     }
 
     @Override
     public List<User> getUsers() {
-        return em.createQuery("SELECT u FROM User u").getResultList();
+        List<User> users = null;
+
+        try{
+            em.createQuery("SELECT u FROM User u").getResultList();
+        }catch (Exception e){
+            //Catch any exception
+            log.error("getUsers: " + e.getMessage(), e);
+        }
+
+            return users;
     }
 }
