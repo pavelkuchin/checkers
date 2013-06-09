@@ -31,7 +31,7 @@ public class StepController {
         return stepService.getStep(Long.parseLong(suid));
     }
 
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @RequestMapping(value="/", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Step newGame(@RequestBody StepProxy stepProxy){
         log.info("Step: \"" + stepProxy.getStep() + "\" created");
