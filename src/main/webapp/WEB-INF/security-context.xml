@@ -62,6 +62,4 @@
                                "select login, password, enabled from User where login=?"
                        authorities-by-username-query=
                                "select login, role from User where login=?" />
-
-    <security:global-method-security secured-annotations="enabled" />
 </beans>

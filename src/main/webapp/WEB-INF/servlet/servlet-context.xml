@@ -4,6 +4,7 @@
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
 		http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/beans 
@@ -11,7 +12,9 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-2.5.xsd ">
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
@@ -21,6 +24,7 @@
     <context:component-scan base-package="com.checkers.server" />
     <mvc:annotation-driven />
     <tx:annotation-driven transaction-manager="transactionManager" />
+    <security:global-method-security pre-post-annotations="enabled" />
 
     <!-- Resolves views selected for rendering by @Controllers to json MappingJacksonHttpMessageConverter -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
