@@ -33,13 +33,13 @@ public class UserControllerTest {
     }
 
     @HttpTest(  method = Method.GET,
-                path = "/")
+                path = "")
     public void getUsersUnauthorized(){
         assertUnauthorized( response );
     }
 
     @HttpTest(  method = Method.GET,
-                path = "/",
+                path = "",
                 authentications = {
                         @Authentication( type = AuthenticationType.BASIC, user = "invalid", password = "invalid" )}
     )
@@ -48,7 +48,7 @@ public class UserControllerTest {
     }
 
     @HttpTest(  method = Method.GET,
-                path = "/",
+                path = "",
                 authentications = {
                         @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
@@ -75,7 +75,7 @@ public class UserControllerTest {
     }
 
     @HttpTest(  method = Method.POST,
-            path = "/",
+            path = "",
             content = "{\n" +
                     "    \"uuid\"\t\t: null,\n" +
                     "    \"login\"\t\t: \"testLogin\",\n" +

@@ -39,14 +39,14 @@ public class GameController {
         return gameService.getGame(Long.parseLong(gauid));
     }
 
-    @RequestMapping(value="/", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value="", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     List<Game> getGames(){
         log.info("All games returned");
         return gameService.getGames();
     }
 
-    @RequestMapping(value="/", method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     Game newGame(@RequestBody GameProxy game){

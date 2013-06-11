@@ -41,7 +41,7 @@ public class GameControllerTest {
     }
 
     @HttpTest(  method = Method.GET,
-            path = "/",
+            path = "",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
@@ -50,7 +50,7 @@ public class GameControllerTest {
     }
 
     @HttpTest(  method = Method.POST,
-            path = "/",
+            path = "",
             content = "{\n" +
                     "    \"gauid\": null,\n" +
                     "    \"name\": \"Just for test\",\n" +

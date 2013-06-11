@@ -14,6 +14,9 @@
 
         <!-- ROLE_USER -->
         <security:intercept-url pattern="/game"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+
+        <!-- Especially for restfuse -->
+        <security:intercept-url pattern="/game/"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
         <security:intercept-url pattern="/game"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/game/*"           access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/game/*"           access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
@@ -21,6 +24,9 @@
         <security:intercept-url pattern="/game/*/laststep"  access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
 
         <security:intercept-url pattern="/step"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+
+        <!-- Especially for restfuse -->
+        <security:intercept-url pattern="/step/"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
         <security:intercept-url pattern="/step/*"           access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
 
         <security:intercept-url pattern="/user"             access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
@@ -31,6 +37,9 @@
         <!-- ROLE_ADMIN -->
         <security:intercept-url pattern="/step" access="hasRole('ROLE_ADMIN')" method="GET" />
         <security:intercept-url pattern="/user" access="hasRole('ROLE_ADMIN')" method="POST" />
+
+        <!-- Especially for restfuse -->
+        <security:intercept-url pattern="/user/" access="hasRole('ROLE_ADMIN')" method="POST" />
 
         <!-- DENY ALL -->
         <security:intercept-url pattern="/**" access="denyAll" />

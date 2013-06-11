@@ -32,7 +32,7 @@ public class StepControllerTest {
     }
 
     @HttpTest(  method = Method.POST,
-            path = "/",
+            path = "",
             content = "{\n" +
                     "  \"suid\"  : null,\n" +
                     "  \"game\"  : 1,\n" +
@@ -43,7 +43,7 @@ public class StepControllerTest {
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
-    public void newGame(){
+    public void newStep(){
         assertCreated( response );
     }
 

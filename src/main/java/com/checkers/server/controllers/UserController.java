@@ -30,7 +30,7 @@ public class UserController {
     @Autowired
     GameService gameService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     User newUser(@RequestBody User user){
@@ -39,7 +39,7 @@ public class UserController {
             return user;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value = "", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     List<User> getUsers(){
         log.info("All users returned");
