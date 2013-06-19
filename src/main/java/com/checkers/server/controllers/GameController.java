@@ -3,16 +3,19 @@ package com.checkers.server.controllers;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.proxy.GameProxy;
 import com.checkers.server.beans.Step;
-import com.checkers.server.beans.User;
+
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  *
@@ -60,6 +63,20 @@ public class GameController {
     List<Step> getGameSteps(@PathVariable String gauid){
         log.info("All steps for game: " + gauid + " returned");
         return stepService.getGameSteps(Long.parseLong(gauid));
+    }
+
+    @RequestMapping(value="/{gauid}/laststep", params = "mode=async", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    public @ResponseBody
+    Callable<Step> getGameLastStepAsync(@PathVariable final String gauid){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final String username = auth.getName();
+
+        return new Callable<Step>() {
+            @Override
+            public Step call() throws Exception {
+                return stepService.getAsyncGameLastStep(Long.parseLong(gauid), username);
+            }
+        };
     }
 
     @RequestMapping(value="/{gauid}/laststep", method = RequestMethod.GET, headers = {"Accept=application/json"})

@@ -19,6 +19,7 @@ public class Game {
     private Long    gauid; // Game unique identifier
 
     // Game public name
+    @Column(unique=true)
     private String  name;
     // Game description (too public)
     private String  description;

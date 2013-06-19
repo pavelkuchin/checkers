@@ -1,9 +1,6 @@
 package com.checkers.server.beans;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -20,6 +17,7 @@ public class User {
     private Long    uuid;
 
     // User login
+    @Column(unique=true)
     private String  login;
     // First name
     private String  firstName;
@@ -27,6 +25,7 @@ public class User {
     private String  lastName;
 
     // Email
+    @Column(unique=true)
     private String  email;
 
     // Password

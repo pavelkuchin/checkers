@@ -55,11 +55,26 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User getUserByLogin(String login) {
+        User user = null;
+
+        try{
+            user = (User)em.createQuery("SELECT u FROM User u WHERE u.login=?1").setParameter(1, login).getSingleResult();
+        }catch (Exception e){
+            //Catch any exception
+            log.error("getUserByLogin: " + e.getMessage(), e);
+        }
+
+        return user;
+    }
+
+
+    @Override
     public List<User> getUsers() {
         List<User> users = null;
 
         try{
-            em.createQuery("SELECT u FROM User u").getResultList();
+            users = em.createQuery("SELECT u FROM User u").getResultList();
         }catch (Exception e){
             //Catch any exception
             log.error("getUsers: " + e.getMessage(), e);

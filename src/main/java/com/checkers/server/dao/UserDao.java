@@ -14,5 +14,7 @@ public interface UserDao {
 
     User getUser(Long uuid);
 
+    User getUserByLogin(String login);
+
     List<User> getUsers();
 }

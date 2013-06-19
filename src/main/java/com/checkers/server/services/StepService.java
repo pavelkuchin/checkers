@@ -16,4 +16,5 @@ public interface StepService {
 
     List<Step> getGameSteps(Long gauid);
     Step getGameLastStep(Long gauid);
+    Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException;
 }
