@@ -26,11 +26,15 @@ public class StepControllerTest {
     private Response response;
 
     private Destination getDestination() {
-        Destination destination = new Destination( this, "http://localhost:8080/step" );
+        Destination destination = new Destination( this, "http://localhost:8080/steps" );
         destination.getRequestContext().addHeader( "Content-Type", "application/json" );
         return destination;
     }
 
+    /**
+     * /steps
+     * Method: POST
+     */
     @HttpTest(  method = Method.POST,
             path = "",
             content = "{\n" +
@@ -47,6 +51,10 @@ public class StepControllerTest {
         assertCreated( response );
     }
 
+    /**
+     * /steps/{suid}
+     * Method: GET
+     */
     @HttpTest(  method = Method.GET,
                 path = "/1",
                 authentications = {

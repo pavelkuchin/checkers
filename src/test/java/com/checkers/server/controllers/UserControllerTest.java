@@ -27,53 +27,43 @@ public class UserControllerTest {
     private Response response;
 
     private Destination getDestination() {
-        Destination destination = new Destination( this, "http://localhost:8080/user" );
+        Destination destination = new Destination( this, "http://localhost:8080/users" );
         destination.getRequestContext().addHeader( "Content-Type", "application/json" );
             return destination;
     }
 
     @HttpTest(  method = Method.GET,
-                path = "")
+            path = "")
     public void getUsersUnauthorized(){
         assertUnauthorized( response );
     }
 
     @HttpTest(  method = Method.GET,
-                path = "",
-                authentications = {
-                        @Authentication( type = AuthenticationType.BASIC, user = "invalid", password = "invalid" )}
+            path = "",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "invalid", password = "invalid" )}
     )
     public void getUsersWithInvalidCredentials(){
         assertUnauthorized( response );
     }
 
+    /**
+     * /users
+     * Method: GET
+     */
     @HttpTest(  method = Method.GET,
-                path = "",
-                authentications = {
-                        @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+            path = "",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
     public void getUsers(){
         assertOk( response );
     }
 
-    @HttpTest(  method = Method.GET,
-                path = "/1",
-                authentications = {
-                        @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
-    )
-    public void getUser(){
-        assertOk( response );
-    }
-
-    @HttpTest(  method = Method.GET,
-            path = "/1/game",
-            authentications = {
-                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
-    )
-    public void getUserGames(){
-        assertOk( response );
-    }
-
+    /**
+     * /users
+     * Method: POST
+     */
     @HttpTest(  method = Method.POST,
             path = "",
             content = "{\n" +
@@ -94,4 +84,92 @@ public class UserControllerTest {
     public void newUser(){
         assertCreated( response );
     }
+
+    /**
+     * /users/{uuid}
+     * Method: GET
+     */
+    @HttpTest(  method = Method.GET,
+            path = "/1",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void getUser(){
+        assertOk( response );
+    }
+
+    /**
+     * /users/{uuid}/games
+     * Method: GET
+     */
+    @HttpTest(  method = Method.GET,
+            path = "/1/games",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void getUserGames(){
+        assertOk( response );
+    }
+
+    /**
+     * /users?action=registration
+     * Method: POST
+     */
+    @HttpTest(  method = Method.POST,
+            path = "?action=registration",
+            content = "{\n" +
+                    "    \"uuid\"\t\t: null,\n" +
+                    "    \"login\"\t\t: \"testLogin\",\n" +
+                    "    \"firstName\"\t: \"testFirstName\",\n" +
+                    "    \"lastName\"\t: \"testLastName\",\n" +
+                    "    \"email\"\t\t: \"test@checkers.com\",\n" +
+                    "    \"password\"\t: \"password\",\n" +
+                    "    \"enabled\"\t: true,\n" +
+                    "    \"created\"\t: 1369311377195,\n" +
+                    "    \"modified\"\t: 1369311377195,\n" +
+                    "    \"lastLogin\"\t: 1369311377195\n" +
+                    "}"
+    )
+    public void regUser(){
+        assertCreated( response );
+    }
+
+    /**
+     * /users/{uuid}
+     * Method: DELETE
+     */
+    @HttpTest(  method = Method.DELETE,
+            path = "/1",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void delUser(){
+        assertOk( response );
+    }
+
+    /**
+     * /users/{uuid}
+     * Method: PUT
+     */
+    @HttpTest(  method = Method.PUT,
+            path = "/1",
+            content = "{\n" +
+                    "    \"uuid\"\t\t: null,\n" +
+                    "    \"login\"\t\t: \"modified testLogin\",\n" +
+                    "    \"firstName\"\t: \"testFirstName\",\n" +
+                    "    \"lastName\"\t: \"testLastName\",\n" +
+                    "    \"email\"\t\t: \"test@checkers.com\",\n" +
+                    "    \"password\"\t: \"password\",\n" +
+                    "    \"enabled\"\t: true,\n" +
+                    "    \"created\"\t: 1369311377195,\n" +
+                    "    \"modified\"\t: 1369311377195,\n" +
+                    "    \"lastLogin\"\t: 1369311377195\n" +
+                    "}",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void modUser(){
+        assertOk( response );
+    }
+
 }

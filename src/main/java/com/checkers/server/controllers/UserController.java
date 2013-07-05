@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @Controller
-@RequestMapping(value="/user")
+@RequestMapping(value="/users")
 public class UserController {
 
     static Logger log = Logger.getLogger(UserController.class.getName());
@@ -30,15 +30,13 @@ public class UserController {
     @Autowired
     GameService gameService;
 
-    @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody
-    User newUser(@RequestBody User user){
-        log.info("User: \"" + user.getLogin() + "\" created");
-        userService.newUser(user);
-            return user;
-    }
-
+    /**
+     * <h3>/users</h3>
+     *
+     * <b>Method:</b> GET
+     * <b>Description:</b> return all users as JSON objects list
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
     @RequestMapping(value = "", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     List<User> getUsers(){
@@ -46,6 +44,29 @@ public class UserController {
             return userService.getUsers();
     }
 
+    /**
+     * <h3>/users</h3>
+     *
+     * <b>Method:</b> POST
+     * <b>Description:</b> creates a new user
+     * <b>Allowed roles:</b> ROLE_ADMIN
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody
+    User newUser(@RequestBody User user){
+        log.info("User: \"" + user.getLogin() + "\" created");
+        userService.newUser(user);
+        return user;
+    }
+
+    /**
+     * <3>/users/{uuid}</3>
+     *
+     * <b>Method:</b> GET
+     * <b>Description:</b> returns user with specific uuid (Long)
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     User getUser(@PathVariable String uuid){
@@ -53,11 +74,65 @@ public class UserController {
             return userService.getUser(Long.parseLong(uuid));
     }
 
-    @RequestMapping(value = "/{uuid}/game", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    /**
+     * <h3>/users/{uuid}/games</h3>
+     *
+     * <b>Method:</b> GET
+     * <b>Description:</b> returns all user games
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
+    @RequestMapping(value = "/{uuid}/games", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     List<Game> getUserGames(@PathVariable String uuid){
         log.info("All games for user " + uuid + " returned");
             return gameService.getUserGames(Long.parseLong(uuid));
     }
 
+    /**
+     *   <h3>/users?action=registration</h3>
+     *
+     *   <b>Method:</b> POST
+     *   <b>Description:</b> new user registrations
+     *   <b>Allowed roles:</b> ANYONE
+     */
+    // TODO Separate the user registration and user creation (see above). Here Would be some a restricted object as param instead of 'User'
+    @RequestMapping(value = "", params = "action=registration", method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody
+    User regUser(@RequestBody User user){
+        log.warn("registersUser has not implemented yet");
+        //TODO implementation
+        return user;
+    }
+
+    /**
+    *    <3>/users/{uuid}</3>
+    *
+    *    <b>Method: DELETE</b>
+    *    <b>Description: deletes user with specific uuid (Long)</b>
+    *    <b>Allowed roles: ROLE_ADMIN</b>
+    */
+    @RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    User delUser(@PathVariable String uuid){
+        log.warn("delUser has not implemented yet");
+        //TODO implementation
+        return null;
+    }
+
+    /**
+    *    <h3>/users/{uuid}</h3>
+    *
+    *    <b>Method:</b> PUT
+    *    <b>Description:</b> modifies user with specific uuid (Long)
+    *    <b>Allowed roles:</b> ROLE_ADMIN(owner only), ROLE_ADMIN
+    */
+    @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
+    public @ResponseBody
+    User modUser(@RequestBody User user){
+        log.info("modUser has not implemented yet");
+        //TODO implementation
+        return null;
+    }
 }

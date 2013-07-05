@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @Controller
-@RequestMapping(value="/step")
+@RequestMapping(value="/steps")
 public class StepController {
 
     static Logger log = Logger.getLogger(StepController.class.getName());
@@ -24,13 +24,13 @@ public class StepController {
     @Autowired
     StepService stepService;
 
-    @RequestMapping(value="/{suid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
-    public @ResponseBody
-    Step getStep(@PathVariable String suid){
-        log.info("Step with SUID: " + suid + " returned");
-        return stepService.getStep(Long.parseLong(suid));
-    }
-
+    /**
+     * <h3>/steps</h3>
+     *
+     * <b>Method:</b> POST
+     * <b>Description:</b> creates a new step
+     * <b>Allowed roles:</b> ROLE_USER(game members only), ROLE_ADMIN
+     */
     @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Step newGame(@RequestBody StepProxy stepProxy){
@@ -39,4 +39,17 @@ public class StepController {
         return getStep(step.getSuid().toString());
     }
 
+    /**
+     * <h3>/steps/{suid}</h3>
+     *
+     * <b>Method:</b> GET
+     * <b>Description:</b> returns the appropriate step details
+     * <b>Allowed roles:</b> ROLE_USER(game members only), ROLE_ADMIN
+     */
+    @RequestMapping(value="/{suid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    public @ResponseBody
+    Step getStep(@PathVariable String suid){
+        log.info("Step with SUID: " + suid + " returned");
+        return stepService.getStep(Long.parseLong(suid));
+    }
 }
