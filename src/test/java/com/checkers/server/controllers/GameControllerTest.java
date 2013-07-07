@@ -77,17 +77,13 @@ public class GameControllerTest {
     @HttpTest(  method = Method.POST,
             path = "",
             content = "{\n" +
-                    "    \"gauid\": null,\n" +
                     "    \"name\": \"Just for test\",\n" +
                     "    \"description\": \"Testing game\",\n" +
                     "    \"type\": \"long\",\n" +
                     "    \"board\": \"10x10\",\n" +
                     "    \"state\": \"open\",\n" +
-                    "    \"white\": 2,\n" +
-                    "    \"black\": 1,\n" +
-                    "    \"created\": 1369311377195,\n" +
-                    "    \"modified\": 1369311377195,\n" +
-                    "    \"lastLogin\": 1369311377195\n" +
+                    "    \"whiteUuid\": 2,\n" +
+                    "    \"blackUuid\": 1\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
@@ -142,11 +138,9 @@ public class GameControllerTest {
     @HttpTest(  method = Method.POST,
             path = "/1/steps",
             content = "{\n" +
-                    "  \"suid\"  : null,\n" +
-                    "  \"game\"  : 1,\n" +
-                    "  \"user\"  : 1,\n" +
-                    "  \"step\"  : \"1-3\",\n" +
-                    "  \"created\": 1369311377195\n" +
+                    "  \"gauid\"  : 1,\n" +
+                    "  \"uuid\"  : 1,\n" +
+                    "  \"step\"  : \"1-3\"\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }

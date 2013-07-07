@@ -2,7 +2,6 @@ package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
-import com.checkers.server.beans.proxy.GameProxy;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +55,7 @@ public class GameDaoTest {
     @Test
     public void newGameProxy(){
         //Creating new game from GameProxy bean
-        GameProxy game = new GameProxy();
+        Game game = new Game();
 
         game.setGauid(null);
 
@@ -67,24 +66,24 @@ public class GameDaoTest {
         game.setType("long");
         game.setBoard("8x8");
 
-        game.setBlack(1L);
-        game.setWhite(2L);
+        game.setBlackUuid(1L);
+        game.setWhiteUuid(2L);
 
         game.setModified(new Date());
         game.setCreated(new Date());
         game.setLastLogin(new Date());
 
-        Game justGame = gameDao.newGame(game);
+        gameDao.newGame(game);
 
-        Assert.assertNotNull("GameProxy's object doesn't persist.", justGame.getGauid());
-        Assert.assertNotNull("Game's object is null in GameProxy method.", justGame);
-        Assert.assertNotNull("Game's object doesn't persist in GameProxy method.", justGame.getGauid());
+        Assert.assertNotNull("GameProxy's object doesn't persist.", game.getGauid());
+        Assert.assertNotNull("Game's object is null in GameProxy method.", game);
+        Assert.assertNotNull("Game's object doesn't persist in GameProxy method.", game.getGauid());
     }
 
     @Test
     public void getGame(){
         //Creating new game from GameProxy bean
-        GameProxy game = new GameProxy();
+        Game game = new Game();
 
         game.setGauid(null);
 
@@ -95,19 +94,19 @@ public class GameDaoTest {
         game.setType("long");
         game.setBoard("8x8");
 
-        game.setBlack(1L);
-        game.setWhite(2L);
+        game.setBlackUuid(1L);
+        game.setWhiteUuid(2L);
 
         game.setModified(new Date());
         game.setCreated(new Date());
         game.setLastLogin(new Date());
 
-        Game justGame = gameDao.newGame(game);
+        gameDao.newGame(game);
 
-        Game obtainedGame = gameDao.getGame(justGame.getGauid());
+        Game obtainedGame = gameDao.getGame(game.getGauid());
 
         Assert.assertNotNull("Obtained game is null", obtainedGame);
-        Assert.assertEquals("Obtained game gauid is incorrect", justGame.getGauid(), obtainedGame.getGauid());
+        Assert.assertEquals("Obtained game gauid is incorrect", game.getGauid(), game.getGauid());
     }
 
     @Test
@@ -136,7 +135,7 @@ public class GameDaoTest {
 
         //Creating three games for this user in the loop
         for(int i = 0; i < 3; i++){
-            GameProxy game = new GameProxy();
+            Game game = new Game();
 
             game.setGauid(null);
 
@@ -147,8 +146,8 @@ public class GameDaoTest {
             game.setType("long");
             game.setBoard("8x8");
 
-            game.setBlack(1L);
-            game.setWhite(user.getUuid());
+            game.setBlackUuid(1L);
+            game.setWhiteUuid(user.getUuid());
 
             game.setModified(new Date());
             game.setCreated(new Date());

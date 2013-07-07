@@ -1,10 +1,8 @@
 package com.checkers.server.controllers;
 
 import com.checkers.server.beans.Game;
-import com.checkers.server.beans.proxy.GameProxy;
 import com.checkers.server.beans.Step;
 
-import com.checkers.server.beans.proxy.StepProxy;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
@@ -91,7 +89,7 @@ public class GameController {
    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Game newGame(@RequestBody GameProxy game){
+   Game newGame(@RequestBody Game game){
        log.info("Game: \"" + game.getName() + "\" created");
        Game persistGame = gameService.newGame(game);
        return getGame(persistGame.getGauid().toString());
@@ -137,7 +135,7 @@ public class GameController {
    @RequestMapping(value="/{gauid}/steps", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Step newGame(@RequestBody StepProxy stepProxy, @PathVariable final String gauid){
+   Step newGame(@RequestBody Step step, @PathVariable final String gauid){
        log.warn("newGameStep has not implemented yet. Please use /steps instead.");
        //TODO implementation
        return null;

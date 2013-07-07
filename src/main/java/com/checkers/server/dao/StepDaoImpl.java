@@ -3,7 +3,6 @@ package com.checkers.server.dao;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
-import com.checkers.server.beans.proxy.StepProxy;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -45,29 +44,32 @@ public class StepDaoImpl implements StepDao {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void newStep(Step step) {
         try{
+            if(step.getGame() != null){
+                step.setGauid(step.getGame().getGauid());
+            } else{
+                if(step.getGauid() != null){
+                    step.setGame(em.getReference(Game.class, step.getGauid()));
+                } else{
+                    throw new Exception("Attempt to create a step without a pointer to the game");
+                }
+            }
+
+            if(step.getUser() != null){
+                step.setUuid(step.getUser().getUuid());
+            } else{
+                if(step.getUuid() != null){
+                    step.setUser(em.getReference(User.class, step.getUuid()));
+                } else{
+                    throw new Exception("Attempt to create a step without a pointer to the user. Service layer should do it");
+                }
+            }
+
             em.persist(step);
+
         }catch(Exception e){
             //Catch any exception
             log.error("newStep: " + e.getMessage(), e);
         }
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Step newStep(StepProxy stepProxy) {
-        Step step = new Step(stepProxy);
-
-        try{
-            step.setGame(em.getReference(Game.class, stepProxy.getGauid()));
-            step.setUser(em.getReference(User.class, stepProxy.getUuid()));
-        }catch(Exception e){
-            //Catch any exception
-            log.error("newStep: " + e.getMessage(), e);
-        }
-
-        this.newStep(step);
-
-        return step;
     }
 
     @Override

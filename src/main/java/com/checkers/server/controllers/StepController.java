@@ -1,7 +1,6 @@
 package com.checkers.server.controllers;
 
 import com.checkers.server.beans.Step;
-import com.checkers.server.beans.proxy.StepProxy;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +32,10 @@ public class StepController {
      */
     @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Step newGame(@RequestBody StepProxy stepProxy){
-        log.info("Step: \"" + stepProxy.getStep() + "\" created");
-        Step step = stepService.newStep(stepProxy);
-        return getStep(step.getSuid().toString());
+    public @ResponseBody Step newGame(@RequestBody Step step){
+        log.info("Step: \"" + step.getStep() + "\" created");
+        stepService.newStep(step);
+        return stepService.getStep(step.getSuid());
     }
 
     /**

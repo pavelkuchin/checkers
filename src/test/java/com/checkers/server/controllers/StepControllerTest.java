@@ -38,11 +38,8 @@ public class StepControllerTest {
     @HttpTest(  method = Method.POST,
             path = "",
             content = "{\n" +
-                    "  \"suid\"  : null,\n" +
-                    "  \"game\"  : 1,\n" +
-                    "  \"user\"  : 1,\n" +
-                    "  \"step\"  : \"1-3\",\n" +
-                    "  \"created\": 1369311377195\n" +
+                    "  \"gauid\"  : 1,\n" +
+                    "  \"step\"  : \"1-3\"\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +23,12 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public void newUser(User user) {
+
+        user.setUuid(null);
+        user.setCreated(new Date());
+        user.setModified(new Date());
+        user.setLastLogin(new Date());
+
         userDao.newUser(user);
     }
 

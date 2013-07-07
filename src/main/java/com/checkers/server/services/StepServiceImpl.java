@@ -1,13 +1,15 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Step;
-import com.checkers.server.beans.proxy.StepProxy;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -34,28 +36,35 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step newStep(StepProxy stepProxy) {
-        Step result;
-
+    public Step newStep(Step step) {
         Object event;
 
+        step.setUuid(null);
+
+        step.setCreated(new Date());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+
+        step.setUser(userDao.getUserByLogin(name));
+
         synchronized (events){
-            if(!events.containsKey(stepProxy.getGauid())){
-                events.put(stepProxy.getGauid(), new Object());
+            if(!events.containsKey(step.getGauid())){
+                events.put(step.getGauid(), new Object());
             }
-            event = events.get(stepProxy.getGauid());
+            event = events.get(step.getGauid());
         }
 
         synchronized (event) {
-            result = stepDao.newStep(stepProxy);
+            stepDao.newStep(step);
 
-            if(result.getSuid() != null){
+            if(step.getSuid() != null){
                 //We notify all listeners about new step in the DB
                 event.notifyAll();
             }
         }
 
-        return result;
+        return step;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")

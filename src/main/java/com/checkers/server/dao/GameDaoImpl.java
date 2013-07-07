@@ -1,7 +1,6 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
-import com.checkers.server.beans.proxy.GameProxy;
 import com.checkers.server.beans.User;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
@@ -44,28 +43,29 @@ public class GameDaoImpl implements GameDao {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void newGame(Game game) {
         try{
+            if(game.getWhite() != null){
+                game.setWhiteUuid(game.getWhite().getUuid());
+            } else{
+                if(game.getWhiteUuid() != null){
+                    game.setWhite(em.getReference(User.class, game.getWhiteUuid()));
+                } else{
+                    throw new Exception("Attempt to create a game without a pointer to the white player");
+                }
+            }
+
+            if(game.getBlack() != null){
+                game.setBlackUuid(game.getBlack().getUuid());
+            } else{
+                if(game.getBlackUuid() != null){
+                    game.setBlack(em.getReference(User.class, game.getBlackUuid()));
+                }
+            }
+
             em.persist(game);
         } catch(Exception e){
             //Catch any exception
             log.error("newGame: " + e.getMessage(), e);
         }
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Game newGame(GameProxy gameProxy) {
-        Game game = new Game(gameProxy);
-
-        try{
-            game.setWhite(em.getReference(User.class, gameProxy.getWhiteUuid()));
-            game.setBlack(em.getReference(User.class, gameProxy.getBlackUuid()));
-        } catch (Exception e){
-            //Catch any exception
-            log.error("newGame: " + e.getMessage(), e);
-        }
-        this.newGame(game);
-
-            return game;
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
-import com.checkers.server.beans.proxy.GameProxy;
 import com.checkers.server.dao.GameDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,8 +27,16 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game newGame(GameProxy game) {
-        return gameDao.newGame(game);
+    public Game newGame(Game game) {
+
+        game.setGauid(null);
+
+        game.setCreated(new Date());
+        game.setModified(new Date());
+        game.setLastLogin(new Date());
+
+        gameDao.newGame(game);
+            return game;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")

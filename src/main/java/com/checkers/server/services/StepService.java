@@ -1,7 +1,6 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Step;
-import com.checkers.server.beans.proxy.StepProxy;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public interface StepService {
     Step getStep(Long suid);
-    Step newStep(StepProxy stepProxy);
+    Step newStep(Step stepProxy);
 
     List<Step> getGameSteps(Long gauid);
     Step getGameLastStep(Long gauid);

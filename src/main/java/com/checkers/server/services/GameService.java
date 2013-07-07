@@ -1,7 +1,6 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
-import com.checkers.server.beans.proxy.GameProxy;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public interface GameService {
     Game getGame(Long gauid);
-    Game newGame(GameProxy game);
+    Game newGame(Game game);
     List<Game> getGames();
     List<Game> getUserGames(Long uuid);
 }

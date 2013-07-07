@@ -10,6 +10,8 @@
         type varchar(255),
         black_uuid bigint,
         white_uuid bigint,
+        blackUuid  bigint,
+        whiteUuid  bigint,
         primary key (gauid)
     );
 
@@ -19,6 +21,8 @@
         step varchar(255),
         game_gauid bigint,
         user_uuid bigint,
+        gauid bigint,
+        uuid bigint,
         primary key (suid)
     );
 

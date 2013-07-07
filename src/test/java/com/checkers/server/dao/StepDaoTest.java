@@ -1,8 +1,6 @@
 package com.checkers.server.dao;
 
-import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
-import com.checkers.server.beans.proxy.StepProxy;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,18 +49,18 @@ public class StepDaoTest {
 
     @Test
     public void newStepProxy(){
-        StepProxy stepProxy = new StepProxy();
+        Step step = new Step();
 
-        stepProxy.setSuid(null);
+        step.setSuid(null);
 
-        stepProxy.setGame(1L);
-        stepProxy.setUser(1L);
+        step.setGauid(1L);
+        step.setUuid(1L);
 
-        stepProxy.setStep("d6-c5");
+        step.setStep("d6-c5");
 
-        stepProxy.setCreated(new Date());
+        step.setCreated(new Date());
 
-        Step step = stepDao.newStep(stepProxy);
+        stepDao.newStep(step);
 
         Assert.assertNotNull("Step's proxy is null", step);
         Assert.assertNotNull("Step's proxy object doesn't persist", step.getSuid());
@@ -70,18 +68,18 @@ public class StepDaoTest {
 
     @Test
     public void getStep(){
-        StepProxy stepProxy = new StepProxy();
+        Step step = new Step();
 
-        stepProxy.setSuid(null);
+        step.setSuid(null);
 
-        stepProxy.setGame(1L);
-        stepProxy.setUser(1L);
+        step.setGauid(1L);
+        step.setUuid(1L);
 
-        stepProxy.setStep("c5:e3:g5");
+        step.setStep("c5:e3:g5");
 
-        stepProxy.setCreated(new Date());
+        step.setCreated(new Date());
 
-        Step step = stepDao.newStep(stepProxy);
+        stepDao.newStep(step);
 
         Step obtainedStep = stepDao.getStep(step.getSuid());
 
@@ -91,39 +89,40 @@ public class StepDaoTest {
 
     @Test
     public void getLastStep() throws InterruptedException {
-        StepProxy stepProxy = new StepProxy();
+        Step step1 = new Step();
+        Step step2 = new Step();
 
-        stepProxy.setSuid(null);
+        step1.setSuid(null);
 
-        stepProxy.setGame(1L);
-        stepProxy.setUser(1L);
+        step1.setGauid(1L);
+        step1.setUuid(1L);
 
-        stepProxy.setStep("g3-f4");
+        step1.setStep("g3-f4");
 
-        stepProxy.setCreated(new Date());
+        step1.setCreated(new Date());
 
-        Step step = stepDao.newStep(stepProxy);
+        stepDao.newStep(step1);
 
         Step obtainedStep = stepDao.getGameLastStep(1L);
 
-        Assert.assertEquals("[First time] Last step is incorrect", step.getSuid(), obtainedStep.getSuid());
+        Assert.assertEquals("[First time] Last step is incorrect", step1.getSuid(), obtainedStep.getSuid());
 
         TimeUnit.SECONDS.sleep(1);
 
-        stepProxy.setSuid(null);
+        step2.setSuid(null);
 
-        stepProxy.setGame(1L);
-        stepProxy.setUser(1L);
+        step2.setGauid(1L);
+        step2.setUuid(1L);
 
-        stepProxy.setStep("f4:h6:f8:c5:g1");
+        step2.setStep("f4:h6:f8:c5:g1");
 
-        stepProxy.setCreated(new Date());
+        step2.setCreated(new Date());
 
-        step = stepDao.newStep(stepProxy);
+        stepDao.newStep(step2);
 
         obtainedStep = stepDao.getGameLastStep(1L);
 
-        Assert.assertEquals("[Second time] Last step is incorrect", step.getSuid(), obtainedStep.getSuid());
+        Assert.assertEquals("[Second time] Last step is incorrect", step2.getSuid(), obtainedStep.getSuid());
 
     }
 
