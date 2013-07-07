@@ -11,36 +11,27 @@
         <security:http-basic />
         <!-- REMIT ALL -->
         <!--!!!PAY ATTENTION-->
-        <security:intercept-url pattern="/users/" access="permitAll" />
+        <security:intercept-url pattern="/**/users/" access="permitAll" />
 
         <!-- ROLE_USER -->
-        <security:intercept-url pattern="/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+        <security:intercept-url pattern="/**/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
 
         <!-- Especially for restfuse -->
-        <security:intercept-url pattern="/games/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
-        <security:intercept-url pattern="/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
-        <security:intercept-url pattern="/games/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
-        <security:intercept-url pattern="/games/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
-        <security:intercept-url pattern="/games/*/steps"          access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
-        <security:intercept-url pattern="/games/*/steps"          access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
-
-        <security:intercept-url pattern="/steps/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+        <security:intercept-url pattern="/**/games/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+        <security:intercept-url pattern="/**/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/games/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/games/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
         <!-- Especially for restfuse -->
-        <security:intercept-url pattern="/steps/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
-        <security:intercept-url pattern="/steps/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/steps/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+        <security:intercept-url pattern="/**/steps/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/steps/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
 
-        <security:intercept-url pattern="/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
-        <security:intercept-url pattern="/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
-        <security:intercept-url pattern="/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="DELETE" />
-        <security:intercept-url pattern="/users/*/games"          access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
         <!-- ROLE_ADMIN -->
-        <security:intercept-url pattern="/steps/"                 access="hasRole('ROLE_ADMIN')" method="GET" />
-        <security:intercept-url pattern="/users/"                 access="hasRole('ROLE_ADMIN')" method="POST" />
-
-        <!-- Especially for restfuse -->
-        <security:intercept-url pattern="/users/"                access="hasRole('ROLE_ADMIN')" method="POST" />
+        <security:intercept-url pattern="/**/users/*"               access="hasRole('ROLE_ADMIN')" method="DELETE" />
 
         <!-- DENY ALL -->
         <security:intercept-url pattern="/**"                   access="denyAll" />
