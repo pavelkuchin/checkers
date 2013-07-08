@@ -2,8 +2,11 @@ package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.dao.GameDao;
+import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,7 +20,10 @@ import java.util.List;
 @Service("gameService")
 public class GameServiceImpl implements GameService {
     @Autowired
-    GameDao gameDao;
+    private GameDao gameDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
@@ -48,6 +54,15 @@ public class GameServiceImpl implements GameService {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public List<Game> getUserGames(Long uuid) {
+
+        if(uuid == null){
+            //TODO it is bad solution but i have not any other now.
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String name = auth.getName();
+
+            uuid = userDao.getUserByLogin(name).getUuid();
+        }
+
         return gameDao.getUserGames(uuid);
     }
 }

@@ -71,7 +71,14 @@ public class UserController {
     public @ResponseBody
     User getUser(@PathVariable String uuid){
         log.info("Returned user with uuid: " + uuid);
-            return userService.getUser(Long.parseLong(uuid));
+
+        Long uuidLong = null;
+
+        if(!uuid.equals("me")){
+            uuidLong = Long.parseLong(uuid);
+        }
+
+            return userService.getUser(uuidLong);
     }
 
     /**
@@ -85,7 +92,14 @@ public class UserController {
     public @ResponseBody
     List<Game> getUserGames(@PathVariable String uuid){
         log.info("All games for user " + uuid + " returned");
-            return gameService.getUserGames(Long.parseLong(uuid));
+
+            Long uuidLong = null;
+
+            if(!uuid.equals("me")){
+                uuidLong = Long.parseLong(uuid);
+            }
+
+                return gameService.getUserGames(uuidLong);
     }
 
     /**
@@ -117,6 +131,13 @@ public class UserController {
     public @ResponseBody
     User delUser(@PathVariable String uuid){
         log.warn("delUser has not implemented yet");
+
+        Long uuidLong = null;
+
+        if(!uuid.equals("me")){
+            uuidLong = Long.parseLong(uuid);
+        }
+
         //TODO implementation
         return null;
     }
@@ -130,8 +151,15 @@ public class UserController {
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     public @ResponseBody
-    User modUser(@RequestBody User user){
+    User modUser(@PathVariable String uuid, @RequestBody User user){
         log.info("modUser has not implemented yet");
+
+        Long uuidLong = null;
+
+        if(!uuid.equals("me")){
+            uuidLong = Long.parseLong(uuid);
+        }
+
         //TODO implementation
         return null;
     }

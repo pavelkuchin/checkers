@@ -4,6 +4,8 @@ import com.checkers.server.beans.User;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -35,7 +37,16 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public User getUser(Long uuid) {
-        return userDao.getUser(uuid);
+
+        if(uuid == null){
+            //TODO it is bad solution but i have not any other now.
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String name = auth.getName();
+
+            uuid = userDao.getUserByLogin(name).getUuid();
+        }
+
+            return userDao.getUser(uuid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
