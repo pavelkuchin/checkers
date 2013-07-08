@@ -34,6 +34,24 @@ public class UserServiceImpl implements UserService {
         userDao.newUser(user);
     }
 
+    @Override
+    public void regUser(User user) {
+
+        // Fields autofill
+        user.setUuid(null);
+
+        //TODO User should be enabled only after email verification
+        user.setEnabled(true);
+
+        user.setRole("ROLE_USER");
+
+        user.setCreated(new Date());
+        user.setModified(new Date());
+        user.setLastLogin(new Date());
+
+        userDao.newUser(user);
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public User getUser(Long uuid) {

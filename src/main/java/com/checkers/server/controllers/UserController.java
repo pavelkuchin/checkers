@@ -109,13 +109,26 @@ public class UserController {
      *   <b>Description:</b> new user registrations
      *   <b>Allowed roles:</b> ANYONE
      */
-    // TODO Separate the user registration and user creation (see above). Here Would be some a restricted object as param instead of 'User'
-    @RequestMapping(value = "", params = "action=registration", method = RequestMethod.POST, headers = {"Accept=application/json"})
+    @RequestMapping(value = "/registration/", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     User regUser(@RequestBody User user){
-        log.warn("registersUser has not implemented yet");
-        //TODO implementation
+        log.info("User " + user.getLogin() + " registration has been started");
+
+        // First stage of validation
+        //TODO Exceptions alert system
+        if(user.getLogin().isEmpty()){
+            return null;
+        }
+        if(user.getEmail().isEmpty()){
+            return null;
+        }
+        if(user.getPassword().isEmpty()){
+            return null;
+        }
+
+        userService.regUser(user);
+
         return user;
     }
 

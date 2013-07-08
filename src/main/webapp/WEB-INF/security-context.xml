@@ -7,11 +7,13 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+
+    <!-- REMIT ALL -->
+    <!--!!!PAY ATTENTION-->
+    <!--!!!!!! It is some security gap, but it will do now -->
+    <security:http pattern="/users/registration/" security="none" />
+
     <security:http use-expressions="true">
-        <security:http-basic />
-        <!-- REMIT ALL -->
-        <!--!!!PAY ATTENTION-->
-        <security:intercept-url pattern="/**/users/" access="permitAll" />
 
         <!-- ROLE_USER -->
         <security:intercept-url pattern="/**/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
@@ -27,14 +29,19 @@
         <security:intercept-url pattern="/**/steps/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/**/steps/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
 
+
+        <security:intercept-url pattern="/**/users/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET"/>
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
         <!-- ROLE_ADMIN -->
+        <security:intercept-url pattern="/**/users/"                access="permitAll" method="POST"/>
         <security:intercept-url pattern="/**/users/*"               access="hasRole('ROLE_ADMIN')" method="DELETE" />
 
         <!-- DENY ALL -->
-        <security:intercept-url pattern="/**"                   access="denyAll" />
+        <security:intercept-url pattern="/**"                       access="denyAll" />
+
+        <security:http-basic />
     </security:http>
 
     <security:authentication-manager>

@@ -13,6 +13,8 @@ import java.util.List;
 public interface UserService {
     void newUser(User user);
 
+    void regUser(User user);
+
     User getUser(Long uuid);
 
     List<User> getUsers();
