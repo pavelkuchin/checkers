@@ -69,6 +69,31 @@ public class GameDaoImpl implements GameDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Game joinGame(Long gauid, Long uuid) {
+
+        Game game = em.find(Game.class, gauid);
+
+        // TODO constants
+        /**
+         * Game state:
+         *  open - game has been opened. Find black player.
+         *  game - game in process
+         *  close - game closed (win or dead heat)
+         */
+        if(game.getState().equals("open") && game.getWhiteUuid() != uuid){
+            game.setType("game");
+            game.setBlackUuid(uuid);
+            game.setBlack(em.find(User.class, uuid));
+
+            em.merge(game);
+        }
+
+        return game;
+    }
+
+
+    @Override
     public List<Game> getGames() {
         List<Game> games = null;
 

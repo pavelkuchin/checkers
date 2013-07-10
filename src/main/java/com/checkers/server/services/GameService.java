@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface GameService {
     Game getGame(Long gauid);
+    Game joinGame(Long gauid);
     Game newGame(Game game);
     List<Game> getGames();
     List<Game> getUserGames(Long uuid);

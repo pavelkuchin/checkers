@@ -62,6 +62,10 @@ public class Game {
     public Game(){
     }
 
+    public Game(Long gauid){
+        this.gauid = gauid;
+    }
+
     public Long getGauid() {
         return gauid;
     }

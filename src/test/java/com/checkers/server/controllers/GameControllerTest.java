@@ -119,6 +119,20 @@ public class GameControllerTest {
     }
 
     /**
+     * Test for /games/{gauid}?action=join
+     * Method: PUT
+     */
+    @HttpTest(  method = Method.PUT,
+            path = "/1?action=join",
+            content = "{}",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void joinGame(){
+        assertOk( response );
+    }
+
+    /**
      * Test for /games/{gauid}/steps
      * Method: GET
      */

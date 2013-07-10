@@ -1,6 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,38 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
+    public Game joinGame(Long gauid) {
+        //TODO it is bad solution but i have not any other now.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+
+        Long uuid = userDao.getUserByLogin(name).getUuid();
+
+        return gameDao.joinGame(gauid, uuid);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @Override
     public Game newGame(Game game) {
 
+        //TODO it is bad solution but i have not any other now.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+
+        User you = userDao.getUserByLogin(name);
+
         game.setGauid(null);
+
+        //TODO constants
+        game.setType("offline");
+        game.setBoard("8x8");
+        game.setState("open");
+
+        game.setWhite(you);
+        game.setWhiteUuid(you.getUuid());
+
+        game.setBlack(null);
+        game.setBlackUuid(null);
 
         game.setCreated(new Date());
         game.setModified(new Date());

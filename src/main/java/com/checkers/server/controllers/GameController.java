@@ -95,6 +95,23 @@ public class GameController {
        return getGame(persistGame.getGauid().toString());
    }
 
+    /**
+     * <h3>/games/{gauid}?action=join</h3>
+     *
+     * <b>Method:</b> PUT
+     * <b>Description:</b> join to game
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
+    @RequestMapping(value="/{gauid}", params = "action=join", method = RequestMethod.PUT, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    Game joinGame(@PathVariable String gauid){
+        log.info("Join to game: \"" + gauid + "\"");
+
+        // TODO result object should be used here. When it is created.
+        return gameService.joinGame(Long.parseLong(gauid));
+    }
+
    /**
     * <h3>/games/{gauid}</h3>
     *

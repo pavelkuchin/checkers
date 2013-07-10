@@ -53,6 +53,35 @@ public class GameDaoTest {
     }
 
     @Test
+    public void joinGame(){
+        //Creating new game from Game bean
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("open");
+        game.setType("long");
+        game.setBoard("8x8");
+
+        game.setWhite(userDao.getUser(2L));
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastLogin(new Date());
+
+        gameDao.newGame(game);
+
+        gameDao.joinGame(game.getGauid(), 1L);
+
+        game = gameDao.getGame(game.getGauid());
+
+        Assert.assertNotNull("You can't join to game", game.getBlack());
+    }
+
+    @Test
     public void newGameProxy(){
         //Creating new game from GameProxy bean
         Game game = new Game();
