@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface StepService {
     Step getStep(Long suid);
-    Step newStep(Step stepProxy);
+    Step newStep(Step stepProxy) throws Exception;
 
     List<Step> getGameSteps(Long gauid);
     Step getGameLastStep(Long gauid);

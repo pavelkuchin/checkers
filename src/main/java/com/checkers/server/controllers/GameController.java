@@ -112,6 +112,23 @@ public class GameController {
         return gameService.joinGame(Long.parseLong(gauid));
     }
 
+    /**
+     * <h3>/games/{gauid}?action=close</h3>
+     *
+     * <b>Method:</b> PUT
+     * <b>Description:</b> close a game
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
+    @RequestMapping(value="/{gauid}", params = "action=close", method = RequestMethod.PUT, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    Game closeGame(@PathVariable String gauid){
+        log.info("Game close process initiated: \"" + gauid + "\"");
+
+        // TODO result object should be used here. When it is created.
+        return gameService.closeGame(Long.parseLong(gauid));
+    }
+
    /**
     * <h3>/games/{gauid}</h3>
     *

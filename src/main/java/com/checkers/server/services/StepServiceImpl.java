@@ -1,6 +1,9 @@
 package com.checkers.server.services;
 
+import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
+import com.checkers.server.beans.User;
+import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class StepServiceImpl implements StepService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private GameDao gameDao;
+
     ConcurrentMap<Long, Object> events = new ConcurrentHashMap<Long, Object>();
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
@@ -36,17 +42,41 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step newStep(Step step) {
+    public Step newStep(Step step) throws Exception {
         Object event;
 
-        step.setUuid(null);
-
-        step.setCreated(new Date());
+        Game game = null;
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
 
-        step.setUser(userDao.getUserByLogin(name));
+        User user = userDao.getUserByLogin(name);
+
+        if(step.getGame() == null){
+            game = gameDao.getGame(step.getGauid());
+        } else{
+            game = step.getGame();
+        }
+
+        // Do step Login
+        // Game should have status - 'game'
+        if(!game.getState().equals("game")){
+            //TODO Exceptions Alarm System
+            throw new Exception("You can't make step in 'close' or 'open' game. Game should be in 'game' state.");
+        }
+
+        // You can't make two steps, one by one. It is obviously.
+        if(stepDao.getGameLastStep(step.getGauid()).getUuid().equals(user.getUuid())){
+            //TODO Exceptions Alarm System
+            throw new Exception("You made your move. Let the opponent to make a move.");
+        }
+
+        // Async Login
+        step.setUuid(null);
+
+        step.setCreated(new Date());
+
+        step.setUser(user);
 
         synchronized (events){
             if(!events.containsKey(step.getGauid())){

@@ -133,6 +133,20 @@ public class GameControllerTest {
     }
 
     /**
+     * Test for /games/{gauid}?action=close
+     * Method: PUT
+     */
+    @HttpTest(  method = Method.PUT,
+            path = "/1?action=close",
+            content = "{}",
+            authentications = {
+                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+    )
+    public void closeGame(){
+        assertOk( response );
+    }
+
+    /**
      * Test for /games/{gauid}/steps
      * Method: GET
      */

@@ -82,9 +82,35 @@ public class GameDaoImpl implements GameDao {
          *  close - game closed (win or dead heat)
          */
         if(game.getState().equals("open") && game.getWhiteUuid() != uuid){
-            game.setType("game");
+            game.setState("game");
             game.setBlackUuid(uuid);
             game.setBlack(em.find(User.class, uuid));
+
+            em.merge(game);
+        }
+
+        return game;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Game closeGame(Long gauid, Long uuid) {
+        Game game = em.find(Game.class, gauid);
+
+        // TODO constants
+        /**
+         * Game state:
+         *  open - game has been opened. Find black player.
+         *  game - game in process
+         *  close - game closed (win or dead heat)
+         */
+        if(game.getState().equals("game")){
+            //TODO Separate field for resolution
+            if(uuid == game.getBlackUuid()){
+                game.setState("close: white win; black capitulated;");
+            } else if(uuid == game.getWhiteUuid()){
+                game.setState("close: black win; white capitulated;");
+            }
 
             em.merge(game);
         }

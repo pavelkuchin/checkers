@@ -82,6 +82,36 @@ public class GameDaoTest {
     }
 
     @Test
+    public void closeGame(){
+        //Creating new game from Game bean
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("game");
+        game.setType("long");
+        game.setBoard("8x8");
+
+        game.setWhite(userDao.getUser(2L));
+        game.setBlack(userDao.getUser(1L));
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastLogin(new Date());
+
+        gameDao.newGame(game);
+
+        gameDao.closeGame(game.getGauid(), 1L);
+
+        game = gameDao.getGame(game.getGauid());
+
+        Assert.assertEquals("Game doesn't close", "close: white win; black capitulated;", game.getState());
+    }
+
+    @Test
     public void newGameProxy(){
         //Creating new game from GameProxy bean
         Game game = new Game();
@@ -135,7 +165,7 @@ public class GameDaoTest {
         Game obtainedGame = gameDao.getGame(game.getGauid());
 
         Assert.assertNotNull("Obtained game is null", obtainedGame);
-        Assert.assertEquals("Obtained game gauid is incorrect", game.getGauid(), game.getGauid());
+        Assert.assertEquals("Obtained game gauid is incorrect", game.getGauid(), obtainedGame.getGauid());
     }
 
     @Test

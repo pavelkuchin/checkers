@@ -34,7 +34,15 @@ public class StepController {
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Step newGame(@RequestBody Step step){
         log.info("Step: \"" + step.getStep() + "\" created");
-        stepService.newStep(step);
+
+        try{
+            stepService.newStep(step);
+        }catch(Exception e){
+            //TODO exceptions return
+            log.warn("There is some exception: " + e.getMessage());
+            return null;
+        }
+
         return stepService.getStep(step.getSuid());
     }
 

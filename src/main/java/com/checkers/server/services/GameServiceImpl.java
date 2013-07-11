@@ -46,6 +46,18 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
+    public Game closeGame(Long gauid) {
+        //TODO it is bad solution but i have not any other now.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+
+        Long uuid = userDao.getUserByLogin(name).getUuid();
+
+        return gameDao.closeGame(gauid, uuid);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @Override
     public Game newGame(Game game) {
 
         //TODO it is bad solution but i have not any other now.
