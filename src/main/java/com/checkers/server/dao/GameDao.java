@@ -14,6 +14,7 @@ public interface GameDao {
     void newGame(Game game);
     Game joinGame(Long gauid, Long uuid);
     Game closeGame(Long gauid, Long uuid);
+    void delGame(Long gauid);
 
     List<Game> getGames();
     List<Game> getUserGames(Long uuid);

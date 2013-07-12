@@ -118,6 +118,16 @@ public class GameDaoImpl implements GameDao {
         return game;
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void delGame(Long gauid) {
+        Game game = em.find(Game.class, gauid);
+
+        if(game.getState().equals("open")){
+            em.remove(game);
+        }
+    }
+
 
     @Override
     public List<Game> getGames() {

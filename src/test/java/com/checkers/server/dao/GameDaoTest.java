@@ -112,6 +112,35 @@ public class GameDaoTest {
     }
 
     @Test
+    public void delGame(){
+        //Creating new game from Game bean
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("open");
+        game.setType("long");
+        game.setBoard("8x8");
+
+        game.setWhite(userDao.getUser(1L));
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastLogin(new Date());
+
+        gameDao.newGame(game);
+
+        gameDao.delGame(game.getGauid());
+
+        game = gameDao.getGame(game.getGauid());
+
+        Assert.assertNull("Open game has not been deleted", game);
+    }
+
+    @Test
     public void newGameProxy(){
         //Creating new game from GameProxy bean
         Game game = new Game();
