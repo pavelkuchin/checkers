@@ -147,7 +147,7 @@ public class UserControllerTest {
      * Method: PUT
      */
     @HttpTest(  method = Method.PUT,
-            path = "/1",
+            path = "/2",
             content = "{\n" +
                     "    \"uuid\"\t\t: null,\n" +
                     "    \"login\"\t\t: \"modified testLogin\",\n" +

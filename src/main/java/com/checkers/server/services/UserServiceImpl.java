@@ -5,9 +5,11 @@ import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +73,68 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delUser(Long uuid) {
         userDao.delUser(uuid);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @Override
+    public User modUser(Long uuid, User user) {
+        User origin = userDao.getUser(uuid);
+
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        SimpleGrantedAuthority roleAdmin = new SimpleGrantedAuthority("ROLE_ADMIN");
+        SimpleGrantedAuthority roleUser = new SimpleGrantedAuthority("ROLE_USER");
+
+        if(authorities.contains(roleAdmin)){
+            //TODO password should be crypted
+            if(user.getPassword() != null){
+                origin.setPassword(user.getPassword());
+            }
+
+            if(user.getEnabled() != null){
+                origin.setEnabled(user.getEnabled());
+            }
+
+            if(user.getRole() != null){
+                origin.setRole(user.getRole());
+            }
+
+            if(user.getFirstName() != null){
+                origin.setFirstName(user.getFirstName());
+            }
+            if(user.getLastName() != null){
+                origin.setLastName(user.getLastName());
+            }
+            if(user.getEmail() != null){
+                origin.setEmail(user.getEmail());
+            }
+
+        } else if(authorities.contains(roleUser)){
+            //TODO password should be changed in other request with old password verification
+            if(user.getPassword() != null){
+                origin.setPassword(user.getPassword());
+            }
+
+            if(user.getFirstName() != null){
+                origin.setFirstName(user.getFirstName());
+            }
+            if(user.getLastName() != null){
+                origin.setLastName(user.getLastName());
+            }
+
+            //TODO email should be changed in other request with email verification
+            if(user.getEmail() != null){
+                origin.setEmail(user.getEmail());
+            }
+
+        }
+
+        origin.setCreated(new Date());
+
+        userDao.modUser(origin);
+
+        return userDao.getUser(uuid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")

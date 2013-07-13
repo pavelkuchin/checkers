@@ -157,12 +157,12 @@ public class UserController {
     *
     *    <b>Method:</b> PUT
     *    <b>Description:</b> modifies user with specific uuid (Long)
-    *    <b>Allowed roles:</b> ROLE_ADMIN(owner only), ROLE_ADMIN
+    *    <b>Allowed roles:</b> ROLE_USER(owner only), ROLE_ADMIN
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     public @ResponseBody
     User modUser(@PathVariable String uuid, @RequestBody User user){
-        log.info("modUser has not implemented yet");
+        log.info("User modification has been started");
 
         Long uuidLong = null;
 
@@ -170,7 +170,6 @@ public class UserController {
             uuidLong = Long.parseLong(uuid);
         }
 
-        //TODO implementation
-        return null;
+            return userService.modUser(uuidLong, user);
     }
 }

@@ -19,5 +19,7 @@ public interface UserService {
 
     void delUser(Long uuid);
 
+    User modUser(Long uuid, User user);
+
     List<User> getUsers();
 }

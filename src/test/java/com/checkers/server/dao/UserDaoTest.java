@@ -49,6 +49,38 @@ public class UserDaoTest {
     }
 
     @Test
+    public void modUser(){
+        User user = new User();
+
+        user.setUuid(null);
+
+        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setFirstName("Konstantin");
+        user.setLastName("Konstantinopolskiy");
+        user.setPassword("jgu*Gg(m574mLU");
+
+        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+
+        user.setEnabled(true);
+
+        user.setRole("USER_ROLE");
+
+        user.setCreated(new Date());
+        user.setModified(new Date());
+        user.setLastLogin(new Date());
+
+        userDao.newUser(user);
+
+        user.setFirstName("Pasha");
+
+        userDao.modUser(user);
+
+        User result = userDao.getUser(user.getUuid());
+
+        Assert.assertEquals("User's object doesn't change.", "Pasha", result.getFirstName());
+    }
+
+    @Test
     public void delUser(){
         User user = new User();
 

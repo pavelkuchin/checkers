@@ -67,6 +67,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public User modUser(User user) {
+        try{
+            em.merge(user);
+        }catch (Exception e){
+            //Catch any exception
+            log.error("modUser" + e.getMessage(), e);
+        }
+
+        return user;
+    }
+
+    @Override
     public User getUserByLogin(String login) {
         User user = null;
 

@@ -16,6 +16,8 @@ public interface UserDao {
 
     void delUser(Long uuid);
 
+    User modUser(User user);
+
     User getUserByLogin(String login);
 
     List<User> getUsers();
