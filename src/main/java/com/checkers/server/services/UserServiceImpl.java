@@ -67,6 +67,12 @@ public class UserServiceImpl implements UserService {
             return userDao.getUser(uuid);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Override
+    public void delUser(Long uuid) {
+        userDao.delUser(uuid);
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public List<User> getUsers() {

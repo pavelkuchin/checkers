@@ -55,6 +55,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void delUser(Long uuid) {
+        try{
+            User user = em.find(User.class, uuid);
+            em.remove(user);
+        }catch (Exception e){
+            //Catch any exception
+            log.error("delUser: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
     public User getUserByLogin(String login) {
         User user = null;
 

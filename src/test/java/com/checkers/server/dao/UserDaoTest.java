@@ -30,7 +30,7 @@ public class UserDaoTest {
 
         user.setLogin("Konstantin.Konstantinopolskiy");
         user.setFirstName("Konstantin");
-        user.setLastName("Konstantinopolskiyancitipate");
+        user.setLastName("Konstantinopolskiy");
         user.setPassword("jgu*Gg(m574mLU");
 
         user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
@@ -46,6 +46,36 @@ public class UserDaoTest {
         userDao.newUser(user);
 
         Assert.assertNotNull("User's object doesn't persist.", user.getUuid());
+    }
+
+    @Test
+    public void delUser(){
+        User user = new User();
+
+        user.setUuid(null);
+
+        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setFirstName("Konstantin");
+        user.setLastName("Konstantinopolskiy");
+        user.setPassword("jgu*Gg(m574mLU");
+
+        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+
+        user.setEnabled(true);
+
+        user.setRole("USER_ROLE");
+
+        user.setCreated(new Date());
+        user.setModified(new Date());
+        user.setLastLogin(new Date());
+
+        userDao.newUser(user);
+
+        userDao.delUser(user.getUuid());
+
+        user = userDao.getUser(user.getUuid());
+
+        Assert.assertNull("User's object doesn't delete.", user);
     }
 
     @Test

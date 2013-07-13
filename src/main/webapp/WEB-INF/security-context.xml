@@ -35,7 +35,7 @@
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
         <!-- ROLE_ADMIN -->
-        <security:intercept-url pattern="/**/users/"                access="permitAll" method="POST"/>
+        <security:intercept-url pattern="/**/users/"                access="hasRole('ROLE_ADMIN')" method="POST"/>
         <security:intercept-url pattern="/**/users/*"               access="hasRole('ROLE_ADMIN')" method="DELETE" />
 
         <!-- DENY ALL -->

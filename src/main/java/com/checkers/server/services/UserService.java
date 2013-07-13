@@ -17,5 +17,7 @@ public interface UserService {
 
     User getUser(Long uuid);
 
+    void delUser(Long uuid);
+
     List<User> getUsers();
 }

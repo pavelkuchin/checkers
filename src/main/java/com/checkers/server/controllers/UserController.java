@@ -136,22 +136,19 @@ public class UserController {
     *    <3>/users/{uuid}</3>
     *
     *    <b>Method: DELETE</b>
-    *    <b>Description: deletes user with specific uuid (Long)</b>
+    *    <b>Description: deletes user with specific uuid (Long). The 'me' constant is not appropriate here.</b>
     *    <b>Allowed roles: ROLE_ADMIN</b>
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     User delUser(@PathVariable String uuid){
-        log.warn("delUser has not implemented yet");
+        log.warn("User delete process has been started");
 
-        Long uuidLong = null;
+        Long uuidLong = Long.parseLong(uuid);
 
-        if(!uuid.equals("me")){
-            uuidLong = Long.parseLong(uuid);
-        }
+        userService.delUser(uuidLong);
 
-        //TODO implementation
         return null;
     }
 

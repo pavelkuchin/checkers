@@ -14,6 +14,8 @@ public interface UserDao {
 
     User getUser(Long uuid);
 
+    void delUser(Long uuid);
+
     User getUserByLogin(String login);
 
     List<User> getUsers();

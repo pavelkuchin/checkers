@@ -134,7 +134,7 @@ public class UserControllerTest {
      * Method: DELETE
      */
     @HttpTest(  method = Method.DELETE,
-            path = "/1",
+            path = "/2",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
