@@ -15,5 +15,6 @@ public interface GameService {
     Game closeGame(Long gauid);
     Game newGame(Game game);
     List<Game> getGames();
+    List<Game> getGamesFiltered(String field, String value);
     List<Game> getUserGames(Long uuid);
 }

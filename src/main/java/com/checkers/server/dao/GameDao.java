@@ -17,5 +17,6 @@ public interface GameDao {
     void delGame(Long gauid);
 
     List<Game> getGames();
+    List<Game> getGamesFiltered(String field, String value);
     List<Game> getUserGames(Long uuid);
 }

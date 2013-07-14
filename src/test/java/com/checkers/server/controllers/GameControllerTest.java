@@ -49,7 +49,7 @@ public class GameControllerTest {
      * Method: GET
      */
     @HttpTest(  method = Method.GET,
-            path = "?field=status&value=open",
+            path = "?field=state&value=open",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )

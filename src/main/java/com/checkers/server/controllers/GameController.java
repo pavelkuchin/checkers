@@ -60,9 +60,9 @@ public class GameController {
    @RequestMapping(value="", params = {"field", "value"},method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
    List<Game> getGamesFiltered(@RequestParam(value = "field") String field, @RequestParam(value = "value") String value){
-       log.warn("getGamesFiltered has not implemented yet");
-       //TODO implementation
-       return null;
+       log.warn("Game filtering started");
+
+       return gameService.getGamesFiltered(field, value);
    }
 
    /**

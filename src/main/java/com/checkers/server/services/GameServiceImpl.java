@@ -105,6 +105,12 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
+    public List<Game> getGamesFiltered(String field, String value) {
+        return gameDao.getGamesFiltered(field, value);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @Override
     public List<Game> getUserGames(Long uuid) {
 
         if(uuid == null){

@@ -257,4 +257,36 @@ public class GameDaoTest {
         Assert.assertNotNull("Games list is null.", games);
         Assert.assertNotEquals("Not all games are returned (or more than you need).", 0, games.size());
     }
+
+    @Test
+    public void getGamesFiltered(){
+        //Creating three games for this user in the loop
+        for(int i = 0; i < 3; i++){
+            Game game = new Game();
+
+            game.setGauid(null);
+
+            game.setName("Game name"+i);
+            game.setDescription("Game description"+i);
+
+            game.setState("open");
+            game.setType("long");
+            game.setBoard("8x8");
+
+            game.setBlackUuid(null);
+            game.setWhiteUuid(2L);
+
+            game.setModified(new Date());
+            game.setCreated(new Date());
+            game.setLastLogin(new Date());
+
+            gameDao.newGame(game);
+        }
+
+        List<Game> games = gameDao.getGamesFiltered("state", "open");
+
+        Assert.assertNotNull("Filtered Games list is null.", games);
+        Assert.assertNotEquals("Not all filtered games are returned (or more than you need).", 3, games.size());
+    }
+
 }

@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -141,6 +144,30 @@ public class GameDaoImpl implements GameDao {
         }
 
             return games;
+    }
+
+    @Override
+    public List<Game> getGamesFiltered(String field, String value) {
+        List<Game> games = null;
+
+        try{
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+
+            CriteriaQuery<Game> query = cb.createQuery(Game.class);
+            Root<Game> root = query.from(Game.class);
+
+            query.select(root);
+            query.where(cb.equal(root.get(field), value));
+
+            games = em.createQuery(query)
+                    .getResultList();
+        } catch(Exception e){
+            //Catch any exception
+            log.error("getGamesFiltered: " + e.getMessage(), e);
+
+        }
+
+        return games;
     }
 
     @Override
