@@ -45,7 +45,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -70,7 +70,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -100,7 +100,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -129,7 +129,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -158,7 +158,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -185,7 +185,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -220,7 +220,7 @@ public class GameDaoTest {
 
         game.setModified(new Date());
         game.setCreated(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
 
@@ -272,7 +272,7 @@ public class GameDaoTest {
 
             game.setModified(new Date());
             game.setCreated(new Date());
-            game.setLastLogin(new Date());
+            game.setLastStep(new Date());
 
             gameDao.newGame(game);
         }
@@ -311,7 +311,7 @@ public class GameDaoTest {
 
             game.setModified(new Date());
             game.setCreated(new Date());
-            game.setLastLogin(new Date());
+            game.setLastStep(new Date());
 
             gameDao.newGame(game);
         }

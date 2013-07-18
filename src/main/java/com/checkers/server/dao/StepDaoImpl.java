@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,6 +66,12 @@ public class StepDaoImpl implements StepDao {
             }
 
             em.persist(step);
+
+            if(step.getSuid() != null){
+                Game game = em.find(Game.class, step.getGauid());
+                game.setLastStep(new Date());
+                em.merge(game);
+            }
 
         }catch(Exception e){
             //Catch any exception

@@ -97,7 +97,7 @@ public class GameServiceImpl implements GameService {
 
         game.setCreated(new Date());
         game.setModified(new Date());
-        game.setLastLogin(new Date());
+        game.setLastStep(new Date());
 
         gameDao.newGame(game);
             return game;

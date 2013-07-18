@@ -150,7 +150,7 @@ public class Game {
         return lastStep;
     }
 
-    public void setLastLogin(Date lastStep) {
+    public void setLastStep(Date lastStep) {
         this.lastStep = lastStep;
     }
 
