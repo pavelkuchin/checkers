@@ -139,10 +139,10 @@ public class GameController {
    @RequestMapping(value="/{gauid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.OK)
    public @ResponseBody
-   Game modGame(@PathVariable String gauid){
-       log.warn("modGame has not implemented yet");
-       //TODO implementation
-       return null;
+   Game modGame(@PathVariable String gauid, @RequestBody Game game){
+       log.info("Game modifying has been started");
+
+       return gameService.modGame(Long.parseLong(gauid), game);
    }
 
    /**

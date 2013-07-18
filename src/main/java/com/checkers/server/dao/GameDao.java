@@ -12,6 +12,7 @@ import java.util.List;
 public interface GameDao {
     Game getGame(Long gauid);
     void newGame(Game game);
+    Game modGame(Game chGame);
     Game joinGame(Long gauid, Long uuid);
     Game closeGame(Long gauid, Long uuid);
     void delGame(Long gauid);

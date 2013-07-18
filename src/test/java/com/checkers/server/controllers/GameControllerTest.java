@@ -99,17 +99,8 @@ public class GameControllerTest {
     @HttpTest(  method = Method.PUT,
             path = "/1",
             content = "{\n" +
-                    "    \"gauid\": 1,\n" +
                     "    \"name\": \"Changed name\",\n" +
-                    "    \"description\": \"Testing game\",\n" +
-                    "    \"type\": \"long\",\n" +
-                    "    \"board\": \"10x10\",\n" +
-                    "    \"state\": \"open\",\n" +
-                    "    \"white\": 2,\n" +
-                    "    \"black\": 1,\n" +
-                    "    \"created\": 1369311377195,\n" +
-                    "    \"modified\": 1369311377195,\n" +
-                    "    \"lastLogin\": 1369311377195\n" +
+                    "    \"description\": \"Testing game\"" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }

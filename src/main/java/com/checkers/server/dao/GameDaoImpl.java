@@ -73,6 +73,19 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Game modGame(Game game){
+        try{
+            em.merge(game);
+        }catch (Exception e){
+            //Catch any exception
+            log.error("modGame" + e.getMessage(), e);
+        }
+
+        return game;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Game joinGame(Long gauid, Long uuid) {
 
         Game game = em.find(Game.class, gauid);

@@ -169,6 +169,42 @@ public class GameDaoTest {
     }
 
     @Test
+    public void modGame(){
+        //Creating new game from GameProxy bean
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("open");
+        game.setType("long");
+        game.setBoard("8x8");
+
+        game.setBlackUuid(1L);
+        game.setWhiteUuid(2L);
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastLogin(new Date());
+
+        gameDao.newGame(game);
+
+        Game chGame = gameDao.getGame(game.getGauid());
+
+        chGame.setDescription("Changed description");
+        chGame.setName("Changed name");
+
+        gameDao.modGame(chGame);
+
+        game = gameDao.getGame(chGame.getGauid());
+
+        Assert.assertEquals("Description has not been changed", "Changed description", game.getDescription());
+        Assert.assertEquals("Name has not been changed", "Changed name", game.getName());
+    }
+
+    @Test
     public void getGame(){
         //Creating new game from GameProxy bean
         Game game = new Game();
