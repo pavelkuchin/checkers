@@ -170,9 +170,17 @@ public class GameController {
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
    Step newGame(@RequestBody Step step, @PathVariable final String gauid){
-       log.warn("newGameStep has not implemented yet. Please use /steps instead.");
-       //TODO implementation
-       return null;
+       log.info("Making step");
+
+       try{
+           step.setGauid(Long.parseLong(gauid));
+           stepService.newStep(step);
+       }catch(Exception e){
+           //TODO exceptions return
+           log.warn("There is some exception: " + e.getMessage());
+           return null;
+       }
+       return stepService.getStep(step.getSuid());
    }
 
    /**

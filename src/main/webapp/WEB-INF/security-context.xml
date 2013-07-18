@@ -10,7 +10,7 @@
 
     <!-- REMIT ALL -->
     <!--!!!PAY ATTENTION-->
-    <!--!!!!!! It is some security gap, but it will do now -->
+    <!--!!!!!! It is possibly security gap, but it will do now -->
     <security:http pattern="/users/registration/" security="none" />
 
     <security:http use-expressions="true">

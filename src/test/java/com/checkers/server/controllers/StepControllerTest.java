@@ -32,23 +32,6 @@ public class StepControllerTest {
     }
 
     /**
-     * /steps
-     * Method: POST
-     */
-    @HttpTest(  method = Method.POST,
-            path = "",
-            content = "{\n" +
-                    "  \"gauid\"  : 1,\n" +
-                    "  \"step\"  : \"1-3\"\n" +
-                    "}",
-            authentications = {
-                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
-    )
-    public void newStep(){
-        assertCreated( response );
-    }
-
-    /**
      * /steps/{suid}
      * Method: GET
      */

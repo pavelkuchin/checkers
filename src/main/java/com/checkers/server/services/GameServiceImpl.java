@@ -130,6 +130,8 @@ public class GameServiceImpl implements GameService {
             }
         }
 
+        chGame.setModified(new Date());
+
         gameDao.modGame(chGame);
 
         return gameDao.getGame(gauid);

@@ -48,7 +48,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void newStepProxy(){
+    public void newStepLongAsObject(){
         Step step = new Step();
 
         step.setSuid(null);
@@ -62,8 +62,8 @@ public class StepDaoTest {
 
         stepDao.newStep(step);
 
-        Assert.assertNotNull("Step's proxy is null", step);
-        Assert.assertNotNull("Step's proxy object doesn't persist", step.getSuid());
+        Assert.assertNotNull("StepLongAsObject's is null", step);
+        Assert.assertNotNull("StepLongAsObject's object doesn't persist", step.getSuid());
     }
 
     @Test

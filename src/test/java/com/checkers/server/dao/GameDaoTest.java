@@ -141,8 +141,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void newGameProxy(){
-        //Creating new game from GameProxy bean
+    public void newGameLongAsObject(){
         Game game = new Game();
 
         game.setGauid(null);
@@ -163,14 +162,13 @@ public class GameDaoTest {
 
         gameDao.newGame(game);
 
-        Assert.assertNotNull("GameProxy's object doesn't persist.", game.getGauid());
-        Assert.assertNotNull("Game's object is null in GameProxy method.", game);
-        Assert.assertNotNull("Game's object doesn't persist in GameProxy method.", game.getGauid());
+        Assert.assertNotNull("GameLongAsObject's object doesn't persist.", game.getGauid());
+        Assert.assertNotNull("Game's object is null in GameLongAsObject method.", game);
+        Assert.assertNotNull("Game's object doesn't persist in GameLongAsObject method.", game.getGauid());
     }
 
     @Test
     public void modGame(){
-        //Creating new game from GameProxy bean
         Game game = new Game();
 
         game.setGauid(null);
@@ -206,7 +204,6 @@ public class GameDaoTest {
 
     @Test
     public void getGame(){
-        //Creating new game from GameProxy bean
         Game game = new Game();
 
         game.setGauid(null);

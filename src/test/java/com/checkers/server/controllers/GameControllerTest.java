@@ -157,8 +157,6 @@ public class GameControllerTest {
     @HttpTest(  method = Method.POST,
             path = "/1/steps",
             content = "{\n" +
-                    "  \"gauid\"  : 1,\n" +
-                    "  \"uuid\"  : 1,\n" +
                     "  \"step\"  : \"1-3\"\n" +
                     "}",
             authentications = {

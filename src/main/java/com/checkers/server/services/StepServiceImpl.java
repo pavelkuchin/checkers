@@ -66,9 +66,13 @@ public class StepServiceImpl implements StepService {
         }
 
         // You can't make two steps, one by one. It is obviously.
-        if(stepDao.getGameLastStep(step.getGauid()).getUuid().equals(user.getUuid())){
-            //TODO Exceptions Alarm System
-            throw new Exception("You made your move. Let the opponent to make a move.");
+        Step lastStep = stepDao.getGameLastStep(step.getGauid());
+
+        if(lastStep != null){
+            if(lastStep.getUuid().equals(user.getUuid())){
+                //TODO Exceptions Alarm System
+                throw new Exception("You made your move. Let the opponent to make a move.");
+            }
         }
 
         // Async Login

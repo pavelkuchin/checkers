@@ -24,29 +24,6 @@ public class StepController {
     StepService stepService;
 
     /**
-     * <h3>/steps</h3>
-     *
-     * <b>Method:</b> POST
-     * <b>Description:</b> creates a new step
-     * <b>Allowed roles:</b> ROLE_USER(game members only), ROLE_ADMIN
-     */
-    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Step newGame(@RequestBody Step step){
-        log.info("Step: \"" + step.getStep() + "\" created");
-
-        try{
-            stepService.newStep(step);
-        }catch(Exception e){
-            //TODO exceptions return
-            log.warn("There is some exception: " + e.getMessage());
-            return null;
-        }
-
-        return stepService.getStep(step.getSuid());
-    }
-
-    /**
      * <h3>/steps/{suid}</h3>
      *
      * <b>Method:</b> GET
