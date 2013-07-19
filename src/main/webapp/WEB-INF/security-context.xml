@@ -44,7 +44,9 @@
         <security:http-basic />
     </security:http>
 
-    <security:authentication-manager>
+    <!-- <bean id="authListener" class="com.checkers.server.listeners.AuthenticationListener"/> -->
+
+    <security:authentication-manager alias="authMan">
         <security:authentication-provider user-service-ref="dbUserService" />
     </security:authentication-manager>
 
