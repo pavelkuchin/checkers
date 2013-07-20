@@ -1,5 +1,6 @@
 package com.checkers.server.controllers;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.services.GameService;
@@ -74,7 +75,7 @@ public class UserController {
 
         Long uuidLong = null;
 
-        if(!uuid.equals("me")){
+        if(!uuid.equals(Consts.ME)){
             uuidLong = Long.parseLong(uuid);
         }
 
@@ -95,7 +96,7 @@ public class UserController {
 
             Long uuidLong = null;
 
-            if(!uuid.equals("me")){
+            if(!uuid.equals(Consts.ME)){
                 uuidLong = Long.parseLong(uuid);
             }
 
@@ -166,7 +167,7 @@ public class UserController {
 
         Long uuidLong = null;
 
-        if(!uuid.equals("me")){
+        if(!uuid.equals(Consts.ME)){
             uuidLong = Long.parseLong(uuid);
         }
 

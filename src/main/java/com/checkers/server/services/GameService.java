@@ -12,9 +12,9 @@ import java.util.List;
 public interface GameService {
     Game getGame(Long gauid);
     Game joinGame(Long gauid);
-    Game closeGame(Long gauid);
+    Game closeGame(Long gauid) throws Exception;
     Game newGame(Game game);
-    Game modGame(Long gauid, Game game);
+    Game modGame(Long gauid, Game game) throws Exception;
     List<Game> getGames();
     List<Game> getGamesFiltered(String field, String value);
     List<Game> getUserGames(Long uuid);

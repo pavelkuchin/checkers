@@ -34,6 +34,17 @@ public class StepController {
     public @ResponseBody
     Step getStep(@PathVariable String suid){
         log.info("Step with SUID: " + suid + " returned");
-        return stepService.getStep(Long.parseLong(suid));
+
+        Step step = null;
+
+        try{
+            step = stepService.getStep(Long.parseLong(suid));
+        } catch(Exception e){
+            //TODO exceptions return
+            log.warn("There is some exception: " + e.getMessage());
+            return null;
+        }
+
+        return step;
     }
 }

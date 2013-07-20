@@ -10,10 +10,10 @@ import java.util.List;
  * @author Pavel_Kuchin
  */
 public interface StepService {
-    Step getStep(Long suid);
+    Step getStep(Long suid) throws Exception;
     Step newStep(Step step) throws Exception;
 
-    List<Step> getGameSteps(Long gauid);
-    Step getGameLastStep(Long gauid);
-    Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException;
+    List<Step> getGameSteps(Long gauid) throws Exception;
+    Step getGameLastStep(Long gauid) throws Exception;
+    Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, Exception;
 }

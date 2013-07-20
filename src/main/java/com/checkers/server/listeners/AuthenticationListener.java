@@ -1,8 +1,13 @@
 package com.checkers.server.listeners;
 
 import com.checkers.server.beans.User;
+import com.checkers.server.dao.UserDao;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -18,13 +23,15 @@ import java.util.Date;
  * @author Pavel Kuchin
  */
 
-@Component
-public class AuthenticationListener implements ApplicationListener {
+public class AuthenticationListener implements ApplicationListener, ApplicationContextAware {
 
     static Logger log = Logger.getLogger(AuthenticationListener.class.getName());
 
-    @Autowired
-    com.checkers.server.dao.UserDao userDao;
+    private ApplicationContext appContext;
+
+    AuthenticationListener(){
+        log.debug("I created");
+    }
 
     @Override
     public void onApplicationEvent(ApplicationEvent appEvent) {
@@ -36,13 +43,24 @@ public class AuthenticationListener implements ApplicationListener {
 
             String login = userDetails.getUsername();
 
+/*            UserDao userDao = (UserDao)appContext.getBean("userDao");
+
             User user = userDao.getUserByLogin(login);
+
+            user = userDao.getUser(user.getUuid());
 
             user.setLastLogin(new Date());
 
             userDao.modUser(user);
 
+            User nUser = userDao.getUser(user.getUuid());*/
+
             log.info(login + " - authenticated successfully");
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.appContext = applicationContext;
     }
 }

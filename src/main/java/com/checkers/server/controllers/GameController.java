@@ -125,8 +125,18 @@ public class GameController {
     Game closeGame(@PathVariable String gauid){
         log.info("Game close process initiated for: \"" + gauid + "\"");
 
+        Game game = null;
+
         // TODO result object should be used here. When it is created.
-        return gameService.closeGame(Long.parseLong(gauid));
+        try{
+            game = gameService.closeGame(Long.parseLong(gauid));
+        } catch(Exception e){
+            //TODO exceptions return
+            log.warn("There is some exception: " + e.getMessage());
+            return null;
+        }
+
+        return game;
     }
 
    /**
@@ -142,7 +152,17 @@ public class GameController {
    Game modGame(@PathVariable String gauid, @RequestBody Game game){
        log.info("Game modifying has been started");
 
-       return gameService.modGame(Long.parseLong(gauid), game);
+       Game result = null;
+
+       try{
+           result = gameService.modGame(Long.parseLong(gauid), game);
+       } catch(Exception e){
+           //TODO exceptions return
+           log.warn("There is some exception: " + e.getMessage());
+           return null;
+       }
+
+       return result;
    }
 
    /**
@@ -156,7 +176,17 @@ public class GameController {
    public @ResponseBody
    List<Step> getGameSteps(@PathVariable String gauid){
        log.info("All steps for game: " + gauid + " returned");
-       return stepService.getGameSteps(Long.parseLong(gauid));
+       List<Step> steps = null;
+
+       try{
+           steps = stepService.getGameSteps(Long.parseLong(gauid));
+       } catch(Exception e){
+           //TODO exceptions return
+           log.warn("There is some exception: " + e.getMessage());
+           return null;
+       }
+
+       return steps;
    }
 
    /**
@@ -172,15 +202,18 @@ public class GameController {
    Step newGame(@RequestBody Step step, @PathVariable final String gauid){
        log.info("Making step");
 
+       Step returnStep = null;
+
        try{
            step.setGauid(Long.parseLong(gauid));
            stepService.newStep(step);
+           returnStep = stepService.getStep(step.getSuid());
        }catch(Exception e){
            //TODO exceptions return
            log.warn("There is some exception: " + e.getMessage());
            return null;
        }
-       return stepService.getStep(step.getSuid());
+       return returnStep;
    }
 
    /**
@@ -215,6 +248,17 @@ public class GameController {
     public @ResponseBody
     Step getGameLastStep(@PathVariable String gauid){
         log.info("Last step for game: " + gauid + " returned");
-        return stepService.getGameLastStep(Long.parseLong(gauid));
+
+        Step step = null;
+
+        try{
+            step = stepService.getGameLastStep(Long.parseLong(gauid));
+        }catch(Exception e){
+            //TODO exceptions return
+            log.warn("There is some exception: " + e.getMessage());
+            return null;
+        }
+
+        return step;
     }
 }

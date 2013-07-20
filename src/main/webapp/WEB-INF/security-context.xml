@@ -30,7 +30,7 @@
         <security:intercept-url pattern="/**/steps/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
 
 
-        <security:intercept-url pattern="/**/users/"                access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET"/>
+        <security:intercept-url pattern="/**/users/"                access="hasRole('ROLE_ADMIN')" method="GET"/>
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
@@ -44,7 +44,7 @@
         <security:http-basic />
     </security:http>
 
-    <!-- <bean id="authListener" class="com.checkers.server.listeners.AuthenticationListener"/> -->
+    <bean id="authListener" class="com.checkers.server.listeners.AuthenticationListener"/>
 
     <security:authentication-manager alias="authMan">
         <security:authentication-provider user-service-ref="dbUserService" />

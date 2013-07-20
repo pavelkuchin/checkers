@@ -1,5 +1,6 @@
 package com.checkers.server.services;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
@@ -48,7 +49,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game closeGame(Long gauid) {
+    public Game closeGame(Long gauid) throws Exception {
         Game result = null;
         Game game   = gameDao.getGame(gauid);
         //TODO it is bad solution but i have not any other now.
@@ -57,6 +58,14 @@ public class GameServiceImpl implements GameService {
 
         Long uuid = userDao.getUserByLogin(name).getUuid();
 
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if(authorities.contains(Consts.ROLE_USER)){
+            if(!(game.getBlackUuid() == uuid || game.getWhiteUuid() == uuid)){
+                throw new Exception("You are not involved in game.");
+            }
+        }
 
         if(game.getState().equals("open")){
             gameDao.delGame(gauid);
@@ -105,26 +114,32 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game modGame(Long gauid, Game game){
+    public Game modGame(Long gauid, Game game) throws Exception {
         Game chGame = gameDao.getGame(gauid);
 
         if(chGame == null)
             return null;
 
+        //TODO it is bad solution but i have not any other now.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User user = userDao.getUserByLogin(name);
+
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-        SimpleGrantedAuthority roleAdmin = new SimpleGrantedAuthority("ROLE_ADMIN");
-        SimpleGrantedAuthority roleUser = new SimpleGrantedAuthority("ROLE_USER");
-
-        if(authorities.contains(roleAdmin)){
+        if(authorities.contains(Consts.ROLE_ADMIN)){
             if(game.getName() != null){
                 chGame.setName(game.getName());
             }
             if(game.getDescription() != null){
                 chGame.setDescription(game.getDescription());
             }
-        }else if(authorities.contains(roleUser)){
+        }else if(authorities.contains(Consts.ROLE_USER)){
+            if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+                throw new Exception("You are not involved in game.");
+            }
+
             if(game.getDescription() != null){
                 chGame.setDescription(game.getDescription());
             }

@@ -1,5 +1,6 @@
 package com.checkers.server.services;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,9 @@ public class UserServiceImpl implements UserService {
             uuid = userDao.getUserByLogin(name).getUuid();
         }
 
-            return userDao.getUser(uuid);
+        User user = userDao.getUser(uuid);
+
+            return user;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -83,10 +86,7 @@ public class UserServiceImpl implements UserService {
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-        SimpleGrantedAuthority roleAdmin = new SimpleGrantedAuthority("ROLE_ADMIN");
-        SimpleGrantedAuthority roleUser = new SimpleGrantedAuthority("ROLE_USER");
-
-        if(authorities.contains(roleAdmin)){
+        if(authorities.contains(Consts.ROLE_ADMIN)){
             //TODO password should be crypted
             if(user.getPassword() != null){
                 origin.setPassword(user.getPassword());
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 origin.setEmail(user.getEmail());
             }
 
-        } else if(authorities.contains(roleUser)){
+        } else if(authorities.contains(Consts.ROLE_USER)){
             //TODO password should be changed in other request with old password verification
             if(user.getPassword() != null){
                 origin.setPassword(user.getPassword());
@@ -130,14 +130,14 @@ public class UserServiceImpl implements UserService {
 
         }
 
-        origin.setCreated(new Date());
+        origin.setModified(new Date());
 
         userDao.modUser(origin);
 
         return userDao.getUser(uuid);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Override
     public List<User> getUsers() {
         return userDao.getUsers();

@@ -1,5 +1,6 @@
 package com.checkers.server.services;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
@@ -7,11 +8,14 @@ import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
@@ -34,10 +38,29 @@ public class StepServiceImpl implements StepService {
 
     ConcurrentMap<Long, Object> events = new ConcurrentHashMap<Long, Object>();
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PostAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getStep(Long suid) {
-        return stepDao.getStep(suid);
+    public Step getStep(Long suid) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User user = userDao.getUserByLogin(name);
+
+        Step step = null;
+
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if(authorities.contains(Consts.ROLE_ADMIN)){
+            step = stepDao.getStep(suid);
+        } else if(authorities.contains(Consts.ROLE_USER)){
+            step = stepDao.getStep(suid);
+
+            if(!(step.getGame().getBlackUuid() == user.getUuid() || step.getGame().getWhiteUuid() == user.getUuid())){
+                throw new Exception("You are not involved in game.");
+            }
+        }
+
+        return step;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
@@ -58,7 +81,12 @@ public class StepServiceImpl implements StepService {
             game = step.getGame();
         }
 
-        // Do step Login
+        // Do step Logic
+        // Are you involved in game?
+        if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+            throw new Exception("You are not involved in game.");
+        }
+
         // Game should have status - 'game'
         if(!game.getState().equals("game")){
             //TODO Exceptions Alarm System
@@ -75,7 +103,7 @@ public class StepServiceImpl implements StepService {
             }
         }
 
-        // Async Login
+        //Bring a little Async
         step.setUuid(null);
 
         step.setCreated(new Date());
@@ -103,21 +131,71 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public List<Step> getGameSteps(Long gauid) {
-        return stepDao.getGameSteps(gauid);
+    public List<Step> getGameSteps(Long gauid) throws Exception{
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User user = userDao.getUserByLogin(name);
+
+        List<Step> steps = null;
+
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if(authorities.contains(Consts.ROLE_ADMIN)){
+            steps = stepDao.getGameSteps(gauid);
+        } else if(authorities.contains(Consts.ROLE_USER)){
+            Game game = gameDao.getGame(gauid);
+
+            if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+                steps = stepDao.getGameSteps(gauid);
+            } else{
+                throw new Exception("You are not involved in game.");
+            }
+        }
+
+        return steps;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getGameLastStep(Long gauid) {
-        return stepDao.getGameLastStep(gauid);
+    public Step getGameLastStep(Long gauid) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        User user = userDao.getUserByLogin(name);
+
+        Step step = null;
+
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if(authorities.contains(Consts.ROLE_ADMIN)){
+            step = stepDao.getGameLastStep(gauid);
+        } else if(authorities.contains(Consts.ROLE_USER)){
+            Game game = gameDao.getGame(gauid);
+
+            if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+                step = stepDao.getGameLastStep(gauid);
+            } else{
+                throw new Exception("You are not involved in game.");
+            }
+        }
+
+        return step;
     }
 
     @Override
-    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException {
+    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, Exception {
         Step result = null;
 
         Object event;
+
+        User user = userDao.getUserByLogin(username);
+
+        Game game = gameDao.getGame(gauid);
+
+        if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+            throw new Exception("You are not involved in game.");
+        }
 
         synchronized (events){
             if(!events.containsKey(gauid)){
