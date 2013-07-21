@@ -1,8 +1,10 @@
 package com.checkers.server.controllers;
 
+import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 
+import com.checkers.server.exceptions.LogicException;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -89,7 +92,7 @@ public class GameController {
    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Game newGame(@RequestBody Game game){
+   Game newGame(@Valid @RequestBody Game game){
        log.info("Game: \"" + game.getName() + "\" created");
        Game persistGame = gameService.newGame(game);
        return getGame(persistGame.getGauid().toString());
@@ -108,7 +111,6 @@ public class GameController {
     Game joinGame(@PathVariable String gauid){
         log.info("Join to game: \"" + gauid + "\"");
 
-        // TODO result object should be used here. When it is created.
         return gameService.joinGame(Long.parseLong(gauid));
     }
 
@@ -122,19 +124,12 @@ public class GameController {
     @RequestMapping(value="/{gauid}", params = "action=close", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    Game closeGame(@PathVariable String gauid){
+    Game closeGame(@PathVariable String gauid) throws Exception {
         log.info("Game close process initiated for: \"" + gauid + "\"");
 
         Game game = null;
 
-        // TODO result object should be used here. When it is created.
-        try{
-            game = gameService.closeGame(Long.parseLong(gauid));
-        } catch(Exception e){
-            //TODO exceptions return
-            log.warn("There is some exception: " + e.getMessage());
-            return null;
-        }
+        game = gameService.closeGame(Long.parseLong(gauid));
 
         return game;
     }
@@ -149,18 +144,12 @@ public class GameController {
    @RequestMapping(value="/{gauid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.OK)
    public @ResponseBody
-   Game modGame(@PathVariable String gauid, @RequestBody Game game){
+   Game modGame(@PathVariable String gauid, @Valid @RequestBody Game game) throws Exception {
        log.info("Game modifying has been started");
 
        Game result = null;
 
-       try{
-           result = gameService.modGame(Long.parseLong(gauid), game);
-       } catch(Exception e){
-           //TODO exceptions return
-           log.warn("There is some exception: " + e.getMessage());
-           return null;
-       }
+       result = gameService.modGame(Long.parseLong(gauid), game);
 
        return result;
    }
@@ -174,17 +163,11 @@ public class GameController {
     */
    @RequestMapping(value="/{gauid}/steps", method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
-   List<Step> getGameSteps(@PathVariable String gauid){
+   List<Step> getGameSteps(@PathVariable String gauid) throws Exception {
        log.info("All steps for game: " + gauid + " returned");
        List<Step> steps = null;
 
-       try{
-           steps = stepService.getGameSteps(Long.parseLong(gauid));
-       } catch(Exception e){
-           //TODO exceptions return
-           log.warn("There is some exception: " + e.getMessage());
-           return null;
-       }
+       steps = stepService.getGameSteps(Long.parseLong(gauid));
 
        return steps;
    }
@@ -199,20 +182,15 @@ public class GameController {
    @RequestMapping(value="/{gauid}/steps", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Step newGame(@RequestBody Step step, @PathVariable final String gauid){
+   Step newGame(@Valid @RequestBody Step step, @PathVariable final String gauid) throws Exception {
        log.info("Making step");
 
        Step returnStep = null;
 
-       try{
-           step.setGauid(Long.parseLong(gauid));
-           stepService.newStep(step);
-           returnStep = stepService.getStep(step.getSuid());
-       }catch(Exception e){
-           //TODO exceptions return
-           log.warn("There is some exception: " + e.getMessage());
-           return null;
-       }
+       step.setGauid(Long.parseLong(gauid));
+       stepService.newStep(step);
+       returnStep = stepService.getStep(step.getSuid());
+
        return returnStep;
    }
 
@@ -246,19 +224,22 @@ public class GameController {
      */
     @RequestMapping(value="/{gauid}/steps", params = "mode=opponentStep", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    Step getGameLastStep(@PathVariable String gauid){
+    Step getGameLastStep(@PathVariable String gauid) throws Exception {
         log.info("Last step for game: " + gauid + " returned");
 
         Step step = null;
 
-        try{
-            step = stepService.getGameLastStep(Long.parseLong(gauid));
-        }catch(Exception e){
-            //TODO exceptions return
-            log.warn("There is some exception: " + e.getMessage());
-            return null;
-        }
+        step = stepService.getGameLastStep(Long.parseLong(gauid));
 
         return step;
+    }
+
+    @ExceptionHandler(LogicException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public @ResponseBody
+    ExceptionMessage handleException(LogicException e){
+        log.warn("There is some exception: " + e.getMessage());
+
+        return e.getExceptionMessage();
     }
 }

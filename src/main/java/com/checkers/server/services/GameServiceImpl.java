@@ -5,6 +5,7 @@ import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.exceptions.LogicException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -49,7 +50,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game closeGame(Long gauid) throws Exception {
+    public Game closeGame(Long gauid) throws LogicException {
         Game result = null;
         Game game   = gameDao.getGame(gauid);
         //TODO it is bad solution but i have not any other now.
@@ -63,7 +64,7 @@ public class GameServiceImpl implements GameService {
 
         if(authorities.contains(Consts.ROLE_USER)){
             if(!(game.getBlackUuid() == uuid || game.getWhiteUuid() == uuid)){
-                throw new Exception("You are not involved in game.");
+                throw new LogicException(1L, "You are not involved in game.");
             }
         }
 
@@ -114,7 +115,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game modGame(Long gauid, Game game) throws Exception {
+    public Game modGame(Long gauid, Game game) throws LogicException {
         Game chGame = gameDao.getGame(gauid);
 
         if(chGame == null)
@@ -137,7 +138,7 @@ public class GameServiceImpl implements GameService {
             }
         }else if(authorities.contains(Consts.ROLE_USER)){
             if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-                throw new Exception("You are not involved in game.");
+                throw new LogicException(1L, "You are not involved in game.");
             }
 
             if(game.getDescription() != null){

@@ -7,6 +7,7 @@ import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.exceptions.LogicException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +41,7 @@ public class StepServiceImpl implements StepService {
 
     @PostAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getStep(Long suid) throws Exception {
+    public Step getStep(Long suid) throws LogicException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -56,7 +57,7 @@ public class StepServiceImpl implements StepService {
             step = stepDao.getStep(suid);
 
             if(!(step.getGame().getBlackUuid() == user.getUuid() || step.getGame().getWhiteUuid() == user.getUuid())){
-                throw new Exception("You are not involved in game.");
+                throw new LogicException(1L, "You are not involved in game.");
             }
         }
 
@@ -65,7 +66,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step newStep(Step step) throws Exception {
+    public Step newStep(Step step) throws LogicException {
         Object event;
 
         Game game = null;
@@ -84,13 +85,12 @@ public class StepServiceImpl implements StepService {
         // Do step Logic
         // Are you involved in game?
         if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-            throw new Exception("You are not involved in game.");
+            throw new LogicException(1L, "You are not involved in game.");
         }
 
         // Game should have status - 'game'
         if(!game.getState().equals("game")){
-            //TODO Exceptions Alarm System
-            throw new Exception("You can't make step in 'close' or 'open' game. Game should be in 'game' state.");
+            throw new LogicException(2L, "You can't make step in 'close' or 'open' game. Game should be in 'game' state.");
         }
 
         // You can't make two steps, one by one. It is obviously.
@@ -98,8 +98,7 @@ public class StepServiceImpl implements StepService {
 
         if(lastStep != null){
             if(lastStep.getUuid().equals(user.getUuid())){
-                //TODO Exceptions Alarm System
-                throw new Exception("You made your move. Let the opponent to make a move.");
+                throw new LogicException(3L, "You made your move. Let the opponent to make a move.");
             }
         }
 
@@ -131,7 +130,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public List<Step> getGameSteps(Long gauid) throws Exception{
+    public List<Step> getGameSteps(Long gauid) throws LogicException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -149,7 +148,7 @@ public class StepServiceImpl implements StepService {
             if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
                 steps = stepDao.getGameSteps(gauid);
             } else{
-                throw new Exception("You are not involved in game.");
+                throw new LogicException(1L, "You are not involved in game.");
             }
         }
 
@@ -158,7 +157,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getGameLastStep(Long gauid) throws Exception {
+    public Step getGameLastStep(Long gauid) throws LogicException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -176,7 +175,7 @@ public class StepServiceImpl implements StepService {
             if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
                 step = stepDao.getGameLastStep(gauid);
             } else{
-                throw new Exception("You are not involved in game.");
+                throw new LogicException(1L, "You are not involved in game.");
             }
         }
 
@@ -184,7 +183,7 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, Exception {
+    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, LogicException {
         Step result = null;
 
         Object event;
@@ -194,7 +193,7 @@ public class StepServiceImpl implements StepService {
         Game game = gameDao.getGame(gauid);
 
         if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-            throw new Exception("You are not involved in game.");
+            throw new LogicException(1L, "You are not involved in game.");
         }
 
         synchronized (events){

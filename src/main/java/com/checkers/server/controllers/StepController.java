@@ -1,6 +1,8 @@
 package com.checkers.server.controllers;
 
+import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Step;
+import com.checkers.server.exceptions.LogicException;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +34,22 @@ public class StepController {
      */
     @RequestMapping(value="/{suid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    Step getStep(@PathVariable String suid){
+    Step getStep(@PathVariable String suid) throws Exception {
         log.info("Step with SUID: " + suid + " returned");
 
         Step step = null;
 
-        try{
-            step = stepService.getStep(Long.parseLong(suid));
-        } catch(Exception e){
-            //TODO exceptions return
-            log.warn("There is some exception: " + e.getMessage());
-            return null;
-        }
+        step = stepService.getStep(Long.parseLong(suid));
 
         return step;
+    }
+
+    @ExceptionHandler(LogicException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public @ResponseBody
+    ExceptionMessage handleException(LogicException e){
+        log.warn("There is some exception: " + e.getMessage());
+
+        return e.getExceptionMessage();
     }
 }

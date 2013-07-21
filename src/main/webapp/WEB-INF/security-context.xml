@@ -8,12 +8,16 @@
 		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 
-    <!-- REMIT ALL -->
-    <!--!!!PAY ATTENTION-->
-    <!--!!!!!! It is possibly security gap, but it will do now -->
-    <security:http pattern="/users/registration/" security="none" />
-
     <security:http use-expressions="true">
+
+        <security:access-denied-handler error-page="/error/403"/>
+        <security:anonymous/>
+
+        <!-- REMIT ALL -->
+        <security:intercept-url pattern="/error/*"                   access="permitAll" method="GET"/>
+        <security:intercept-url pattern="/users/registration/"       access="isAnonymous()" method="POST"/>
+        <security:intercept-url pattern="/"                          access="permitAll" method="GET" />
+        <security:intercept-url pattern="/index.html"                access="permitAll" method="GET" />
 
         <!-- ROLE_USER -->
         <security:intercept-url pattern="/**/games/"                 access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />

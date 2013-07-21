@@ -1,5 +1,6 @@
 package com.checkers.server.controllers;
 
+import static com.eclipsesource.restfuse.Assert.assertNotAcceptable;
 import static com.eclipsesource.restfuse.Assert.assertOk;
 import static com.eclipsesource.restfuse.Assert.assertCreated;
 
@@ -163,7 +164,7 @@ public class GameControllerTest {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
     public void newStepInGame(){
-        assertCreated( response );
+        assertNotAcceptable( response );
     }
 
     /**

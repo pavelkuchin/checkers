@@ -1,8 +1,10 @@
 package com.checkers.server.controllers;
 
 import com.checkers.server.Consts;
+import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.UserService;
 import org.apache.log4j.Logger;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -55,7 +58,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User newUser(@RequestBody User user){
+    User newUser(@Valid @RequestBody User user){
         log.info("User: \"" + user.getLogin() + "\" created");
         userService.newUser(user);
         return user;
@@ -113,7 +116,7 @@ public class UserController {
     @RequestMapping(value = "/registration/", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User regUser(@RequestBody User user){
+    User regUser(@Valid @RequestBody User user){
         log.info("User " + user.getLogin() + " registration has been started");
 
         // First stage of validation
@@ -162,7 +165,7 @@ public class UserController {
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     public @ResponseBody
-    User modUser(@PathVariable String uuid, @RequestBody User user){
+    User modUser(@PathVariable String uuid, @Valid @RequestBody User user){
         log.info("User modification has been started");
 
         Long uuidLong = null;
@@ -172,5 +175,14 @@ public class UserController {
         }
 
             return userService.modUser(uuidLong, user);
+    }
+
+    @ExceptionHandler(LogicException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public @ResponseBody
+    ExceptionMessage handleException(LogicException e){
+        log.warn("There is some exception: " + e.getMessage());
+
+        return e.getExceptionMessage();
     }
 }
