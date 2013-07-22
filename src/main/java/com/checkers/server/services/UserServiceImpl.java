@@ -81,13 +81,20 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public User modUser(Long uuid, User user) {
+        if(uuid == null){
+            //TODO it is bad solution but i have not any other now.
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String name = auth.getName();
+
+            uuid = userDao.getUserByLogin(name).getUuid();
+        }
+
         User origin = userDao.getUser(uuid);
 
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         if(authorities.contains(Consts.ROLE_ADMIN)){
-            //TODO password should be crypted
             if(user.getPassword() != null){
                 origin.setPassword(user.getPassword());
             }

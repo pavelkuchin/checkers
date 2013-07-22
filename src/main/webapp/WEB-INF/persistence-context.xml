@@ -8,8 +8,6 @@
         http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-
-
     <!-- Embedded InMemory database for development stage -->
     <!-- TODO: changes it on real DB -->
     <jdbc:embedded-database id="dataSource" type="HSQL">

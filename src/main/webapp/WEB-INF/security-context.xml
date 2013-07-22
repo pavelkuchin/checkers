@@ -50,8 +50,12 @@
 
     <bean id="authListener" class="com.checkers.server.listeners.AuthenticationListener"/>
 
+    <bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
+
     <security:authentication-manager alias="authMan">
-        <security:authentication-provider user-service-ref="dbUserService" />
+        <security:authentication-provider user-service-ref="dbUserService">
+            <security:password-encoder ref="encoder" />
+        </security:authentication-provider>
     </security:authentication-manager>
 
     <security:user-service id="mockUserService">
