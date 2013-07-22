@@ -24,7 +24,7 @@ public class RootController {
     public String getIndex(){
         log.info("Index page");
 
-        return "index.html";
+        return "index";
     }
 
     @RequestMapping(value="/error/404", method = RequestMethod.GET, headers = {"Accept=application/json"})
