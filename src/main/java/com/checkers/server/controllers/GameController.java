@@ -10,12 +10,17 @@ import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -60,7 +65,7 @@ public class GameController {
     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
     *
     */
-   @RequestMapping(value="", params = {"field", "value"},method = RequestMethod.GET, headers = {"Accept=application/json"})
+   @RequestMapping(value="", params = {"field", "value"}, method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
    List<Game> getGamesFiltered(@RequestParam(value = "field") String field, @RequestParam(value = "value") String value){
        log.warn("Game filtering started");
@@ -77,9 +82,18 @@ public class GameController {
     */
    @RequestMapping(value="/{gauid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
-   Game getGame(@PathVariable String gauid){
+   Game getGame(@PathVariable String gauid) throws LogicException {
        log.info("Game with GAUID: " + gauid + " returned");
-       return gameService.getGame(Long.parseLong(gauid));
+
+       Long lGauid;
+
+       try{
+            lGauid = Long.parseLong(gauid);
+       }catch(Exception e){
+           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+       }
+
+       return gameService.getGame(lGauid);
    }
 
    /**
@@ -92,7 +106,7 @@ public class GameController {
    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Game newGame(@Valid @RequestBody Game game){
+   Game newGame(@Valid @RequestBody Game game) throws LogicException {
        log.info("Game: \"" + game.getName() + "\" created");
        Game persistGame = gameService.newGame(game);
        return getGame(persistGame.getGauid().toString());
@@ -108,10 +122,18 @@ public class GameController {
     @RequestMapping(value="/{gauid}", params = "action=join", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    Game joinGame(@PathVariable String gauid){
+    Game joinGame(@PathVariable String gauid) throws LogicException {
         log.info("Join to game: \"" + gauid + "\"");
 
-        return gameService.joinGame(Long.parseLong(gauid));
+        Long lGauid;
+
+        try{
+            lGauid = Long.parseLong(gauid);
+        } catch(Exception e){
+            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+        }
+
+        return gameService.joinGame(lGauid);
     }
 
     /**
@@ -128,8 +150,15 @@ public class GameController {
         log.info("Game close process initiated for: \"" + gauid + "\"");
 
         Game game = null;
+        Long lGauid;
 
-        game = gameService.closeGame(Long.parseLong(gauid));
+        try{
+            lGauid = Long.parseLong(gauid);
+        } catch(Exception e){
+            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+        }
+
+        game = gameService.closeGame(lGauid);
 
         return game;
     }
@@ -147,9 +176,16 @@ public class GameController {
    Game modGame(@PathVariable String gauid, @Valid @RequestBody Game game) throws Exception {
        log.info("Game modifying has been started");
 
-       Game result = null;
+       Game result;
+       Long lGauid;
 
-       result = gameService.modGame(Long.parseLong(gauid), game);
+       try{
+           lGauid = Long.parseLong(gauid);
+       } catch(Exception e){
+           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+       }
+
+       result = gameService.modGame(lGauid, game);
 
        return result;
    }
@@ -166,8 +202,15 @@ public class GameController {
    List<Step> getGameSteps(@PathVariable String gauid) throws Exception {
        log.info("All steps for game: " + gauid + " returned");
        List<Step> steps = null;
+       Long lGauid;
 
-       steps = stepService.getGameSteps(Long.parseLong(gauid));
+       try{
+           lGauid = Long.parseLong(gauid);
+       } catch(Exception e){
+           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+       }
+
+       steps = stepService.getGameSteps(lGauid);
 
        return steps;
    }
@@ -185,9 +228,16 @@ public class GameController {
    Step newGame(@Valid @RequestBody Step step, @PathVariable final String gauid) throws Exception {
        log.info("Making step");
 
-       Step returnStep = null;
+       Step returnStep;
+       Long lGauid;
 
-       step.setGauid(Long.parseLong(gauid));
+       try{
+           lGauid = Long.parseLong(gauid);
+       } catch(Exception e){
+           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+       }
+
+       step.setGauid(lGauid);
        stepService.newStep(step);
        returnStep = stepService.getStep(step.getSuid());
 
@@ -203,14 +253,21 @@ public class GameController {
     */
     @RequestMapping(value="/{gauid}/steps", params = "mode=opponentStepAsync", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    Callable<Step> getGameLastStepAsync(@PathVariable final String gauid){
+    Callable<Step> getGameLastStepAsync(@PathVariable final String gauid) throws LogicException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final String username = auth.getName();
+        final Long lGauid;
+
+        try{
+            lGauid = Long.parseLong(gauid);
+        } catch (Exception e){
+            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+        }
 
         return new Callable<Step>() {
             @Override
             public Step call() throws Exception {
-                return stepService.getAsyncGameLastStep(Long.parseLong(gauid), username);
+                return stepService.getAsyncGameLastStep(lGauid, username);
             }
         };
     }
@@ -227,19 +284,88 @@ public class GameController {
     Step getGameLastStep(@PathVariable String gauid) throws Exception {
         log.info("Last step for game: " + gauid + " returned");
 
-        Step step = null;
+        Step step;
+        Long lGauid;
 
-        step = stepService.getGameLastStep(Long.parseLong(gauid));
+        try{
+            lGauid = Long.parseLong(gauid);
+        } catch(Exception e){
+            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+        }
+
+        step = stepService.getGameLastStep(lGauid);
 
         return step;
     }
 
+    /**
+     *
+     * EXCEPTION HANDLERS
+     *
+     */
+
     @ExceptionHandler(LogicException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
     ExceptionMessage handleException(LogicException e){
-        log.warn("There is some exception: " + e.getMessage());
+        log.warn(e + " : " + e.getMessage());
 
         return e.getExceptionMessage();
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionMessage handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+        log.warn(e + " : " + e.getMessage());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(105L);
+        em.setMessage(e.getMessage());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-105");
+
+        return em;
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionMessage ArgumentNotValidException(MethodArgumentNotValidException e){
+        log.warn(e + " : " + e.getMessage());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(106L);
+        List<ObjectError> errors = e.getBindingResult().getAllErrors();
+        StringBuilder strErrors = new StringBuilder();
+        for(ObjectError oe : errors){
+            strErrors.append(oe.getDefaultMessage());
+            strErrors.append("\n");
+        }
+
+        em.setMessage(strErrors.toString());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-106");
+
+        return em;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody
+    ExceptionMessage internalException(Exception e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        log.error("Message: " + e.getMessage());
+        log.error("StackTrace: " + sw.toString());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(4L);
+        em.setMessage(e.getMessage());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-4");
+
+        return em;
     }
 }

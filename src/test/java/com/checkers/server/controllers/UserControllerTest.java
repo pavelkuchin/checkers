@@ -134,7 +134,7 @@ public class UserControllerTest {
      * Method: DELETE
      */
     @HttpTest(  method = Method.DELETE,
-            path = "/2",
+            path = "/3",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
@@ -150,15 +150,12 @@ public class UserControllerTest {
             path = "/2",
             content = "{\n" +
                     "    \"uuid\"\t\t: null,\n" +
-                    "    \"login\"\t\t: \"modified testLogin\",\n" +
+                    "    \"login\"\t\t: \"modified\",\n" +
                     "    \"firstName\"\t: \"testFirstName\",\n" +
                     "    \"lastName\"\t: \"testLastName\",\n" +
                     "    \"email\"\t\t: \"test@checkers.com\",\n" +
                     "    \"password\"\t: \"password\",\n" +
-                    "    \"enabled\"\t: true,\n" +
-                    "    \"created\"\t: 1369311377195,\n" +
-                    "    \"modified\"\t: 1369311377195,\n" +
-                    "    \"lastLogin\"\t: 1369311377195\n" +
+                    "    \"enabled\"\t: true\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }

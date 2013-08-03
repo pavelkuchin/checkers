@@ -1,7 +1,9 @@
 package com.checkers.server.dao;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,11 +31,16 @@ public class GameDaoImpl implements GameDao {
     private EntityManager em;
 
     @Override
-    public Game getGame(Long gauid) {
+    public Game getGame(Long gauid) throws LogicException {
         Game game = null;
 
         try{
             game = em.find(Game.class, gauid);
+            if(game == null){
+                throw new LogicException(4L, "Game not found");
+            }
+        } catch (LogicException le){
+            throw le;
         } catch(Exception e){
             //Catch any exception
             log.error("getGame: " + e.getMessage(), e);
@@ -86,23 +93,31 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Game joinGame(Long gauid, Long uuid) {
+    public Game joinGame(Long gauid, Long uuid) throws LogicException {
+        Game game = null;
 
-        Game game = em.find(Game.class, gauid);
+        try{
+            game = this.getGame(gauid);
 
-        // TODO constants
-        /**
-         * Game state:
-         *  open - game has been opened. Find black player.
-         *  game - game in process
-         *  close - game closed (win or dead heat)
-         */
-        if(game.getState().equals("open") && game.getWhiteUuid() != uuid){
-            game.setState("game");
-            game.setBlackUuid(uuid);
-            game.setBlack(em.find(User.class, uuid));
+            if(game.getState().equals(Consts.GAME_STATE_OPEN) && game.getWhiteUuid() != uuid){
+                game.setState(Consts.GAME_STATE_GAME);
+                game.setBlackUuid(uuid);
+                game.setBlack(em.find(User.class, uuid));
 
-            em.merge(game);
+                em.merge(game);
+            } else{
+                if(game.getState().contains(Consts.GAME_STATE_CLOSE) || game.getState().equals(Consts.GAME_STATE_GAME)){
+                    throw new LogicException(8L, "Incorrect game state.");
+                }
+                if(game.getWhiteUuid() == uuid){
+                    throw new LogicException(9L, "It is your game.");
+                }
+            }
+        } catch (LogicException le){
+            throw le;
+        } catch (Exception e){
+            //Catch any exception
+            log.error("joinGame" + e.getMessage(), e);
         }
 
         return game;
@@ -110,25 +125,27 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Game closeGame(Long gauid, Long uuid) {
-        Game game = em.find(Game.class, gauid);
+    public Game closeGame(Long gauid, Long uuid) throws LogicException {
+        Game game = null;
 
-        // TODO constants
-        /**
-         * Game state:
-         *  open - game has been opened. Find black player.
-         *  game - game in process
-         *  close - game closed (win or dead heat)
-         */
-        if(game.getState().equals("game")){
-            //TODO Separate field for resolution
-            if(uuid == game.getBlackUuid()){
-                game.setState("close: white win; black capitulated;");
-            } else if(uuid == game.getWhiteUuid()){
-                game.setState("close: black win; white capitulated;");
+        try{
+            game = this.getGame(gauid);
+
+            if(game.getState().equals(Consts.GAME_STATE_GAME)){
+                if(uuid == game.getBlackUuid()){
+                    game.setState(Consts.GAME_STATE_CLOSE);
+                    game.setResolution("white win; black capitulated;");
+                } else if(uuid == game.getWhiteUuid()){
+                    game.setState(Consts.GAME_STATE_CLOSE);
+                    game.setResolution("black win; white capitulated;");
+                }
+                em.merge(game);
             }
-
-            em.merge(game);
+        } catch (LogicException le){
+            throw le;
+        } catch (Exception e){
+            //Catch any exception
+            log.error("closeGame" + e.getMessage(), e);
         }
 
         return game;
@@ -137,10 +154,17 @@ public class GameDaoImpl implements GameDao {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void delGame(Long gauid) {
-        Game game = em.find(Game.class, gauid);
+        Game game = null;
 
-        if(game.getState().equals("open")){
-            em.remove(game);
+        try{
+            game = em.find(Game.class, gauid);
+
+            if(game.getState().equals("open")){
+                em.remove(game);
+            }
+        }catch (Exception e){
+            //Catch any exception
+            log.error("delGame" + e.getMessage(), e);
         }
     }
 
@@ -184,8 +208,12 @@ public class GameDaoImpl implements GameDao {
     }
 
     @Override
-    public List<Game> getUserGames(Long uuid) {
+    public List<Game> getUserGames(Long uuid) throws LogicException {
         List<Game> games = null;
+
+        if(em.find(User.class, uuid) == null){
+            throw new LogicException(4L, "User with id " + uuid + " not found");
+        }
 
         try{
             games = em.createQuery("SELECT g FROM Game g WHERE g.white.uuid = :uuid OR g.black.uuid = :uuid")

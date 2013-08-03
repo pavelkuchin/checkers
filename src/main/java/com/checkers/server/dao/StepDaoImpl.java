@@ -3,6 +3,7 @@ package com.checkers.server.dao;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,11 +29,16 @@ public class StepDaoImpl implements StepDao {
     private EntityManager em;
 
     @Override
-    public Step getStep(Long suid) {
+    public Step getStep(Long suid) throws LogicException {
         Step step = null;
 
         try{
             step = em.find(Step.class, suid);
+            if(step == null){
+                throw new LogicException(4L, "Step not found");
+            }
+        }catch(LogicException le){
+            throw le;
         }catch(Exception e){
             //Catch any exception
             log.error("getStep: " + e.getMessage(), e);
@@ -96,13 +102,13 @@ public class StepDaoImpl implements StepDao {
     }
 
     @Override
-    public Step getGameLastStep(Long gauid) {
+    public Step getGameLastStep(Long gauid) throws LogicException {
         Step step = null;
 
         try{
             step = (Step)em.createQuery("SELECT s FROM Step s ORDER BY s.suid DESC").setMaxResults(1).getSingleResult();
         }catch (javax.persistence.NoResultException noResult){
-            return null;
+            throw new LogicException(10L, "There are no steps");
         }catch(Exception e){
             //Catch any exception
             log.error("getGameLastStep: " + e.getMessage(), e);

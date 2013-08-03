@@ -1,6 +1,11 @@
 package com.checkers.server.beans;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -18,6 +23,10 @@ public class User {
 
     // User login
     @Column(unique=true)
+    @Length(min = 4, max = 50, message = "Min login length is 4. Max is 50.")
+    @Pattern(regexp = "[A-Za-z0-9//.-_]*",
+            message =   "Incorrect login. Login should contain only latin letters in Upper or Lower cases , " +
+                        "Numbers, point (.), dash(-), underscore(_)")
     private String  login;
     // First name
     private String  firstName;
@@ -26,6 +35,7 @@ public class User {
 
     // Email
     @Column(unique=true)
+    @Email
     private String  email;
 
     // Password
@@ -35,6 +45,7 @@ public class User {
     private Boolean enabled;
 
     // User role (for Spring security)
+    @Pattern(regexp = "ROLE_ADMIN|ROLE_USER", message = "Role field must be equal to ROLE_ADMIN or ROLE_USER")
     private String  role;
 
     // Date of user creation
@@ -134,5 +145,11 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    @JsonProperty(value = "password")
+    public Object getNull(){
+        return null;
+    }
+
 }
 

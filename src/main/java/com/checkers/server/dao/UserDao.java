@@ -1,6 +1,7 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ import java.util.List;
 public interface UserDao {
     void newUser(User user);
 
-    User getUser(Long uuid);
+    User getUser(Long uuid) throws LogicException;
 
-    void delUser(Long uuid);
+    void delUser(Long uuid) throws LogicException;
 
     User modUser(User user);
 

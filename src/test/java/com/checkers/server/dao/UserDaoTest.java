@@ -1,6 +1,7 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ public class UserDaoTest {
 
         user.setEnabled(true);
 
-        user.setRole("USER_ROLE");
+        user.setRole("ROLE_USER");
 
         user.setCreated(new Date());
         user.setModified(new Date());
@@ -49,7 +50,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void modUser(){
+    public void modUser() throws LogicException {
         User user = new User();
 
         user.setUuid(null);
@@ -63,7 +64,7 @@ public class UserDaoTest {
 
         user.setEnabled(true);
 
-        user.setRole("USER_ROLE");
+        user.setRole("ROLE_USER");
 
         user.setCreated(new Date());
         user.setModified(new Date());
@@ -80,8 +81,8 @@ public class UserDaoTest {
         Assert.assertEquals("User's object doesn't change.", "Pasha", result.getFirstName());
     }
 
-    @Test
-    public void delUser(){
+    @Test(expected = LogicException.class)
+    public void delUser() throws LogicException {
         User user = new User();
 
         user.setUuid(null);
@@ -95,7 +96,7 @@ public class UserDaoTest {
 
         user.setEnabled(true);
 
-        user.setRole("USER_ROLE");
+        user.setRole("ROLE_USER");
 
         user.setCreated(new Date());
         user.setModified(new Date());
@@ -105,13 +106,11 @@ public class UserDaoTest {
 
         userDao.delUser(user.getUuid());
 
-        user = userDao.getUser(user.getUuid());
-
-        Assert.assertNull("User's object doesn't delete.", user);
+        userDao.getUser(user.getUuid());
     }
 
     @Test
-    public void getUser(){
+    public void getUser() throws LogicException {
         //User creation.
         User user = new User();
 
@@ -126,7 +125,7 @@ public class UserDaoTest {
 
         user.setEnabled(true);
 
-        user.setRole("USER_ROLE");
+        user.setRole("ROLE_USER");
 
         user.setCreated(new Date());
         user.setModified(new Date());

@@ -1,6 +1,8 @@
 package com.checkers.server.dao;
 
+import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
+import com.checkers.server.exceptions.LogicException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +32,32 @@ public class StepDaoTest {
     StepDao stepDao;
 
     @Test
-    public void newStep(){
+    public void newStep() throws LogicException {
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("game");
+        game.setType("offline");
+        game.setBoard("8x8");
+
+        game.setWhite(userDao.getUser(2L));
+        game.setBlack(userDao.getUser(1L));
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastStep(new Date());
+
+        gameDao.newGame(game);
+
         Step step = new Step();
 
         step.setSuid(null);
 
-        step.setGame(gameDao.getGame(1L));
+        step.setGame(game);
         step.setUser(userDao.getUser(1L));
 
         step.setStep("e3-d4");
@@ -48,12 +70,32 @@ public class StepDaoTest {
     }
 
     @Test
-    public void newStepLongAsObject(){
+    public void newStepLongAsObject() throws LogicException {
+        Game game = new Game();
+
+        game.setGauid(null);
+
+        game.setName("Game name");
+        game.setDescription("Game description");
+
+        game.setState("game");
+        game.setType("offline");
+        game.setBoard("8x8");
+
+        game.setWhite(userDao.getUser(2L));
+        game.setBlack(userDao.getUser(1L));
+
+        game.setModified(new Date());
+        game.setCreated(new Date());
+        game.setLastStep(new Date());
+
+        gameDao.newGame(game);
+
         Step step = new Step();
 
         step.setSuid(null);
 
-        step.setGauid(1L);
+        step.setGauid(game.getGauid());
         step.setUuid(1L);
 
         step.setStep("d6-c5");
@@ -67,7 +109,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void getStep(){
+    public void getStep() throws LogicException {
         Step step = new Step();
 
         step.setSuid(null);
@@ -88,7 +130,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void getLastStep() throws InterruptedException {
+    public void getLastStep() throws InterruptedException, LogicException {
         Step step1 = new Step();
         Step step2 = new Step();
 

@@ -1,6 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.Consts;
+import com.checkers.server.Context;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
@@ -8,7 +9,6 @@ import com.checkers.server.dao.UserDao;
 import com.checkers.server.exceptions.LogicException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,18 +32,14 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game getGame(Long gauid) {
+    public Game getGame(Long gauid) throws LogicException {
         return gameDao.getGame(gauid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game joinGame(Long gauid) {
-        //TODO it is bad solution but i have not any other now.
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-
-        Long uuid = userDao.getUserByLogin(name).getUuid();
+    public Game joinGame(Long gauid) throws LogicException {
+        Long uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
 
         return gameDao.joinGame(gauid, uuid);
     }
@@ -53,11 +49,8 @@ public class GameServiceImpl implements GameService {
     public Game closeGame(Long gauid) throws LogicException {
         Game result = null;
         Game game   = gameDao.getGame(gauid);
-        //TODO it is bad solution but i have not any other now.
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
 
-        Long uuid = userDao.getUserByLogin(name).getUuid();
+        Long uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
 
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
@@ -82,22 +75,19 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game newGame(Game game) {
 
-        //TODO it is bad solution but i have not any other now.
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-
-        User you = userDao.getUserByLogin(name);
+        User you = userDao.getUserByLogin(Context.getAuthLogin());
 
         game.setGauid(null);
 
-        //TODO constants
         if(game.getType() == null){
-            game.setType("offline");
+            game.setType(Consts.GAME_TYPE_OFFLINE);
         }
         if(game.getBoard() == null){
-            game.setBoard("8x8");
+            game.setBoard(Consts.GAME_BOARD_RUSSIAN);
         }
-        game.setState("open");
+        game.setState(Consts.GAME_STATE_OPEN);
+
+        game.setResolution("");
 
         game.setWhite(you);
         game.setWhiteUuid(you.getUuid());
@@ -121,10 +111,7 @@ public class GameServiceImpl implements GameService {
         if(chGame == null)
             return null;
 
-        //TODO it is bad solution but i have not any other now.
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        User user = userDao.getUserByLogin(name);
+        User user = userDao.getUserByLogin(Context.getAuthLogin());
 
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
@@ -167,14 +154,10 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public List<Game> getUserGames(Long uuid) {
+    public List<Game> getUserGames(Long uuid) throws LogicException {
 
         if(uuid == null){
-            //TODO it is bad solution but i have not any other now.
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String name = auth.getName();
-
-            uuid = userDao.getUserByLogin(name).getUuid();
+            uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
         }
 
         return gameDao.getUserGames(uuid);

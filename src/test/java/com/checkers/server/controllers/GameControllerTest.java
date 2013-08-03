@@ -1,15 +1,13 @@
 package com.checkers.server.controllers;
 
-import static com.eclipsesource.restfuse.Assert.assertNotAcceptable;
-import static com.eclipsesource.restfuse.Assert.assertOk;
-import static com.eclipsesource.restfuse.Assert.assertCreated;
-
 import com.eclipsesource.restfuse.*;
 import com.eclipsesource.restfuse.annotation.Authentication;
 import com.eclipsesource.restfuse.annotation.Context;
 import com.eclipsesource.restfuse.annotation.HttpTest;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
+
+import static com.eclipsesource.restfuse.Assert.*;
 
 /**
  * Tests for {@link GameController}
@@ -80,11 +78,9 @@ public class GameControllerTest {
             content = "{\n" +
                     "    \"name\": \"Just for test\",\n" +
                     "    \"description\": \"Testing game\",\n" +
-                    "    \"type\": \"long\",\n" +
+                    "    \"type\": \"offline\",\n" +
                     "    \"board\": \"10x10\",\n" +
-                    "    \"state\": \"open\",\n" +
-                    "    \"whiteUuid\": 2,\n" +
-                    "    \"blackUuid\": 1\n" +
+                    "    \"state\": \"open\"\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
@@ -118,7 +114,7 @@ public class GameControllerTest {
             path = "/1?action=join",
             content = "{}",
             authentications = {
-                    @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
+                    @Authentication( type = AuthenticationType.BASIC, user = "user", password = "user" ) }
     )
     public void joinGame(){
         assertOk( response );
@@ -158,20 +154,20 @@ public class GameControllerTest {
     @HttpTest(  method = Method.POST,
             path = "/1/steps",
             content = "{\n" +
-                    "  \"step\"  : \"1-3\"\n" +
+                    "  \"step\"  : \"a1-b3\"\n" +
                     "}",
             authentications = {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
     public void newStepInGame(){
-        assertNotAcceptable( response );
+        assertBadRequest(response);
     }
 
     /**
      * Test for /games/{gauid}/steps?mode=opponentStepAsync
      * Method: GET
      */
-    //TODO if steps are no exists then server should return something other than Internal Server Error (500)
+    //TODO Async doesn't supported by servlet than involved in testing
     /*
     @HttpTest(  method = Method.GET,
             path = "/1/steps?mode=opponentStepAsync",
@@ -195,6 +191,6 @@ public class GameControllerTest {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
     public void getGameLastStep(){
-        assertOk( response );
+        assertBadRequest(response);
     }
 }

@@ -1,6 +1,7 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import org.apache.log4j.Logger;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -46,13 +47,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUser(Long uuid) {
+    public User getUser(Long uuid) throws LogicException{
         User user = null;
 
         try{
             user = em.find(User.class, uuid);
-            user.setPassword(null);
-        }catch (Exception e){
+            if(user == null){
+                throw new LogicException(4L, "User with id " + uuid + " not found");
+            }
+        } catch (LogicException le){
+            throw le;
+        } catch (Exception e){
             //Catch any exception
             log.error("getUser: " + e.getMessage(), e);
         }
@@ -62,10 +67,15 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delUser(Long uuid) {
+    public void delUser(Long uuid) throws LogicException {
         try{
             User user = em.find(User.class, uuid);
+            if(user == null){
+                throw new LogicException(4L, "User with id " + uuid + " not found");
+            }
             em.remove(user);
+        }catch (LogicException le){
+            throw le;
         }catch (Exception e){
             //Catch any exception
             log.error("delUser: " + e.getMessage(), e);
@@ -76,7 +86,6 @@ public class UserDaoImpl implements UserDao {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public User modUser(User user) {
         try{
-
             if(user.getPassword() != null){
                 user.setPassword(encoder.encode(user.getPassword()));
             }
@@ -96,7 +105,6 @@ public class UserDaoImpl implements UserDao {
 
         try{
             user = (User)em.createQuery("SELECT u FROM User u WHERE u.login=?1").setParameter(1, login).getSingleResult();
-            user.setPassword(null);
         }catch (Exception e){
             //Catch any exception
             log.error("getUserByLogin: " + e.getMessage(), e);

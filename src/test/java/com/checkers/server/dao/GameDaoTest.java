@@ -2,6 +2,7 @@ package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
+import com.checkers.server.exceptions.LogicException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +28,7 @@ public class GameDaoTest {
     UserDao userDao;
 
     @Test
-    public void newGame(){
+    public void newGame() throws LogicException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -37,7 +38,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setBlack(userDao.getUser(1L));
@@ -53,7 +54,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void joinGame(){
+    public void joinGame() throws LogicException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -63,7 +64,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setWhite(userDao.getUser(2L));
@@ -82,7 +83,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void closeGame(){
+    public void closeGame() throws LogicException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -92,7 +93,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("game");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setWhite(userDao.getUser(2L));
@@ -108,11 +109,11 @@ public class GameDaoTest {
 
         game = gameDao.getGame(game.getGauid());
 
-        Assert.assertEquals("Game doesn't close", "close: white win; black capitulated;", game.getState());
+        Assert.assertEquals("Game doesn't close", "close", game.getState());
     }
 
-    @Test
-    public void delGame(){
+    @Test(expected=LogicException.class)
+    public void delGame() throws LogicException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -122,7 +123,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setWhite(userDao.getUser(1L));
@@ -135,9 +136,7 @@ public class GameDaoTest {
 
         gameDao.delGame(game.getGauid());
 
-        game = gameDao.getGame(game.getGauid());
-
-        Assert.assertNull("Open game has not been deleted", game);
+        gameDao.getGame(game.getGauid());
     }
 
     @Test
@@ -150,7 +149,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setBlackUuid(1L);
@@ -168,7 +167,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void modGame(){
+    public void modGame() throws LogicException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -177,7 +176,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setBlackUuid(1L);
@@ -203,7 +202,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void getGame(){
+    public void getGame() throws LogicException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -212,7 +211,7 @@ public class GameDaoTest {
         game.setDescription("Game description");
 
         game.setState("open");
-        game.setType("long");
+        game.setType("offline");
         game.setBoard("8x8");
 
         game.setBlackUuid(1L);
@@ -231,7 +230,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void getUserGames(){
+    public void getUserGames() throws LogicException {
         //Creating some new user
         User user = new User();
 
@@ -246,7 +245,7 @@ public class GameDaoTest {
 
         user.setEnabled(true);
 
-        user.setRole("USER_ROLE");
+        user.setRole("ROLE_USER");
 
         user.setCreated(new Date());
         user.setModified(new Date());
@@ -264,7 +263,7 @@ public class GameDaoTest {
             game.setDescription("Game description");
 
             game.setState("open");
-            game.setType("long");
+            game.setType("offline");
             game.setBoard("8x8");
 
             game.setBlackUuid(1L);
@@ -303,7 +302,7 @@ public class GameDaoTest {
             game.setDescription("Game description"+i);
 
             game.setState("open");
-            game.setType("long");
+            game.setType("offline");
             game.setBoard("8x8");
 
             game.setBlackUuid(null);

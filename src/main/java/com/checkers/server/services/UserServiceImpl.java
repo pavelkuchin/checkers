@@ -1,11 +1,12 @@
 package com.checkers.server.services;
 
 import com.checkers.server.Consts;
+import com.checkers.server.Context;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.exceptions.LogicException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,15 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public void newUser(User user) {
+    public void newUser(User user) throws LogicException {
+
+        if(user.getLogin() == null){
+            throw new LogicException(6L, "Login field should be filled");
+        } else if(user.getPassword() == null){
+            throw new LogicException(6L, "Password field should be filled");
+        } else if(user.getEmail() == null){
+            throw new LogicException(6L, "Email field should be filled");
+        }
 
         user.setUuid(null);
         user.setCreated(new Date());
@@ -38,7 +47,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void regUser(User user) {
+    public void regUser(User user) throws LogicException {
+
+        if(user.getLogin() == null){
+            throw new LogicException(6L, "Login field should be filled");
+        } else if(user.getPassword() == null){
+            throw new LogicException(6L, "Password field should be filled");
+        } else if(user.getEmail() == null){
+            throw new LogicException(6L, "Email field should be filled");
+        }
 
         // Fields autofill
         user.setUuid(null);
@@ -57,14 +74,9 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public User getUser(Long uuid) {
-
+    public User getUser(Long uuid) throws LogicException {
         if(uuid == null){
-            //TODO it is bad solution but i have not any other now.
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String name = auth.getName();
-
-            uuid = userDao.getUserByLogin(name).getUuid();
+            uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
         }
 
         User user = userDao.getUser(uuid);
@@ -74,19 +86,17 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public void delUser(Long uuid) {
+    public void delUser(Long uuid) throws LogicException {
         userDao.delUser(uuid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public User modUser(Long uuid, User user) {
-        if(uuid == null){
-            //TODO it is bad solution but i have not any other now.
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String name = auth.getName();
+    public User modUser(Long uuid, User user) throws LogicException {
+        User authUser = userDao.getUserByLogin(Context.getAuthLogin());
 
-            uuid = userDao.getUserByLogin(name).getUuid();
+        if(uuid == null){
+            uuid = authUser.getUuid();
         }
 
         User origin = userDao.getUser(uuid);
@@ -118,6 +128,10 @@ public class UserServiceImpl implements UserService {
             }
 
         } else if(authorities.contains(Consts.ROLE_USER)){
+            if(!authUser.getUuid().equals(origin.getUuid())){
+                throw new LogicException(7L, "As User you can't modify other users");
+            }
+
             //TODO password should be changed in other request with old password verification
             if(user.getPassword() != null){
                 origin.setPassword(user.getPassword());

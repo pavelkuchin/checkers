@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  *
  *
@@ -38,18 +41,49 @@ public class StepController {
         log.info("Step with SUID: " + suid + " returned");
 
         Step step = null;
+        Long lSuid;
 
-        step = stepService.getStep(Long.parseLong(suid));
+        try{
+            lSuid = Long.parseLong(suid);
+        } catch(Exception e){
+            throw new LogicException(6L, "{suid} should be a positive number");
+        }
+
+        step = stepService.getStep(lSuid);
 
         return step;
     }
 
+    /**
+     *
+     * EXCEPTION HANDLERS
+     *
+     */
+
     @ExceptionHandler(LogicException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
     ExceptionMessage handleException(LogicException e){
-        log.warn("There is some exception: " + e.getMessage());
+        log.warn(e + " : " + e.getMessage());
 
         return e.getExceptionMessage();
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody
+    ExceptionMessage internalException(Exception e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        log.error("Message: " + e.getMessage());
+        log.error("StackTrace: " + sw.toString());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(4L);
+        em.setMessage(e.getMessage());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-4");
+
+        return em;
     }
 }

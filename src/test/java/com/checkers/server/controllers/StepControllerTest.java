@@ -1,5 +1,6 @@
 package com.checkers.server.controllers;
 
+import static com.eclipsesource.restfuse.Assert.assertBadRequest;
 import static com.eclipsesource.restfuse.Assert.assertOk;
 import static com.eclipsesource.restfuse.Assert.assertCreated;
 
@@ -41,6 +42,6 @@ public class StepControllerTest {
                     @Authentication( type = AuthenticationType.BASIC, user = "admin", password = "admin" ) }
     )
     public void getStep(){
-        assertOk( response );
+        assertBadRequest(response);
     }
 }

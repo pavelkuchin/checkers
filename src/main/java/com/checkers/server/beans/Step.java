@@ -1,6 +1,7 @@
 package com.checkers.server.beans;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -27,8 +28,9 @@ public class Step {
     /**
      * Step in checkers notation
      * 2b-3b - Russian (8x8)
-     * 1-10  - Worldwide (10x10)
      */
+    @Pattern(regexp = "([a-h][1-8]-[a-h][1-8])|([a-h][1-8](:[a-h][1-8])+)",
+            message = "Step should be in checkers notation (a1-b2 or a1:b2:c3 for step with double fight)")
     private String  step;
     // Date of creation
     private Date    created;

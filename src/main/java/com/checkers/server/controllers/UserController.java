@@ -10,10 +10,15 @@ import com.checkers.server.services.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -58,7 +63,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User newUser(@Valid @RequestBody User user){
+    User newUser(@Valid @RequestBody User user) throws LogicException {
         log.info("User: \"" + user.getLogin() + "\" created");
         userService.newUser(user);
         return user;
@@ -73,13 +78,17 @@ public class UserController {
      */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    User getUser(@PathVariable String uuid){
+    User getUser(@PathVariable String uuid) throws LogicException {
         log.info("Returned user with uuid: " + uuid);
 
         Long uuidLong = null;
 
         if(!uuid.equals(Consts.ME)){
-            uuidLong = Long.parseLong(uuid);
+            try{
+                uuidLong = Long.parseLong(uuid);
+            } catch(NumberFormatException nfe){
+                throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+            }
         }
 
             return userService.getUser(uuidLong);
@@ -94,13 +103,17 @@ public class UserController {
      */
     @RequestMapping(value = "/{uuid}/games", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    List<Game> getUserGames(@PathVariable String uuid){
+    List<Game> getUserGames(@PathVariable String uuid) throws LogicException {
         log.info("All games for user " + uuid + " returned");
 
             Long uuidLong = null;
 
             if(!uuid.equals(Consts.ME)){
-                uuidLong = Long.parseLong(uuid);
+                try{
+                    uuidLong = Long.parseLong(uuid);
+                } catch(NumberFormatException nfe){
+                    throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+                }
             }
 
                 return gameService.getUserGames(uuidLong);
@@ -116,20 +129,8 @@ public class UserController {
     @RequestMapping(value = "/registration/", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User regUser(@Valid @RequestBody User user){
+    User regUser(@Valid @RequestBody User user) throws LogicException {
         log.info("User " + user.getLogin() + " registration has been started");
-
-        // First stage of validation
-        //TODO Exceptions alert system
-        if(user.getLogin().isEmpty()){
-            return null;
-        }
-        if(user.getEmail().isEmpty()){
-            return null;
-        }
-        if(user.getPassword().isEmpty()){
-            return null;
-        }
 
         userService.regUser(user);
 
@@ -146,10 +147,16 @@ public class UserController {
     @RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    User delUser(@PathVariable String uuid){
+    User delUser(@PathVariable String uuid) throws LogicException {
         log.warn("User delete process has been started");
 
-        Long uuidLong = Long.parseLong(uuid);
+        Long uuidLong;
+
+        try{
+            uuidLong = Long.parseLong(uuid);
+        } catch(NumberFormatException nfe){
+            throw new LogicException(6L, "Numbers are acceptable only");
+        }
 
         userService.delUser(uuidLong);
 
@@ -165,24 +172,90 @@ public class UserController {
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     public @ResponseBody
-    User modUser(@PathVariable String uuid, @Valid @RequestBody User user){
+    User modUser(@PathVariable String uuid, @Valid @RequestBody User user) throws LogicException {
         log.info("User modification has been started");
 
         Long uuidLong = null;
 
         if(!uuid.equals(Consts.ME)){
-            uuidLong = Long.parseLong(uuid);
+            try{
+                uuidLong = Long.parseLong(uuid);
+            } catch(NumberFormatException nfe){
+                throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+            }
         }
 
             return userService.modUser(uuidLong, user);
     }
 
+    /**
+     *
+     * EXCEPTION HANDLERS
+     *
+     */
+
     @ExceptionHandler(LogicException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    ExceptionMessage handleException(LogicException e){
-        log.warn("There is some exception: " + e.getMessage());
+    ExceptionMessage handleLogicException(LogicException e){
+        log.warn(e + " : " + e.getMessage());
 
         return e.getExceptionMessage();
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionMessage handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+        log.warn(e + " : " + e.getMessage());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(105L);
+        em.setMessage(e.getMessage());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-105");
+
+        return em;
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionMessage ArgumentNotValidException(MethodArgumentNotValidException e){
+        log.warn(e + " : " + e.getMessage());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(106L);
+        List<ObjectError> errors = e.getBindingResult().getAllErrors();
+        StringBuilder strErrors = new StringBuilder();
+        for(ObjectError oe : errors){
+            strErrors.append(oe.getDefaultMessage());
+            strErrors.append("\n");
+        }
+
+        em.setMessage(strErrors.toString());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-106");
+
+        return em;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public @ResponseBody
+    ExceptionMessage internalException(Exception e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        log.error("Message: " + e.getMessage());
+        log.error("StackTrace: " + sw.toString());
+
+        ExceptionMessage em = new ExceptionMessage();
+
+        em.setCode(4L);
+        em.setMessage(e.getMessage());
+        em.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-4");
+
+        return em;
     }
 }

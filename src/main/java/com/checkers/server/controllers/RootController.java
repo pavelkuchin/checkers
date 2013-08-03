@@ -27,6 +27,21 @@ public class RootController {
         return "index";
     }
 
+    @RequestMapping(value="/error/405", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public @ResponseBody
+    ExceptionMessage get405(){
+        log.info("Method Not Allowed");
+
+        ExceptionMessage eMsg = new ExceptionMessage();
+
+        eMsg.setCode(5L);
+        eMsg.setMessage("Method Not Allowed");
+        eMsg.setDetailsURL("https://github.com/pavelkuchin/checkers/wiki/Errors#code-5");
+
+        return eMsg;
+    }
+
     @RequestMapping(value="/error/404", method = RequestMethod.GET, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody

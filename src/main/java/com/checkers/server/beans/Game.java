@@ -1,6 +1,7 @@
 package com.checkers.server.beans;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -27,6 +28,7 @@ public class Game {
      *  online - During one session (minutes or hours)
      *  offline - During many sessions (days or months)
      */
+    @Pattern(regexp = "online|offline", message = "Game type should be 'online' or 'offline'")
     private String  type;
 
     /**
@@ -34,6 +36,7 @@ public class Game {
      * 8x8   - Russian checkers
      * 10x10 - Worldwide checkers
      */
+    @Pattern(regexp = "8x8|10x10", message = "Board type should be '8x8' or '10x10'")
     private String  board;
 
     /**
@@ -42,7 +45,15 @@ public class Game {
      *  game - game in process
      *  close - game closed (win or dead heat)
      */
+    @Pattern(regexp = "(open)|(game)|(close.*)", message = "Game state should be 'open', 'game' or 'close'")
     private String  state;
+
+    /**
+     * Game resolution:
+     *  white win; black capitulated;
+     *  black win; white capitulated;
+     */
+    private String  resolution;
 
     @ManyToOne
     private User    white; // White player object
@@ -170,4 +181,11 @@ public class Game {
         return this.blackUuid;
     }
 
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
 }

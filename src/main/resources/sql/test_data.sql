@@ -1,4 +1,4 @@
     INSERT INTO User(uuid, created, email, enabled, firstName, lastLogin, lastName, login, modified, password, role) VALUES (null, NOW(), 'admin@checkers.in.ua', true, 'Admin', NOW(), 'Admin', 'admin', NOW(), 'cea8e7dff61767cdee00b7a9e9c999fa77842d3dbcbbb15972df55d298819bc38dce97d0edd34aaa', 'ROLE_ADMIN' );
     INSERT INTO User(uuid, created, email, enabled, firstName, lastLogin, lastName, login, modified, password, role) VALUES (null, NOW(), 'user@checkers.in.ua', true, 'User', NOW(), 'User', 'user', NOW(), '46cb0fdeee5df334925b950961f35666ad506b677171a7078de1e8bdc815b0feab6a89b69f566a39', 'ROLE_USER' );
 
-    INSERT INTO Game(gauid, board, created, description, lastStep, modified, name, state, type, black_uuid, white_uuid, blackUuid, whiteUuid) VALUES (null, '10x10', NOW(), 'Ogogo', NOW(), NOW(), 'Just a game', 'open', 'long', null, 1, null, 1);
+    INSERT INTO Game(gauid, board, created, description, lastStep, modified, name, state, type, black_uuid, white_uuid, blackUuid, whiteUuid) VALUES (null, '8x8', NOW(), 'Ogogo', NOW(), NOW(), 'Just a game', 'open', 'offline', null, 1, null, 1);

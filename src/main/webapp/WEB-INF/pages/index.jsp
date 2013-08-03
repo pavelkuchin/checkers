@@ -7,7 +7,7 @@
     <body>
         <h1>Hi</h1>
         <p>
-            RESTful server for the checkers based on Spring
+            I am RESTful server for the checkers based on Spring
         </p>
         <p>
             <a href="https://github.com/pavelkuchin/checkers">Sources</a><br/>
