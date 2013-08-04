@@ -10,6 +10,9 @@
             I am RESTful server for the checkers based on Spring
         </p>
         <p>
+            <b>v0.3</b>
+        </p>
+        <p>
             <a href="https://github.com/pavelkuchin/checkers">Sources</a><br/>
             <a href="https://github.com/pavelkuchin/checkers/wiki">Wiki</a><br/>
             <a href="https://github.com/forrana/checkers-client">Client</a><br/>

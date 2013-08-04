@@ -148,7 +148,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     User delUser(@PathVariable String uuid) throws LogicException {
-        log.warn("User delete process has been started");
+        log.info("User delete process has been started");
 
         Long uuidLong;
 
