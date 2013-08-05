@@ -27,7 +27,7 @@ public class RootController {
         return "index";
     }
 
-    @RequestMapping(value="/error/405", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value="/error/405", headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody
     ExceptionMessage get405(){
@@ -42,7 +42,7 @@ public class RootController {
         return eMsg;
     }
 
-    @RequestMapping(value="/error/404", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value="/error/404", headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody
     ExceptionMessage get404(){
@@ -57,7 +57,7 @@ public class RootController {
         return eMsg;
     }
 
-    @RequestMapping(value="/error/403", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value="/error/403", headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public @ResponseBody
     ExceptionMessage get403(){
@@ -72,7 +72,7 @@ public class RootController {
         return eMsg;
     }
 
-    @RequestMapping(value="/error/401", method = RequestMethod.GET, headers = {"Accept=application/json"})
+    @RequestMapping(value="/error/401", headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public @ResponseBody
     ExceptionMessage get401(){
