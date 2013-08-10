@@ -18,6 +18,8 @@ public interface UserService {
 
     User getUser(Long uuid) throws LogicException;
 
+    User getUserByLogin(String login) throws LogicException;
+
     void delUser(Long uuid) throws LogicException;
 
     User modUser(Long uuid, User user) throws LogicException;

@@ -100,7 +100,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws LogicException {
         User user = null;
 
         try{
@@ -108,6 +108,10 @@ public class UserDaoImpl implements UserDao {
         }catch (Exception e){
             //Catch any exception
             log.error("getUserByLogin: " + e.getMessage(), e);
+        }
+
+        if(user == null){
+            throw new LogicException(4L, "User with login " + login + " not found");
         }
 
         return user;

@@ -16,6 +16,7 @@
         <!-- REMIT ALL -->
         <security:intercept-url pattern="/error/*"                   access="permitAll" method="GET"/>
         <security:intercept-url pattern="/users/registration/"       access="permitAll" method="POST"/>
+        <security:intercept-url pattern="/users/registration"        access="permitAll" method="POST"/>
         <security:intercept-url pattern="/"                          access="permitAll" method="GET" />
         <security:intercept-url pattern="/index.html"                access="permitAll" method="GET" />
 

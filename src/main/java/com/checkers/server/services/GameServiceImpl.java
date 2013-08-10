@@ -73,7 +73,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game newGame(Game game) {
+    public Game newGame(Game game) throws LogicException {
 
         User you = userDao.getUserByLogin(Context.getAuthLogin());
 

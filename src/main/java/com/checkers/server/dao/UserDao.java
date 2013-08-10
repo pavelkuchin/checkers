@@ -19,7 +19,7 @@ public interface UserDao {
 
     User modUser(User user);
 
-    User getUserByLogin(String login);
+    User getUserByLogin(String login) throws LogicException;
 
     List<User> getUsers();
 }

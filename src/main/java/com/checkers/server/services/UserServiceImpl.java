@@ -84,6 +84,12 @@ public class UserServiceImpl implements UserService {
             return user;
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @Override
+    public User getUserByLogin(String login) throws LogicException {
+        return userDao.getUserByLogin(login);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public void delUser(Long uuid) throws LogicException {

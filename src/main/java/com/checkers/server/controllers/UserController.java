@@ -87,7 +87,7 @@ public class UserController {
             try{
                 uuidLong = Long.parseLong(uuid);
             } catch(NumberFormatException nfe){
-                throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+                uuidLong = userService.getUserByLogin(uuid).getUuid();
             }
         }
 
@@ -112,7 +112,7 @@ public class UserController {
                 try{
                     uuidLong = Long.parseLong(uuid);
                 } catch(NumberFormatException nfe){
-                    throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+                    uuidLong = userService.getUserByLogin(uuid).getUuid();
                 }
             }
 
@@ -155,7 +155,7 @@ public class UserController {
         try{
             uuidLong = Long.parseLong(uuid);
         } catch(NumberFormatException nfe){
-            throw new LogicException(6L, "Numbers are acceptable only");
+            uuidLong = userService.getUserByLogin(uuid).getUuid();
         }
 
         userService.delUser(uuidLong);
@@ -181,7 +181,7 @@ public class UserController {
             try{
                 uuidLong = Long.parseLong(uuid);
             } catch(NumberFormatException nfe){
-                throw new LogicException(6L, "Numbers and 'me' are acceptable only");
+                uuidLong = userService.getUserByLogin(uuid).getUuid();
             }
         }
 
