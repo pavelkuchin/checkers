@@ -171,6 +171,7 @@ public class UserController {
     *    <b>Allowed roles:</b> ROLE_USER(owner only), ROLE_ADMIN
     */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     User modUser(@PathVariable String uuid, @Valid @RequestBody User user) throws LogicException {
         log.info("User modification has been started");
