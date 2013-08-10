@@ -84,13 +84,20 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public User modUser(User user) {
+    public User modUser(User user) throws LogicException {
         try{
-            if(user.getPassword() != null){
+            User oldUser = em.find(User.class, user.getUuid());
+            if(oldUser == null){
+                throw new LogicException(4L, "User with id " + oldUser.getUuid() + " not found");
+            }
+
+            if(user.getPassword() != null && !oldUser.getPassword().equals(user.getPassword())){
                 user.setPassword(encoder.encode(user.getPassword()));
             }
 
             em.merge(user);
+        }catch (LogicException le){
+            throw le;
         }catch (Exception e){
             //Catch any exception
             log.error("modUser" + e.getMessage(), e);

@@ -123,6 +123,9 @@ public class UserServiceImpl implements UserService {
                 origin.setRole(user.getRole());
             }
 
+            if(user.getLogin() != null){
+                origin.setLogin(user.getLogin());
+            }
             if(user.getFirstName() != null){
                 origin.setFirstName(user.getFirstName());
             }

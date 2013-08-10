@@ -17,7 +17,7 @@ public interface UserDao {
 
     void delUser(Long uuid) throws LogicException;
 
-    User modUser(User user);
+    User modUser(User user) throws LogicException;
 
     User getUserByLogin(String login) throws LogicException;
 
