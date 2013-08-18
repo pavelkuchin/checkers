@@ -5,24 +5,23 @@ import com.checkers.server.beans.ExceptionMessage;
 /**
  *
  *
- *
- * @author Pavel Kuchin
+ * @author  Pavel Kuchin
  */
-public class LogicException extends Exception {
+public class CheckersException extends Exception {
     Long    code;
     String  detailsURL;
 
-    public LogicException() {}
+    public CheckersException() {}
 
-    public LogicException(Long code, String message){
+    public CheckersException(Long code, String message){
         super(message);
-        this.code = 100 + code;
+        this.code = 200 + code;
         this.detailsURL = "https://github.com/pavelkuchin/checkers/wiki/Errors#code-" + this.code;
     }
 
-    public LogicException(Long code, String message, String detailsURL){
+    public CheckersException(Long code, String message, String detailsURL){
         super(message);
-        this.code = 100 + code;
+        this.code = 200 + code;
         this.detailsURL = detailsURL;
     }
 
