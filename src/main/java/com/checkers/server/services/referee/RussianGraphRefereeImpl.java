@@ -31,10 +31,22 @@ public class RussianGraphRefereeImpl implements Referee {
             for(int j = 0; j < 4; j++){
                 if ((j + 1) % 2 == 0) {
                     cell = graph.newCell(new RussianCoords(i + 1, 2 + (j * 2)));
-                    //TODO cells linkage
+
+                    if(i > 0){
+                        cell.setLeftDown(graph.getCell(new RussianCoords(i, 1 + (j * 2))));
+                        if(j < 3){
+                            cell.setRightDown(graph.getCell(new RussianCoords(i, 3 + (j * 2))));
+                        }
+                    }
                 } else {
                     cell = graph.newCell(new RussianCoords(i + 1, 1 + (j * 2)));
-                    //TODO cells linkage
+
+                    if(i > 0){
+                        if(j > 0){
+                            cell.setLeftDown(graph.getCell(new RussianCoords(i, 0 + (j * 2))));
+                        }
+                        cell.setRightDown(graph.getCell(new RussianCoords(i, 2 + (j * 2))));
+                    }
                 }
 
                 if(i < 3){
