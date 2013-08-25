@@ -23,28 +23,42 @@ public class RussianGraphRefereeImpl implements Referee {
         Cell<RussianCoords> cell;
         Figure  figure;
 
+        graph = new CheckersGraph<RussianCoords>();
         white = new HashMap<RussianCoords, Figure>();
         black = new HashMap<RussianCoords, Figure>();
 
         for(int i = 0; i < 8; i++){
+            Integer offset;
+            Integer rOffset;
+
+            if((i + 1) % 2 == 0){
+                offset = 2;
+                rOffset = 1;
+            } else{
+                offset = 1;
+                rOffset = 2;
+            }
+
             for(int j = 0; j < 4; j++){
                 if ((j + 1) % 2 == 0) {
-                    cell = graph.newCell(new RussianCoords(i + 1, 2 + (j * 2)));
+                    cell = graph.newCell(new RussianCoords(i + 1, offset + (j * 2)));
 
                     if(i > 0){
-                        cell.setLeftDown(graph.getCell(new RussianCoords(i, 1 + (j * 2))));
+                        cell.setLeftDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
                         if(j < 3){
-                            cell.setRightDown(graph.getCell(new RussianCoords(i, 3 + (j * 2))));
+                            cell.setRightDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
                         }
                     }
                 } else {
-                    cell = graph.newCell(new RussianCoords(i + 1, 1 + (j * 2)));
+                    cell = graph.newCell(new RussianCoords(i + 1, offset + (j * 2)));
 
                     if(i > 0){
                         if(j > 0){
-                            cell.setLeftDown(graph.getCell(new RussianCoords(i, 0 + (j * 2))));
+                            cell.setLeftDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
                         }
-                        cell.setRightDown(graph.getCell(new RussianCoords(i, 2 + (j * 2))));
+                        if(j < 3){
+                            cell.setRightDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
+                        }
                     }
                 }
 
@@ -512,6 +526,11 @@ public class RussianGraphRefereeImpl implements Referee {
 
         //Check is it your figure?
         Figure bf = graph.getFigure(new RussianCoords(steps[0]));
+
+        if(bf == null){
+            throw new CheckersException(19L, "Cell is clear");
+        }
+
         if(!bf.getColor().equals(color)){
             throw new CheckersException(13L, "This figure isn't yours");
         }

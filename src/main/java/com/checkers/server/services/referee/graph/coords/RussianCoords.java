@@ -77,13 +77,13 @@ public class RussianCoords implements Coords{
 
     @Override
     public void setCheckersNotation(String checkersNotation) throws CheckersException {
-        this.x = resolver.get(checkersNotation.charAt(0));
-        if(this.x == null){
+        this.y = resolver.get(checkersNotation.charAt(0));
+        if(this.y == null){
             throw new CheckersException(1L, "Incorrect notation (Russian checkers)");
         }
         try{
-            this.y = Integer.parseInt(new Character(checkersNotation.charAt(1)).toString());
-            if(this.y > 8 || this.y < 1){
+            this.x = Integer.parseInt(new Character(checkersNotation.charAt(1)).toString());
+            if(this.x > 8 || this.x < 1){
                 throw new CheckersException(2L, "Incorrect notation (Russian checkers)");
             }
         } catch(Exception e){

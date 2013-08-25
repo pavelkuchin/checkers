@@ -142,6 +142,10 @@ public class CheckersGraph <C extends Coords> {
     }
 
     public Figure getFigure(C coords){
-        return cells.get(coords).getFigure();
+        Cell cell = cells.get(coords);
+        if(cell != null){
+            return cells.get(coords).getFigure();
+        }
+            return null;
     }
 }

@@ -7,7 +7,12 @@ import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.exceptions.CheckersException;
 import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.services.referee.Referee;
+import com.checkers.server.services.referee.RussianGraphRefereeImpl;
+import com.checkers.server.services.referee.WorldwideGraphRefereeImpl;
+import com.checkers.server.services.referee.graph.FigureColor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,7 +71,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step newStep(Step step) throws LogicException {
+    public Step newStep(Step step) throws LogicException, CheckersException {
         Object event;
 
         Game game = null;
@@ -100,6 +105,20 @@ public class StepServiceImpl implements StepService {
             if(lastStep.getUuid().equals(user.getUuid())){
                 throw new LogicException(3L, "You made your move. Let the opponent to make a move.");
             }
+        }
+
+        Referee referee = null;
+
+        if(game.getBoard().equals(Consts.GAME_BOARD_RUSSIAN)){
+            referee = new RussianGraphRefereeImpl();
+        } else if(game.getBoard().equals(Consts.GAME_BOARD_WORDWIDE)){
+            referee = new WorldwideGraphRefereeImpl();
+        }
+
+        if(game.getBlackUuid() == user.getUuid()){
+            referee.checkStep(step.getStep(), FigureColor.BLACK);
+        } else if(game.getWhiteUuid() == user.getUuid()){
+            referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
 
         //Bring a little Async
