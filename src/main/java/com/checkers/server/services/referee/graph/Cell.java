@@ -1,11 +1,13 @@
 package com.checkers.server.services.referee.graph;
 
+import com.checkers.server.services.referee.graph.coords.Coords;
+
 /**
  *
  *
  * @author Pavel Kuchin
  */
-public class Cell <C> {
+public class Cell <C extends Coords> {
 
     private C      coords;
     private Figure figure;

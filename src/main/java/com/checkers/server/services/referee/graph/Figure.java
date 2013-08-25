@@ -1,17 +1,20 @@
 package com.checkers.server.services.referee.graph;
 
+import com.checkers.server.services.referee.graph.coords.Coords;
+
 /**
  *
  *
  * @author Pavel Kuchin
  */
-public class Figure{
+public class Figure<C extends Coords>{
     private FigureType type;
     private FigureColor color;
 
-    private Cell    cell;
+    private Cell<C>    cell;
 
     private Boolean threatened;
+    private Boolean fighter;
 
     private Figure leftUpFigure;
     private Figure leftDownFigure;
@@ -50,6 +53,71 @@ public class Figure{
         this.rightDownFigure = rightDownFigure;
     }
 
+    public Figure getFigureFromDirection(C to){
+        Integer dX = 0;
+        Integer dY = 0;
+
+        C from = this.cell.getCoords();
+
+        dX = to.getX() - from.getX();
+        dY = to.getY() - from.getY();
+
+        Figure tmpFigure = null;
+        Integer tmpX = 0;
+        Integer tmpY = 0;
+
+        if(dX > 0 && dY > 0){
+            tmpFigure = this.getRightUpFigure();
+
+            tmpX = tmpFigure.getCell().getCoords().getX();
+            tmpY = tmpFigure.getCell().getCoords().getY();
+
+            if(tmpX <= dX && tmpY <= dY){
+                return this.getRightUpFigure();
+            } else{
+                return null;
+            }
+        }
+        if(dX < 0 && dY < 0){
+            tmpFigure = this.getLeftDownFigure();
+
+            tmpX = tmpFigure.getCell().getCoords().getX();
+            tmpY = tmpFigure.getCell().getCoords().getY();
+
+            if(tmpX >= dX && tmpY >= dY){
+                return this.getLeftDownFigure();
+            } else{
+                return null;
+            }
+        }
+        if(dX > 0 && dY < 0){
+            tmpFigure = this.getLeftUpFigure();
+
+            tmpX = tmpFigure.getCell().getCoords().getX();
+            tmpY = tmpFigure.getCell().getCoords().getY();
+
+            if(tmpX <= dX && tmpY >= dY){
+                return this.getLeftUpFigure();
+            } else{
+                return null;
+            }
+        }
+        if(dX < 0 && dY > 0){
+            tmpFigure = this.getRightDownFigure();
+
+            tmpX = tmpFigure.getCell().getCoords().getX();
+            tmpY = tmpFigure.getCell().getCoords().getY();
+
+            if(tmpX >= dX && tmpY <= dY){
+                return this.getRightDownFigure();
+            } else{
+                return null;
+            }
+        }
+
+        return null;
+    }
+
     public FigureType getType() {
         return type;
     }
@@ -74,11 +142,19 @@ public class Figure{
         this.threatened = threatened;
     }
 
-    public Cell getCell() {
+    public Cell<C> getCell() {
         return cell;
     }
 
-    public void setCell(Cell cell) {
+    public void setCell(Cell<C> cell) {
         this.cell = cell;
+    }
+
+    public Boolean getFighter() {
+        return fighter;
+    }
+
+    public void setFighter(Boolean fighter) {
+        this.fighter = fighter;
     }
 }
