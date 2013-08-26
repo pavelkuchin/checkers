@@ -108,7 +108,9 @@ public class StepDaoImpl implements StepDao {
         try{
             step = (Step)em.createQuery("SELECT s FROM Step s ORDER BY s.suid DESC").setMaxResults(1).getSingleResult();
         }catch (javax.persistence.NoResultException noResult){
-            throw new LogicException(10L, "There are no steps");
+            //TODO return that, when listeners subsystems will be created.
+            //throw new LogicException(10L, "There are no steps");
+            return null;
         }catch(Exception e){
             //Catch any exception
             log.error("getGameLastStep: " + e.getMessage(), e);

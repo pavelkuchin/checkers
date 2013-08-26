@@ -105,8 +105,12 @@ public class StepServiceImpl implements StepService {
             if(lastStep.getUuid().equals(user.getUuid())){
                 throw new LogicException(3L, "You made your move. Let the opponent to make a move.");
             }
+        } else if(game.getBlackUuid() == user.getUuid()){
+            // TODO errors refactoring
+            throw new LogicException(3L, "White should make step first");
         }
 
+        /*
         Referee referee = null;
 
         if(game.getBoard().equals(Consts.GAME_BOARD_RUSSIAN)){
@@ -120,6 +124,7 @@ public class StepServiceImpl implements StepService {
         } else if(game.getWhiteUuid() == user.getUuid()){
             referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
+        */
 
         //Bring a little Async
         step.setUuid(null);
