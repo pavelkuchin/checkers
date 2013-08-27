@@ -67,14 +67,14 @@ public class RussianGraphRefereeImpl implements Referee {
                     figure.setType(FigureType.CHECKER);
                     figure.setColor(FigureColor.WHITE);
 
-                    cell.setFigure(figure);
+                    graph.newFigure(cell.getCoords(), figure);
                     white.put(cell.getCoords(), figure);
                 }else if(i > 4){
                     figure = new Figure();
                     figure.setType(FigureType.CHECKER);
                     figure.setColor(FigureColor.BLACK);
 
-                    cell.setFigure(figure);
+                    graph.newFigure(cell.getCoords(), figure);
                     black.put(cell.getCoords(), figure);
                 }
             }
@@ -487,12 +487,12 @@ public class RussianGraphRefereeImpl implements Referee {
         return null;
     }
 
-    private void isValidCheckerStep(RussianCoords fromCoord, RussianCoords toCoord) throws CheckersException {
+    private void isValidCheckerStep(RussianCoords fromCoord, RussianCoords toCoord, FigureColor color) throws CheckersException {
         Integer vX = toCoord.getX() - fromCoord.getX();
         Integer vY = toCoord.getY() - fromCoord.getY();
 
         //Check step direction (only forward allowed)
-        if(vX < 0){
+        if((vX < 0 && color.equals(FigureColor.WHITE)) || (vX > 0 && color.equals(FigureColor.BLACK))){
             throw new CheckersException(6L, "Invalid step direction (only forward allowed for checker)");
         }
 
@@ -502,7 +502,7 @@ public class RussianGraphRefereeImpl implements Referee {
         }
 
         //Only diagonally
-        if(!vX.equals(vY)){
+        if(Math.abs(vX) != Math.abs(vY)){
             throw new CheckersException(8L, "Only diagonally step allowed");
         }
 
@@ -563,7 +563,7 @@ public class RussianGraphRefereeImpl implements Referee {
             }
 
             if(f.getType().equals(FigureType.CHECKER)){
-                isValidCheckerStep(fromCoord, toCoord);
+                isValidCheckerStep(fromCoord, toCoord, color);
             } else if(f.getType().equals(FigureType.KING)){
                 isValidKingStep(fromCoord, toCoord);
             }
@@ -574,8 +574,8 @@ public class RussianGraphRefereeImpl implements Referee {
                 black.put(toCoord, black.get(fromCoord));
                 black.remove(fromCoord);
             } else if(color.equals(FigureColor.WHITE)){
-                black.put(toCoord, black.get(fromCoord));
-                black.remove(fromCoord);
+                white.put(toCoord, white.get(fromCoord));
+                white.remove(fromCoord);
             }
 
             if(color.equals(FigureColor.BLACK) && toCoord.getX().equals(1)){

@@ -105,4 +105,13 @@ public class RussianCoords implements Coords{
         return y;
     }
 
+    @Override
+    public boolean equals(Object c){
+        return (this.x.equals(((Coords)c).getX()) && this.y.equals(((Coords)c).getY()));
+    }
+
+    @Override
+    public int hashCode(){
+        return this.x + (this.y * 10);
+    }
 }

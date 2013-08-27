@@ -23,7 +23,9 @@ public class Cell <C extends Coords> {
 
     public void setFigure(Figure figure) {
         this.figure = figure;
-        this.figure.setCell(this);
+        if(figure != null){
+            this.figure.setCell(this);
+        }
     }
 
     public Cell getLeftUp() {

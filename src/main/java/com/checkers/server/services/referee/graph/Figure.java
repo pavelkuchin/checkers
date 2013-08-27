@@ -13,8 +13,8 @@ public class Figure<C extends Coords>{
 
     private Cell<C>    cell;
 
-    private Boolean threatened;
-    private Boolean fighter;
+    private Boolean threatened  = false;
+    private Boolean fighter     = false;
 
     private Figure leftUpFigure;
     private Figure leftDownFigure;
