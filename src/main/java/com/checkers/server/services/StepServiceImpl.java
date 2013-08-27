@@ -127,6 +127,8 @@ public class StepServiceImpl implements StepService {
         */
 
         //Bring a little Async
+        step.setSuid(null);
+
         step.setUuid(null);
 
         step.setCreated(new Date());
