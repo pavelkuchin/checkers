@@ -138,6 +138,11 @@ public class CheckersGraph <C extends Coords> {
             rdf.setLeftUpFigure(luf);
         }
 
+        figure.setLeftDownFigure(null);
+        figure.setLeftUpFigure(null);
+        figure.setRightDownFigure(null);
+        figure.setRightUpFigure(null);
+
         cells.get(coords).setFigure(null);
     }
 

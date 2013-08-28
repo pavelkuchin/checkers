@@ -28,37 +28,32 @@ public class RussianGraphRefereeImpl implements Referee {
         black = new HashMap<RussianCoords, Figure>();
 
         for(int i = 0; i < 8; i++){
-            Integer offset;
-            Integer rOffset;
-
-            if((i + 1) % 2 == 0){
-                offset = 2;
-                rOffset = 1;
-            } else{
-                offset = 1;
-                rOffset = 2;
-            }
-
             for(int j = 0; j < 4; j++){
-                if ((j + 1) % 2 == 0) {
-                    cell = graph.newCell(new RussianCoords(i + 1, offset + (j * 2)));
+                if ((i + 1) % 2 == 0) {
+                    cell = graph.newCell(new RussianCoords(i + 1, 2 + (j * 2)));
 
                     if(i > 0){
-                        cell.setLeftDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
+                        Cell c1 = graph.getCell(new RussianCoords(i, 1 + (j * 2)));
+                        cell.setLeftDown(c1);
+                        c1.setRightUp(cell);
                         if(j < 3){
-                            cell.setRightDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
+                            Cell c2 = graph.getCell(new RussianCoords(i, 3 + (j * 2)));
+                            cell.setRightDown(c2);
+                            c2.setLeftUp(cell);
                         }
                     }
                 } else {
-                    cell = graph.newCell(new RussianCoords(i + 1, offset + (j * 2)));
+                    cell = graph.newCell(new RussianCoords(i + 1, 1 + (j * 2)));
 
                     if(i > 0){
                         if(j > 0){
-                            cell.setLeftDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
+                            Cell c3 = graph.getCell(new RussianCoords(i, 0 + (j * 2)));
+                            cell.setLeftDown(c3);
+                            c3.setRightUp(cell);
                         }
-                        if(j < 3){
-                            cell.setRightDown(graph.getCell(new RussianCoords(i, rOffset + (j * 2))));
-                        }
+                        Cell c4 = graph.getCell(new RussianCoords(i, 2 + (j * 2)));
+                        cell.setRightDown(c4);
+                        c4.setLeftUp(cell);
                     }
                 }
 
@@ -96,6 +91,7 @@ public class RussianGraphRefereeImpl implements Referee {
         Integer vX = null;
         Integer svX = null;
 
+        //TODO perform check based on cell but not figure (for exclude null issue)
         f = figure.getLeftDownFigure();
         if(f != null && !f.getThreatened()){
             if(!f.getColor().equals(figure.getColor())){
@@ -109,7 +105,7 @@ public class RussianGraphRefereeImpl implements Referee {
                     svX = getDistance(f, f.getLeftDownFigure());
 
                     if(svX == null){
-                        return true;
+                        return false;
                     }
 
                     if(!svX.equals(1)){
@@ -132,7 +128,7 @@ public class RussianGraphRefereeImpl implements Referee {
                     svX = getDistance(f, f.getLeftUpFigure());
 
                     if(svX == null){
-                        return true;
+                        return false;
                     }
 
                     if(!svX.equals(1)){
@@ -155,7 +151,7 @@ public class RussianGraphRefereeImpl implements Referee {
                     svX = getDistance(f, f.getRightDownFigure());
 
                     if(svX == null){
-                        return true;
+                        return false;
                     }
 
                     if(!svX.equals(1)){
@@ -178,7 +174,7 @@ public class RussianGraphRefereeImpl implements Referee {
                     svX = getDistance(f, f.getRightUpFigure());
 
                     if(svX == null){
-                        return true;
+                        return false;
                     }
 
                     if(!svX.equals(1)){
@@ -397,7 +393,7 @@ public class RussianGraphRefereeImpl implements Referee {
                 svX = getDistance(f, f.getLeftDownFigure());
 
                 if(svX == null){
-                    return true;
+                    return false;
                 }
 
                 if(!svX.equals(1)){
@@ -412,7 +408,7 @@ public class RussianGraphRefereeImpl implements Referee {
                 svX = getDistance(f, f.getLeftUpFigure());
 
                 if(svX == null){
-                    return true;
+                    return false;
                 }
 
                 if(!svX.equals(1)){
@@ -427,7 +423,7 @@ public class RussianGraphRefereeImpl implements Referee {
                 svX = getDistance(f, f.getRightDownFigure());
 
                 if(svX == null){
-                    return true;
+                    return false;
                 }
 
                 if(!svX.equals(1)){
@@ -442,7 +438,7 @@ public class RussianGraphRefereeImpl implements Referee {
                 svX = getDistance(f, f.getRightUpFigure());
 
                 if(svX == null){
-                   return true;
+                   return false;
                 }
 
                 if(!svX.equals(1)){
@@ -666,14 +662,53 @@ public class RussianGraphRefereeImpl implements Referee {
                 throw ce;
             }
 
-            if(canFigureFight(graph.getFigure(new RussianCoords(steps[steps.length])), true)){
+            //TODO There is issue: When fight performing doesn't any check of step length.
+            //TODO When king fight he should not be able to fight several figures in one step
+
+            if(canFigureFight(graph.getFigure(new RussianCoords(steps[steps.length - 1])), true)){
                 throw new CheckersException(19L, "You have another step to fight");
             }
 
-            graph.getFigure(new RussianCoords(steps[steps.length])).setFighter(false);
+            graph.getFigure(new RussianCoords(steps[steps.length - 1])).setFighter(false);
             graph.commitTransaction();
         }
 
         return true;
+    }
+
+    private String f(Integer x, Integer y){
+        try {
+            Cell<RussianCoords> c = graph.getCell(new RussianCoords(x, y));
+            Figure<RussianCoords> f;
+            if((f = c.getFigure()) != null){
+                if(f.getType().equals(FigureType.CHECKER)){
+                    return "o";
+                } else if(f.getType().equals(FigureType.KING)){
+                    return "0";
+                }
+            }
+        } catch (CheckersException e) {
+            e.printStackTrace();
+        }
+
+        return " ";
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" |a|b|c|d|e|f|g|h|\n");
+
+        sb.append("8|x|" + f(8,2) + "|x|" + f(8,4) +  "|x|" + f(8,6) + "|x|" + f(8,8) + "|\n");
+        sb.append("7|" + f(7,1) + "|x|" + f(7,3) + "|x|" + f(7,5) + "|x|" + f(7,7) + "|x|\n");
+        sb.append("6|x|" + f(6,2) + "|x|" + f(6,4) + "|x|" + f(6,6) + "|x|" + f(6,8) + "|\n");
+        sb.append("5|" + f(5,1) + "|x|" + f(5,3) + "|x|" + f(5,5) + "|x|" + f(5,7) + "|x|\n");
+        sb.append("4|x|" + f(4,2) + "|x|" + f(4,4) + "|x|" + f(4,6) + "|x|" + f(4,8) + "|\n");
+        sb.append("3|" + f(3,1) + "|x|" + f(3,3) + "|x|" + f(3,5) + "|x|" + f(3,7) + "|x|\n");
+        sb.append("2|x|" + f(2,2) + "|x|" + f(2,4) + "|x|" + f(2,6) + "|x|" + f(2,8) + "|\n");
+        sb.append("1|" + f(1,1) + "|x|" + f(1,3) + "|x|" + f(1,5) + "|x|" + f(1,7) + "|x|\n");
+
+        return sb.toString();
     }
 }

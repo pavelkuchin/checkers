@@ -69,8 +69,8 @@ public class RussianCoords implements Coords{
             return null;
         }
 
-        checkersNotation.append(reverseResolver.get(this.x));
-        checkersNotation.append(this.y);
+        checkersNotation.append(reverseResolver.get(this.y));
+        checkersNotation.append(this.x);
 
         return checkersNotation.toString();
     }
