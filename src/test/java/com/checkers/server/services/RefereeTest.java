@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class RefereeTest {
 
-/*    @Test
+    @Test
     public void russianGraphRefereeBasicTest() throws CheckersException {
         Referee referee = new RussianGraphRefereeImpl();
 
@@ -34,9 +34,11 @@ public class RefereeTest {
 
         Assert.assertTrue(referee.checkStep("b4-c5", FigureColor.WHITE));
         Assert.assertTrue(referee.checkStep("g5-f4", FigureColor.BLACK));
+
+        System.out.println(referee.toString());
     }
-*/
-/*
+
+
     @Test
     public void russianGraphRefereeVariant1Test() throws CheckersException {
         Referee referee = new RussianGraphRefereeImpl();
@@ -50,9 +52,7 @@ public class RefereeTest {
         Assert.assertTrue(referee.checkStep("f2-e3", FigureColor.WHITE));
         Assert.assertTrue(referee.checkStep("a5:c3", FigureColor.BLACK));
 
-        System.out.println(referee.toString());
-
-        Assert.assertTrue(referee.checkStep("b2:f6", FigureColor.WHITE));
+        Assert.assertTrue(referee.checkStep("b2:d4:f6", FigureColor.WHITE));
         Assert.assertTrue(referee.checkStep("e7:g5", FigureColor.BLACK));
 
         Assert.assertTrue(referee.checkStep("a3-b4", FigureColor.WHITE));
@@ -68,13 +68,13 @@ public class RefereeTest {
         Assert.assertTrue(referee.checkStep("g7-f6", FigureColor.BLACK));
 
         Assert.assertTrue(referee.checkStep("f4-g5", FigureColor.WHITE));
-        Assert.assertTrue(referee.checkStep("h6-f4", FigureColor.BLACK));
+        Assert.assertTrue(referee.checkStep("h6:f4", FigureColor.BLACK));
 
-        Assert.assertTrue(referee.checkStep("e3:e7", FigureColor.WHITE));
+        Assert.assertTrue(referee.checkStep("e3:g5:e7", FigureColor.WHITE));
         Assert.assertTrue(referee.checkStep("d8:f6", FigureColor.BLACK));
 
-        Assert.assertTrue(referee.checkStep("g3:f4", FigureColor.WHITE));
-        Assert.assertTrue(referee.checkStep("f6:e5", FigureColor.BLACK));
+        Assert.assertTrue(referee.checkStep("g3-f4", FigureColor.WHITE));
+        Assert.assertTrue(referee.checkStep("f6-e5", FigureColor.BLACK));
 
         Assert.assertTrue(referee.checkStep("f2-e3", FigureColor.WHITE));
         Assert.assertTrue(referee.checkStep("e5:g3", FigureColor.BLACK));
@@ -92,7 +92,8 @@ public class RefereeTest {
         Assert.assertTrue(referee.checkStep("c7:a5", FigureColor.BLACK));
 
         Assert.assertTrue(referee.checkStep("f2-g3", FigureColor.WHITE));
-        Assert.assertTrue(referee.checkStep("h4:d4", FigureColor.BLACK));
+        Assert.assertTrue(referee.checkStep("h4:f2:d4", FigureColor.BLACK));
+
+        System.out.println(referee.toString());
     }
-*/
 }

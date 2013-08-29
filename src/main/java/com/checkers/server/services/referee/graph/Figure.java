@@ -72,7 +72,7 @@ public class Figure<C extends Coords>{
             tmpX = tmpFigure.getCell().getCoords().getX();
             tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX <= dX && tmpY <= dY){
+            if(tmpX <= to.getX() && tmpY <= to.getY()){
                 return this.getRightUpFigure();
             } else{
                 return null;
@@ -84,7 +84,7 @@ public class Figure<C extends Coords>{
             tmpX = tmpFigure.getCell().getCoords().getX();
             tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX >= dX && tmpY >= dY){
+            if(tmpX >= to.getX() && tmpY >= to.getY()){
                 return this.getLeftDownFigure();
             } else{
                 return null;
@@ -96,7 +96,7 @@ public class Figure<C extends Coords>{
             tmpX = tmpFigure.getCell().getCoords().getX();
             tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX <= dX && tmpY >= dY){
+            if(tmpX <= to.getX() && tmpY >= to.getY()){
                 return this.getLeftUpFigure();
             } else{
                 return null;
@@ -108,7 +108,7 @@ public class Figure<C extends Coords>{
             tmpX = tmpFigure.getCell().getCoords().getX();
             tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX >= dX && tmpY <= dY){
+            if(tmpX >= to.getX() && tmpY <= to.getY()){
                 return this.getRightDownFigure();
             } else{
                 return null;

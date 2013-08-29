@@ -9,7 +9,6 @@
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
     <!-- Embedded InMemory database for development stage -->
-    <!-- TODO: changes it on real DB -->
     <jdbc:embedded-database id="dataSource" type="HSQL">
         <jdbc:script location="classpath:sql/ddl_hsql.sql"/>
         <jdbc:script location="classpath:sql/test_data.sql"/>

@@ -18,7 +18,6 @@
     <tx:annotation-driven transaction-manager="transactionManager" />
 
     <!-- Embedded InMemory database for development stage -->
-    <!-- TODO: changes it on real DB -->
     <jdbc:embedded-database id="dataSource" type="HSQL">
         <jdbc:script location="classpath:sql/ddl_hsql.sql"/>
         <jdbc:script location="classpath:sql/test_data.sql"/>
