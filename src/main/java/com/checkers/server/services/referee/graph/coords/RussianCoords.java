@@ -1,7 +1,6 @@
 package com.checkers.server.services.referee.graph.coords;
 
 import com.checkers.server.exceptions.CheckersException;
-import com.checkers.server.exceptions.LogicException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class RussianCoords implements Coords{
         this();
 
         if(x < 1 || x > 8 || y < 1 || y > 8){
-            throw new CheckersException(4L, "Incorrect input data");
+            throw new CheckersException(4L, "Incorrect X or Y out of range (Russian checkers)");
         }
 
         if((x + y) % 2 != 0){
@@ -79,15 +78,15 @@ public class RussianCoords implements Coords{
     public void setCheckersNotation(String checkersNotation) throws CheckersException {
         this.y = resolver.get(checkersNotation.charAt(0));
         if(this.y == null){
-            throw new CheckersException(1L, "Incorrect notation (Russian checkers)");
+            throw new CheckersException(1L, "Only symbols from 'a' to 'h' allowed (Russian checkers)");
         }
         try{
             this.x = Integer.parseInt(new Character(checkersNotation.charAt(1)).toString());
             if(this.x > 8 || this.x < 1){
-                throw new CheckersException(2L, "Incorrect notation (Russian checkers)");
+                throw new CheckersException(2L, "Only numbers from '1' to '8' allowed (Russian checkers)");
             }
         } catch(Exception e){
-            throw new CheckersException(3L, "Incorrect notation (Russian checkers)");
+            throw new CheckersException(3L, "Only numbers allowed (Russian checkers)");
         }
 
         if((this.x + this.y) % 2 != 0){

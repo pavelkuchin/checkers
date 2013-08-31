@@ -3,7 +3,7 @@ package com.checkers.server.dao;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,15 +29,15 @@ public class StepDaoImpl implements StepDao {
     private EntityManager em;
 
     @Override
-    public Step getStep(Long suid) throws LogicException {
+    public Step getStep(Long suid) throws ApplicationException {
         Step step = null;
 
         try{
             step = em.find(Step.class, suid);
             if(step == null){
-                throw new LogicException(4L, "Step not found");
+                throw new ApplicationException(4L, "Step not found");
             }
-        }catch(LogicException le){
+        }catch(ApplicationException le){
             throw le;
         }catch(Exception e){
             //Catch any exception
@@ -102,14 +102,14 @@ public class StepDaoImpl implements StepDao {
     }
 
     @Override
-    public Step getGameLastStep(Long gauid) throws LogicException {
+    public Step getGameLastStep(Long gauid) throws ApplicationException {
         Step step = null;
 
         try{
             step = (Step)em.createQuery("SELECT s FROM Step s ORDER BY s.suid DESC").setMaxResults(1).getSingleResult();
         }catch (javax.persistence.NoResultException noResult){
             //TODO return that, when listeners subsystems will be created.
-            //throw new LogicException(10L, "There are no steps");
+            //throw new ApplicationException(10L, "There are no steps");
             return null;
         }catch(Exception e){
             //Catch any exception

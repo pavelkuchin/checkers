@@ -2,7 +2,7 @@ package com.checkers.server.controllers;
 
 import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Step;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class StepController {
         try{
             lSuid = Long.parseLong(suid);
         } catch(Exception e){
-            throw new LogicException(6L, "{suid} should be a positive number");
+            throw new ApplicationException(6L, "{suid} should be a positive number");
         }
 
         step = stepService.getStep(lSuid);
@@ -60,11 +60,11 @@ public class StepController {
      *
      */
 
-    @ExceptionHandler(LogicException.class)
+    @ExceptionHandler(ApplicationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    ExceptionMessage handleException(LogicException e){
-        log.warn(e + " : " + e.getMessage());
+    ExceptionMessage handleApplicationException(ApplicationException e){
+        log.warn(e);
 
         return e.getExceptionMessage();
     }

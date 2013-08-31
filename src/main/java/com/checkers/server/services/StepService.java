@@ -1,8 +1,8 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Step;
+import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.exceptions.CheckersException;
-import com.checkers.server.exceptions.LogicException;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import java.util.List;
  * @author Pavel_Kuchin
  */
 public interface StepService {
-    Step getStep(Long suid) throws LogicException;
-    Step newStep(Step step) throws LogicException, CheckersException;
+    Step getStep(Long suid) throws ApplicationException;
+    Step newStep(Step step) throws ApplicationException, CheckersException;
 
-    List<Step> getGameSteps(Long gauid) throws LogicException;
-    Step getGameLastStep(Long gauid) throws LogicException;
-    Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, LogicException;
+    List<Step> getGameSteps(Long gauid) throws ApplicationException;
+    Step getGameLastStep(Long gauid) throws ApplicationException;
+    Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, ApplicationException;
 }

@@ -4,7 +4,8 @@ import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
+import com.checkers.server.exceptions.CheckersException;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.StepService;
 import org.apache.log4j.Logger;
@@ -82,7 +83,7 @@ public class GameController {
     */
    @RequestMapping(value="/{gauid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
-   Game getGame(@PathVariable String gauid) throws LogicException {
+   Game getGame(@PathVariable String gauid) throws ApplicationException {
        log.info("Game with GAUID: " + gauid + " returned");
 
        Long lGauid;
@@ -90,7 +91,7 @@ public class GameController {
        try{
             lGauid = Long.parseLong(gauid);
        }catch(Exception e){
-           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+           throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
        }
 
        return gameService.getGame(lGauid);
@@ -106,7 +107,7 @@ public class GameController {
    @RequestMapping(value="", method = RequestMethod.POST, headers = {"Accept=application/json"})
    @ResponseStatus(HttpStatus.CREATED)
    public @ResponseBody
-   Game newGame(@Valid @RequestBody Game game) throws LogicException {
+   Game newGame(@Valid @RequestBody Game game) throws ApplicationException {
        log.info("Game: \"" + game.getName() + "\" created");
        Game persistGame = gameService.newGame(game);
        return getGame(persistGame.getGauid().toString());
@@ -122,7 +123,7 @@ public class GameController {
     @RequestMapping(value="/{gauid}", params = "action=join", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    Game joinGame(@PathVariable String gauid) throws LogicException {
+    Game joinGame(@PathVariable String gauid) throws ApplicationException {
         log.info("Join to game: \"" + gauid + "\"");
 
         Long lGauid;
@@ -130,7 +131,7 @@ public class GameController {
         try{
             lGauid = Long.parseLong(gauid);
         } catch(Exception e){
-            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
         }
 
         return gameService.joinGame(lGauid);
@@ -155,7 +156,7 @@ public class GameController {
         try{
             lGauid = Long.parseLong(gauid);
         } catch(Exception e){
-            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
         }
 
         game = gameService.closeGame(lGauid);
@@ -182,7 +183,7 @@ public class GameController {
        try{
            lGauid = Long.parseLong(gauid);
        } catch(Exception e){
-           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+           throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
        }
 
        result = gameService.modGame(lGauid, game);
@@ -207,7 +208,7 @@ public class GameController {
        try{
            lGauid = Long.parseLong(gauid);
        } catch(Exception e){
-           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+           throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
        }
 
        steps = stepService.getGameSteps(lGauid);
@@ -234,7 +235,7 @@ public class GameController {
        try{
            lGauid = Long.parseLong(gauid);
        } catch(Exception e){
-           throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+           throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
        }
 
        step.setGauid(lGauid);
@@ -253,7 +254,7 @@ public class GameController {
     */
     @RequestMapping(value="/{gauid}/steps", params = "mode=opponentStepAsync", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    Callable<Step> getGameLastStepAsync(@PathVariable final String gauid) throws LogicException {
+    Callable<Step> getGameLastStepAsync(@PathVariable final String gauid) throws ApplicationException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final String username = auth.getName();
         final Long lGauid;
@@ -261,7 +262,7 @@ public class GameController {
         try{
             lGauid = Long.parseLong(gauid);
         } catch (Exception e){
-            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
         }
 
         return new Callable<Step>() {
@@ -290,7 +291,7 @@ public class GameController {
         try{
             lGauid = Long.parseLong(gauid);
         } catch(Exception e){
-            throw new LogicException(6L, "{gauid} should be id of game (positive number type)");
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
         }
 
         step = stepService.getGameLastStep(lGauid);
@@ -304,11 +305,20 @@ public class GameController {
      *
      */
 
-    @ExceptionHandler(LogicException.class)
+    @ExceptionHandler(ApplicationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    ExceptionMessage handleException(LogicException e){
-        log.warn(e + " : " + e.getMessage());
+    ExceptionMessage handleApplicationException(ApplicationException e){
+        log.warn(e);
+
+        return e.getExceptionMessage();
+    }
+
+    @ExceptionHandler(CheckersException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionMessage handleGameException(CheckersException e){
+        log.warn(e);
 
         return e.getExceptionMessage();
     }

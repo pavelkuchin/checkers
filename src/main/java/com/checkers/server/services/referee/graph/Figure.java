@@ -69,49 +69,57 @@ public class Figure<C extends Coords>{
         if(dX > 0 && dY > 0){
             tmpFigure = this.getRightUpFigure();
 
-            tmpX = tmpFigure.getCell().getCoords().getX();
-            tmpY = tmpFigure.getCell().getCoords().getY();
+            if(tmpFigure != null){
+                tmpX = tmpFigure.getCell().getCoords().getX();
+                tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX <= to.getX() && tmpY <= to.getY()){
-                return this.getRightUpFigure();
-            } else{
-                return null;
+                if(tmpX <= to.getX() && tmpY <= to.getY()){
+                    return this.getRightUpFigure();
+                } else{
+                    return null;
+                }
             }
         }
         if(dX < 0 && dY < 0){
             tmpFigure = this.getLeftDownFigure();
 
-            tmpX = tmpFigure.getCell().getCoords().getX();
-            tmpY = tmpFigure.getCell().getCoords().getY();
+            if(tmpFigure != null){
+                tmpX = tmpFigure.getCell().getCoords().getX();
+                tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX >= to.getX() && tmpY >= to.getY()){
-                return this.getLeftDownFigure();
-            } else{
-                return null;
+                if(tmpX >= to.getX() && tmpY >= to.getY()){
+                    return this.getLeftDownFigure();
+                } else{
+                    return null;
+                }
             }
         }
         if(dX > 0 && dY < 0){
             tmpFigure = this.getLeftUpFigure();
 
-            tmpX = tmpFigure.getCell().getCoords().getX();
-            tmpY = tmpFigure.getCell().getCoords().getY();
+            if(tmpFigure != null){
+                tmpX = tmpFigure.getCell().getCoords().getX();
+                tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX <= to.getX() && tmpY >= to.getY()){
-                return this.getLeftUpFigure();
-            } else{
-                return null;
+                if(tmpX <= to.getX() && tmpY >= to.getY()){
+                    return this.getLeftUpFigure();
+                } else{
+                    return null;
+                }
             }
         }
         if(dX < 0 && dY > 0){
             tmpFigure = this.getRightDownFigure();
 
-            tmpX = tmpFigure.getCell().getCoords().getX();
-            tmpY = tmpFigure.getCell().getCoords().getY();
+            if(tmpFigure != null){
+                tmpX = tmpFigure.getCell().getCoords().getX();
+                tmpY = tmpFigure.getCell().getCoords().getY();
 
-            if(tmpX >= to.getX() && tmpY <= to.getY()){
-                return this.getRightDownFigure();
-            } else{
-                return null;
+                if(tmpX >= to.getX() && tmpY <= to.getY()){
+                    return this.getRightDownFigure();
+                } else{
+                    return null;
+                }
             }
         }
 

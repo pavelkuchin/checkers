@@ -92,10 +92,10 @@ public class RussianGraphRefereeImpl implements Referee {
         cell = figure.getCell().getLeftUp();
 
         // Check opponent figure near me
-        if(cell != null &&
-                cell.getFigure() != null &&
-                !cell.getFigure().getColor().equals(figure.getColor()) &&
-                !cell.getFigure().getThreatened()){
+        if(cell != null &&                                                  //Cell exist
+                cell.getFigure() != null &&                                 //Cell has figure
+                !cell.getFigure().getColor().equals(figure.getColor()) &&   //It is opponent figure
+                !cell.getFigure().getThreatened()){                         //This figure hasn't threatened yet
             //Check is it empty cell over opponent figure
             if(cell.getLeftUp() != null && cell.getLeftUp().getFigure() == null){
                 return true;
@@ -105,10 +105,10 @@ public class RussianGraphRefereeImpl implements Referee {
         cell = figure.getCell().getLeftDown();
 
         // Check opponent figure near me
-        if(cell != null &&
-                cell.getFigure() != null &&
-                !cell.getFigure().getColor().equals(figure.getColor()) &&
-                !cell.getFigure().getThreatened()){
+        if(cell != null &&                                                  //Cell exist
+                cell.getFigure() != null &&                                 //Cell has figure
+                !cell.getFigure().getColor().equals(figure.getColor()) &&   //It is opponent figure
+                !cell.getFigure().getThreatened()){                         //This figure hasn't threatened yet
             //Check is it empty cell over opponent figure
             if(cell.getLeftDown() != null && cell.getLeftDown().getFigure() == null){
                 return true;
@@ -118,10 +118,10 @@ public class RussianGraphRefereeImpl implements Referee {
         cell = figure.getCell().getRightDown();
 
         // Check opponent figure near me
-        if(cell != null &&
-                cell.getFigure() != null &&
-                !cell.getFigure().getColor().equals(figure.getColor()) &&
-                !cell.getFigure().getThreatened()){
+        if(cell != null &&                                                  //Cell exist
+                cell.getFigure() != null &&                                 //Cell has figure
+                !cell.getFigure().getColor().equals(figure.getColor()) &&   //It is opponent figure
+                !cell.getFigure().getThreatened()){                         //This figure hasn't threatened yet
             //Check is it empty cell over opponent figure
             if(cell.getRightDown() != null && cell.getRightDown().getFigure() == null){
                 return true;
@@ -131,10 +131,10 @@ public class RussianGraphRefereeImpl implements Referee {
         cell = figure.getCell().getRightUp();
 
         // Check opponent figure near me
-        if(cell != null &&
-                cell.getFigure() != null &&
-                !cell.getFigure().getColor().equals(figure.getColor()) &&
-                !cell.getFigure().getThreatened()){
+        if(cell != null &&                                                  //Cell exist
+                cell.getFigure() != null &&                                 //Cell has figure
+                !cell.getFigure().getColor().equals(figure.getColor()) &&   //It is opponent figure
+                !cell.getFigure().getThreatened()){                         //This figure hasn't threatened yet
             //Check is it empty cell over opponent figure
             if(cell.getRightUp() != null && cell.getRightUp().getFigure() == null){
                 return true;
@@ -345,63 +345,43 @@ public class RussianGraphRefereeImpl implements Referee {
         Integer svX = null;
 
         f = figure.getLeftDownFigure();
-        if(f != null && !f.getThreatened()){
-            if(!f.getColor().equals(figure.getColor())){
-                svX = getDistance(f.getCell().getCoords(), f.getLeftDownFigure().getCell().getCoords());
-
-                if(svX == null){
-                    return false;
-                }
-
-                if(!svX.equals(1)){
-                    return true;
-                }
-            }
+        if(f != null &&                                         //id figure exist
+                !f.getThreatened() &&                           //it hasn't threatened yet
+                !f.getColor().equals(figure.getColor()) &&      //it is opponent figure
+                f.getCell().getLeftDown() != null &&            //cell over it is exist
+                f.getCell().getLeftDown().getFigure() == null   //cell over it is free
+                ){
+            return true;
         }
 
         f = figure.getLeftUpFigure();
-        if(f != null && !f.getThreatened()){
-            if(!f.getColor().equals(figure.getColor())){
-                svX = getDistance(f.getCell().getCoords(), f.getLeftUpFigure().getCell().getCoords());
-
-                if(svX == null){
-                    return false;
-                }
-
-                if(!svX.equals(1)){
-                    return true;
-                }
-            }
-        }
-
-        f = figure.getRightDownFigure();
-        if(f != null && !f.getThreatened()){
-            if(!f.getColor().equals(figure.getColor())){
-                svX = getDistance(f.getCell().getCoords(), f.getRightDownFigure().getCell().getCoords());
-
-                if(svX == null){
-                    return false;
-                }
-
-                if(!svX.equals(1)){
-                   return true;
-                }
-            }
+        if(f != null &&                                         //id figure exist
+                !f.getThreatened() &&                           //it hasn't threatened yet
+                !f.getColor().equals(figure.getColor()) &&      //it is opponent figure
+                f.getCell().getLeftUp() != null &&              //cell over it is exist
+                f.getCell().getLeftUp().getFigure() == null     //cell over it is free
+                ){
+            return true;
         }
 
         f = figure.getRightUpFigure();
-        if(f != null && !f.getThreatened()){
-            if(!f.getColor().equals(figure.getColor())){
-                svX = getDistance(f.getCell().getCoords(), f.getRightUpFigure().getCell().getCoords());
+        if(f != null &&                                         //id figure exist
+                !f.getThreatened() &&                           //it hasn't threatened yet
+                !f.getColor().equals(figure.getColor()) &&      //it is opponent figure
+                f.getCell().getRightUp() != null &&             //cell over it is exist
+                f.getCell().getRightUp().getFigure() == null    //cell over it is free
+                ){
+            return true;
+        }
 
-                if(svX == null){
-                   return false;
-                }
-
-                if(!svX.equals(1)){
-                   return true;
-                }
-            }
+        f = figure.getRightDownFigure();
+        if(f != null &&                                         //id figure exist
+                !f.getThreatened() &&                           //it hasn't threatened yet
+                !f.getColor().equals(figure.getColor()) &&      //it is opponent figure
+                f.getCell().getRightDown() != null &&           //cell over it is exist
+                f.getCell().getRightDown().getFigure() == null  //cell over it is free
+                ){
+            return true;
         }
 
         return false;
@@ -466,7 +446,7 @@ public class RussianGraphRefereeImpl implements Referee {
         Integer vY = toCoord.getY() - fromCoord.getY();
 
         //Only diagonally
-        if(!vX.equals(vY)){
+        if(Math.abs(vX) != Math.abs(vY)){
             throw new CheckersException(8L, "Only diagonally step allowed");
         }
 
@@ -481,7 +461,7 @@ public class RussianGraphRefereeImpl implements Referee {
         Figure bf = graph.getFigure(new RussianCoords(steps[0]));
 
         if(bf == null){
-            throw new CheckersException(19L, "Cell is clear");
+            throw new CheckersException(9L, "Cell is clear");
         }
 
         if(!bf.getColor().equals(color)){
@@ -512,7 +492,7 @@ public class RussianGraphRefereeImpl implements Referee {
             }
 
             if(f == null){
-                throw new CheckersException(9L, "There isn't figure on this position");
+                throw new CheckersException(9L, "Cell is clear");
             }
 
             if(f.getType().equals(FigureType.CHECKER)){
@@ -552,6 +532,11 @@ public class RussianGraphRefereeImpl implements Referee {
 
                     if(f == null){
                         throw new CheckersException(18L, "There is no figure for fight");
+                    }
+
+                    //Only diagonally
+                    if(Math.abs(fromCoord.getX() - toCoord.getX()) != Math.abs(fromCoord.getY() - toCoord.getY())){
+                        throw new CheckersException(8L, "Only diagonally step allowed");
                     }
 
                     // all checks should be placed here

@@ -1,7 +1,7 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void modUser() throws LogicException {
+    public void modUser() throws ApplicationException {
         User user = new User();
 
         user.setUuid(null);
@@ -81,8 +81,8 @@ public class UserDaoTest {
         Assert.assertEquals("User's object doesn't change.", "Pasha", result.getFirstName());
     }
 
-    @Test(expected = LogicException.class)
-    public void delUser() throws LogicException {
+    @Test(expected = ApplicationException.class)
+    public void delUser() throws ApplicationException {
         User user = new User();
 
         user.setUuid(null);
@@ -110,7 +110,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void getUser() throws LogicException {
+    public void getUser() throws ApplicationException {
         //User creation.
         User user = new User();
 

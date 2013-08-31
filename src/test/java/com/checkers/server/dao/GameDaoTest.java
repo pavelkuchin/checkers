@@ -2,7 +2,7 @@ package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ public class GameDaoTest {
     UserDao userDao;
 
     @Test
-    public void newGame() throws LogicException {
+    public void newGame() throws ApplicationException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -54,7 +54,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void joinGame() throws LogicException {
+    public void joinGame() throws ApplicationException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -83,7 +83,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void closeGame() throws LogicException {
+    public void closeGame() throws ApplicationException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -112,8 +112,8 @@ public class GameDaoTest {
         Assert.assertEquals("Game doesn't close", "close", game.getState());
     }
 
-    @Test(expected=LogicException.class)
-    public void delGame() throws LogicException {
+    @Test(expected=ApplicationException.class)
+    public void delGame() throws ApplicationException {
         //Creating new game from Game bean
         Game game = new Game();
 
@@ -167,7 +167,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void modGame() throws LogicException {
+    public void modGame() throws ApplicationException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -202,7 +202,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void getGame() throws LogicException {
+    public void getGame() throws ApplicationException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -230,7 +230,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void getUserGames() throws LogicException {
+    public void getUserGames() throws ApplicationException {
         //Creating some new user
         User user = new User();
 

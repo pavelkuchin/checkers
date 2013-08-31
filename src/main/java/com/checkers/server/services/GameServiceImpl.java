@@ -6,7 +6,7 @@ import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.UserDao;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,13 +32,13 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game getGame(Long gauid) throws LogicException {
+    public Game getGame(Long gauid) throws ApplicationException {
         return gameDao.getGame(gauid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game joinGame(Long gauid) throws LogicException {
+    public Game joinGame(Long gauid) throws ApplicationException {
         Long uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
 
         return gameDao.joinGame(gauid, uuid);
@@ -46,7 +46,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game closeGame(Long gauid) throws LogicException {
+    public Game closeGame(Long gauid) throws ApplicationException {
         Game result = null;
         Game game   = gameDao.getGame(gauid);
 
@@ -57,7 +57,7 @@ public class GameServiceImpl implements GameService {
 
         if(authorities.contains(Consts.ROLE_USER)){
             if(!(game.getBlackUuid() == uuid || game.getWhiteUuid() == uuid)){
-                throw new LogicException(1L, "You are not involved in game.");
+                throw new ApplicationException(1L, "You are not involved in game.");
             }
         }
 
@@ -73,7 +73,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game newGame(Game game) throws LogicException {
+    public Game newGame(Game game) throws ApplicationException {
 
         User you = userDao.getUserByLogin(Context.getAuthLogin());
 
@@ -105,7 +105,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Game modGame(Long gauid, Game game) throws LogicException {
+    public Game modGame(Long gauid, Game game) throws ApplicationException {
         Game chGame = gameDao.getGame(gauid);
 
         if(chGame == null)
@@ -125,7 +125,7 @@ public class GameServiceImpl implements GameService {
             }
         }else if(authorities.contains(Consts.ROLE_USER)){
             if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-                throw new LogicException(1L, "You are not involved in game.");
+                throw new ApplicationException(1L, "You are not involved in game.");
             }
 
             if(game.getDescription() != null){
@@ -154,7 +154,7 @@ public class GameServiceImpl implements GameService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public List<Game> getUserGames(Long uuid) throws LogicException {
+    public List<Game> getUserGames(Long uuid) throws ApplicationException {
 
         if(uuid == null){
             uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();

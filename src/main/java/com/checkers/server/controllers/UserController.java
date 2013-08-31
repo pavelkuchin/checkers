@@ -4,7 +4,7 @@ import com.checkers.server.Consts;
 import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.services.GameService;
 import com.checkers.server.services.UserService;
 import org.apache.log4j.Logger;
@@ -63,7 +63,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User newUser(@Valid @RequestBody User user) throws LogicException {
+    User newUser(@Valid @RequestBody User user) throws ApplicationException {
         log.info("User: \"" + user.getLogin() + "\" created");
         userService.newUser(user);
         return user;
@@ -78,7 +78,7 @@ public class UserController {
      */
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    User getUser(@PathVariable String uuid) throws LogicException {
+    User getUser(@PathVariable String uuid) throws ApplicationException {
         log.info("Returned user with uuid: " + uuid);
 
         Long uuidLong = null;
@@ -103,7 +103,7 @@ public class UserController {
      */
     @RequestMapping(value = "/{uuid}/games", method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
-    List<Game> getUserGames(@PathVariable String uuid) throws LogicException {
+    List<Game> getUserGames(@PathVariable String uuid) throws ApplicationException {
         log.info("All games for user " + uuid + " returned");
 
             Long uuidLong = null;
@@ -129,7 +129,7 @@ public class UserController {
     @RequestMapping(value = "/registration/", method = RequestMethod.POST, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
-    User regUser(@Valid @RequestBody User user) throws LogicException {
+    User regUser(@Valid @RequestBody User user) throws ApplicationException {
         log.info("User " + user.getLogin() + " registration has been started");
 
         userService.regUser(user);
@@ -147,7 +147,7 @@ public class UserController {
     @RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    User delUser(@PathVariable String uuid) throws LogicException {
+    User delUser(@PathVariable String uuid) throws ApplicationException {
         log.info("User delete process has been started");
 
         Long uuidLong;
@@ -173,7 +173,7 @@ public class UserController {
     @RequestMapping(value = "/{uuid}", method = RequestMethod.PUT, headers = {"Accept=application/json"})
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    User modUser(@PathVariable String uuid, @Valid @RequestBody User user) throws LogicException {
+    User modUser(@PathVariable String uuid, @Valid @RequestBody User user) throws ApplicationException {
         log.info("User modification has been started");
 
         Long uuidLong = null;
@@ -195,11 +195,11 @@ public class UserController {
      *
      */
 
-    @ExceptionHandler(LogicException.class)
+    @ExceptionHandler(ApplicationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody
-    ExceptionMessage handleLogicException(LogicException e){
-        log.warn(e + " : " + e.getMessage());
+    ExceptionMessage handleApplicationException(ApplicationException e){
+        log.warn(e);
 
         return e.getExceptionMessage();
     }

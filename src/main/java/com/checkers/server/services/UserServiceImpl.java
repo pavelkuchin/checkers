@@ -4,7 +4,7 @@ import com.checkers.server.Consts;
 import com.checkers.server.Context;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.UserDao;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,14 +28,14 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public void newUser(User user) throws LogicException {
+    public void newUser(User user) throws ApplicationException {
 
         if(user.getLogin() == null){
-            throw new LogicException(6L, "Login field should be filled");
+            throw new ApplicationException(6L, "Login field should be filled");
         } else if(user.getPassword() == null){
-            throw new LogicException(6L, "Password field should be filled");
+            throw new ApplicationException(6L, "Password field should be filled");
         } else if(user.getEmail() == null){
-            throw new LogicException(6L, "Email field should be filled");
+            throw new ApplicationException(6L, "Email field should be filled");
         }
 
         user.setUuid(null);
@@ -47,14 +47,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void regUser(User user) throws LogicException {
+    public void regUser(User user) throws ApplicationException {
 
         if(user.getLogin() == null){
-            throw new LogicException(6L, "Login field should be filled");
+            throw new ApplicationException(6L, "Login field should be filled");
         } else if(user.getPassword() == null){
-            throw new LogicException(6L, "Password field should be filled");
+            throw new ApplicationException(6L, "Password field should be filled");
         } else if(user.getEmail() == null){
-            throw new LogicException(6L, "Email field should be filled");
+            throw new ApplicationException(6L, "Email field should be filled");
         }
 
         // Fields autofill
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public User getUser(Long uuid) throws LogicException {
+    public User getUser(Long uuid) throws ApplicationException {
         if(uuid == null){
             uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
         }
@@ -86,19 +86,19 @@ public class UserServiceImpl implements UserService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public User getUserByLogin(String login) throws LogicException {
+    public User getUserByLogin(String login) throws ApplicationException {
         return userDao.getUserByLogin(login);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public void delUser(Long uuid) throws LogicException {
+    public void delUser(Long uuid) throws ApplicationException {
         userDao.delUser(uuid);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public User modUser(Long uuid, User user) throws LogicException {
+    public User modUser(Long uuid, User user) throws ApplicationException {
         User authUser = userDao.getUserByLogin(Context.getAuthLogin());
 
         if(uuid == null){
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
         } else if(authorities.contains(Consts.ROLE_USER)){
             if(!authUser.getUuid().equals(origin.getUuid())){
-                throw new LogicException(7L, "As User you can't modify other users");
+                throw new ApplicationException(7L, "As User you can't modify other users");
             }
 
             //TODO password should be changed in other request with old password verification

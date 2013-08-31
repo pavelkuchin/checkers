@@ -7,8 +7,8 @@ import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.exceptions.CheckersException;
-import com.checkers.server.exceptions.LogicException;
 import com.checkers.server.services.referee.Referee;
 import com.checkers.server.services.referee.RussianGraphRefereeImpl;
 import com.checkers.server.services.referee.WorldwideGraphRefereeImpl;
@@ -46,7 +46,7 @@ public class StepServiceImpl implements StepService {
 
     @PostAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getStep(Long suid) throws LogicException {
+    public Step getStep(Long suid) throws ApplicationException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -62,7 +62,7 @@ public class StepServiceImpl implements StepService {
             step = stepDao.getStep(suid);
 
             if(!(step.getGame().getBlackUuid() == user.getUuid() || step.getGame().getWhiteUuid() == user.getUuid())){
-                throw new LogicException(1L, "You are not involved in game.");
+                throw new ApplicationException(1L, "You are not involved in game.");
             }
         }
 
@@ -71,7 +71,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step newStep(Step step) throws LogicException, CheckersException {
+    public Step newStep(Step step) throws ApplicationException, CheckersException {
         Object event;
 
         Game game = null;
@@ -90,12 +90,12 @@ public class StepServiceImpl implements StepService {
         // Do step Logic
         // Are you involved in game?
         if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-            throw new LogicException(1L, "You are not involved in game.");
+            throw new ApplicationException(1L, "You are not involved in game.");
         }
 
         // Game should have status - 'game'
         if(!game.getState().equals("game")){
-            throw new LogicException(2L, "You can't make step in 'close' or 'open' game. Game should be in 'game' state.");
+            throw new ApplicationException(2L, "You can't make step in 'close' or 'open' game. Game should be in 'game' state.");
         }
 
         // You can't make two steps, one by one. It is obviously.
@@ -103,14 +103,12 @@ public class StepServiceImpl implements StepService {
 
         if(lastStep != null){
             if(lastStep.getUuid().equals(user.getUuid())){
-                throw new LogicException(3L, "You made your move. Let the opponent to make a move.");
+                throw new CheckersException(20L, "You made your move. Let the opponent to make a move.");
             }
         } else if(game.getBlackUuid() == user.getUuid()){
-            // TODO errors refactoring
-            throw new LogicException(3L, "White should make step first");
+            throw new CheckersException(10L, "White should make step first");
         }
 
-        /*
         Referee referee = null;
 
         if(game.getBoard().equals(Consts.GAME_BOARD_RUSSIAN)){
@@ -124,7 +122,6 @@ public class StepServiceImpl implements StepService {
         } else if(game.getWhiteUuid() == user.getUuid()){
             referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
-        */
 
         //Bring a little Async
         step.setSuid(null);
@@ -156,7 +153,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public List<Step> getGameSteps(Long gauid) throws LogicException {
+    public List<Step> getGameSteps(Long gauid) throws ApplicationException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -174,7 +171,7 @@ public class StepServiceImpl implements StepService {
             if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
                 steps = stepDao.getGameSteps(gauid);
             } else{
-                throw new LogicException(1L, "You are not involved in game.");
+                throw new ApplicationException(1L, "You are not involved in game.");
             }
         }
 
@@ -183,7 +180,7 @@ public class StepServiceImpl implements StepService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
-    public Step getGameLastStep(Long gauid) throws LogicException {
+    public Step getGameLastStep(Long gauid) throws ApplicationException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
         User user = userDao.getUserByLogin(name);
@@ -201,7 +198,7 @@ public class StepServiceImpl implements StepService {
             if((game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
                 step = stepDao.getGameLastStep(gauid);
             } else{
-                throw new LogicException(1L, "You are not involved in game.");
+                throw new ApplicationException(1L, "You are not involved in game.");
             }
         }
 
@@ -209,7 +206,7 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, LogicException {
+    public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, ApplicationException {
         Step result = null;
 
         Object event;
@@ -219,7 +216,7 @@ public class StepServiceImpl implements StepService {
         Game game = gameDao.getGame(gauid);
 
         if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
-            throw new LogicException(1L, "You are not involved in game.");
+            throw new ApplicationException(1L, "You are not involved in game.");
         }
 
         synchronized (events){

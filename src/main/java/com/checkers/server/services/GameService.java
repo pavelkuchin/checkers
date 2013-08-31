@@ -1,7 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import java.util.List;
  * @author Pavel_Kuchin
  */
 public interface GameService {
-    Game getGame(Long gauid) throws LogicException;
-    Game joinGame(Long gauid) throws LogicException;
-    Game closeGame(Long gauid) throws LogicException;
-    Game newGame(Game game) throws LogicException;
-    Game modGame(Long gauid, Game game) throws LogicException;
+    Game getGame(Long gauid) throws ApplicationException;
+    Game joinGame(Long gauid) throws ApplicationException;
+    Game closeGame(Long gauid) throws ApplicationException;
+    Game newGame(Game game) throws ApplicationException;
+    Game modGame(Long gauid, Game game) throws ApplicationException;
     List<Game> getGames();
     List<Game> getGamesFiltered(String field, String value);
-    List<Game> getUserGames(Long uuid) throws LogicException;
+    List<Game> getUserGames(Long uuid) throws ApplicationException;
 }

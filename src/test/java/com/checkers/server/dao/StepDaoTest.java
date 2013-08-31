@@ -2,7 +2,7 @@ package com.checkers.server.dao;
 
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class StepDaoTest {
     StepDao stepDao;
 
     @Test
-    public void newStep() throws LogicException {
+    public void newStep() throws ApplicationException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -70,7 +70,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void newStepLongAsObject() throws LogicException {
+    public void newStepLongAsObject() throws ApplicationException {
         Game game = new Game();
 
         game.setGauid(null);
@@ -109,7 +109,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void getStep() throws LogicException {
+    public void getStep() throws ApplicationException {
         Step step = new Step();
 
         step.setSuid(null);
@@ -130,7 +130,7 @@ public class StepDaoTest {
     }
 
     @Test
-    public void getLastStep() throws InterruptedException, LogicException {
+    public void getLastStep() throws InterruptedException, ApplicationException {
         Step step1 = new Step();
         Step step2 = new Step();
 

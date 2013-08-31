@@ -3,7 +3,7 @@ package com.checkers.server.dao;
 import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,15 +31,15 @@ public class GameDaoImpl implements GameDao {
     private EntityManager em;
 
     @Override
-    public Game getGame(Long gauid) throws LogicException {
+    public Game getGame(Long gauid) throws ApplicationException {
         Game game = null;
 
         try{
             game = em.find(Game.class, gauid);
             if(game == null){
-                throw new LogicException(4L, "Game not found");
+                throw new ApplicationException(4L, "Game not found");
             }
-        } catch (LogicException le){
+        } catch (ApplicationException le){
             throw le;
         } catch(Exception e){
             //Catch any exception
@@ -93,7 +93,7 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Game joinGame(Long gauid, Long uuid) throws LogicException {
+    public Game joinGame(Long gauid, Long uuid) throws ApplicationException {
         Game game = null;
 
         try{
@@ -107,13 +107,13 @@ public class GameDaoImpl implements GameDao {
                 em.merge(game);
             } else{
                 if(game.getState().contains(Consts.GAME_STATE_CLOSE) || game.getState().equals(Consts.GAME_STATE_GAME)){
-                    throw new LogicException(8L, "Incorrect game state.");
+                    throw new ApplicationException(8L, "Incorrect game state.");
                 }
                 if(game.getWhiteUuid() == uuid){
-                    throw new LogicException(9L, "It is your game.");
+                    throw new ApplicationException(9L, "It is your game.");
                 }
             }
-        } catch (LogicException le){
+        } catch (ApplicationException le){
             throw le;
         } catch (Exception e){
             //Catch any exception
@@ -125,7 +125,7 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Game closeGame(Long gauid, Long uuid) throws LogicException {
+    public Game closeGame(Long gauid, Long uuid) throws ApplicationException {
         Game game = null;
 
         try{
@@ -141,7 +141,7 @@ public class GameDaoImpl implements GameDao {
                 }
                 em.merge(game);
             }
-        } catch (LogicException le){
+        } catch (ApplicationException le){
             throw le;
         } catch (Exception e){
             //Catch any exception
@@ -208,11 +208,11 @@ public class GameDaoImpl implements GameDao {
     }
 
     @Override
-    public List<Game> getUserGames(Long uuid) throws LogicException {
+    public List<Game> getUserGames(Long uuid) throws ApplicationException {
         List<Game> games = null;
 
         if(em.find(User.class, uuid) == null){
-            throw new LogicException(4L, "User with id " + uuid + " not found");
+            throw new ApplicationException(4L, "User with id " + uuid + " not found");
         }
 
         try{

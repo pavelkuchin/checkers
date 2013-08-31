@@ -1,7 +1,7 @@
 package com.checkers.server.dao;
 
 import com.checkers.server.beans.User;
-import com.checkers.server.exceptions.LogicException;
+import com.checkers.server.exceptions.ApplicationException;
 import org.apache.log4j.Logger;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -47,15 +47,15 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUser(Long uuid) throws LogicException{
+    public User getUser(Long uuid) throws ApplicationException {
         User user = null;
 
         try{
             user = em.find(User.class, uuid);
             if(user == null){
-                throw new LogicException(4L, "User with id " + uuid + " not found");
+                throw new ApplicationException(4L, "User with id " + uuid + " not found");
             }
-        } catch (LogicException le){
+        } catch (ApplicationException le){
             throw le;
         } catch (Exception e){
             //Catch any exception
@@ -67,14 +67,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void delUser(Long uuid) throws LogicException {
+    public void delUser(Long uuid) throws ApplicationException {
         try{
             User user = em.find(User.class, uuid);
             if(user == null){
-                throw new LogicException(4L, "User with id " + uuid + " not found");
+                throw new ApplicationException(4L, "User with id " + uuid + " not found");
             }
             em.remove(user);
-        }catch (LogicException le){
+        }catch (ApplicationException le){
             throw le;
         }catch (Exception e){
             //Catch any exception
@@ -84,11 +84,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public User modUser(User user) throws LogicException {
+    public User modUser(User user) throws ApplicationException {
         try{
             User oldUser = em.find(User.class, user.getUuid());
             if(oldUser == null){
-                throw new LogicException(4L, "User with id " + oldUser.getUuid() + " not found");
+                throw new ApplicationException(4L, "User with id " + oldUser.getUuid() + " not found");
             }
 
             if(user.getPassword() != null && !oldUser.getPassword().equals(user.getPassword())){
@@ -96,7 +96,7 @@ public class UserDaoImpl implements UserDao {
             }
 
             em.merge(user);
-        }catch (LogicException le){
+        }catch (ApplicationException le){
             throw le;
         }catch (Exception e){
             //Catch any exception
@@ -107,7 +107,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUserByLogin(String login) throws LogicException {
+    public User getUserByLogin(String login) throws ApplicationException {
         User user = null;
 
         try{
@@ -118,7 +118,7 @@ public class UserDaoImpl implements UserDao {
         }
 
         if(user == null){
-            throw new LogicException(4L, "User with login " + login + " not found");
+            throw new ApplicationException(4L, "User with login " + login + " not found");
         }
 
         return user;

@@ -8,19 +8,19 @@ import com.checkers.server.beans.ExceptionMessage;
  *
  * @author Pavel Kuchin
  */
-public class LogicException extends Exception {
+public class ApplicationException extends Exception {
     Long    code;
     String  detailsURL;
 
-    public LogicException() {}
+    public ApplicationException() {}
 
-    public LogicException(Long code, String message){
+    public ApplicationException(Long code, String message){
         super(message);
         this.code = 100 + code;
         this.detailsURL = "https://github.com/pavelkuchin/checkers/wiki/Errors#code-" + this.code;
     }
 
-    public LogicException(Long code, String message, String detailsURL){
+    public ApplicationException(Long code, String message, String detailsURL){
         super(message);
         this.code = 100 + code;
         this.detailsURL = detailsURL;
