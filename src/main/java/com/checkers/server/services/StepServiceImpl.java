@@ -1,14 +1,17 @@
 package com.checkers.server.services;
 
 import com.checkers.server.Consts;
+import com.checkers.server.Context;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.events.MyEvent;
 import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.exceptions.CheckersException;
+import com.checkers.server.listeners.MyListener;
 import com.checkers.server.services.referee.Referee;
 import com.checkers.server.services.referee.RussianGraphRefereeImpl;
 import com.checkers.server.services.referee.WorldwideGraphRefereeImpl;
@@ -42,7 +45,11 @@ public class StepServiceImpl implements StepService {
     @Autowired
     private GameDao gameDao;
 
-    ConcurrentMap<Long, Object> events = new ConcurrentHashMap<Long, Object>();
+    @Autowired
+    private MyListener myListener;
+
+    @Autowired
+    private Context context;
 
     @PostAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
@@ -109,6 +116,8 @@ public class StepServiceImpl implements StepService {
             throw new CheckersException(10L, "White should make step first");
         }
 
+        //TODO referees collection with step by step game replay
+        /*
         Referee referee = null;
 
         if(game.getBoard().equals(Consts.GAME_BOARD_RUSSIAN)){
@@ -122,6 +131,7 @@ public class StepServiceImpl implements StepService {
         } else if(game.getWhiteUuid() == user.getUuid()){
             referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
+        */
 
         //Bring a little Async
         step.setSuid(null);
@@ -132,21 +142,9 @@ public class StepServiceImpl implements StepService {
 
         step.setUser(user);
 
-        synchronized (events){
-            if(!events.containsKey(step.getGauid())){
-                events.put(step.getGauid(), new Object());
-            }
-            event = events.get(step.getGauid());
-        }
+        stepDao.newStep(step);
 
-        synchronized (event) {
-            stepDao.newStep(step);
-
-            if(step.getSuid() != null){
-                //We notify all listeners about new step in the DB
-                event.notifyAll();
-            }
-        }
+        context.getApplicationContext().publishEvent(new MyEvent(context.getApplicationContext(), "step"));
 
         return step;
     }
@@ -219,22 +217,13 @@ public class StepServiceImpl implements StepService {
             throw new ApplicationException(1L, "You are not involved in game.");
         }
 
-        synchronized (events){
-            if(!events.containsKey(gauid)){
-                events.put(gauid, new Object());
-            }
-            event = events.get(gauid);
-        }
-
-        synchronized (event){
-            while(result == null){
-                Step lastStep = stepDao.getGameLastStep(gauid);
-                if(lastStep != null && !lastStep.getUser().getLogin().equals(username)){
-                    result = lastStep;
-                } else{
-                    //We are waiting for object creation
-                    event.wait();
-                }
+        while(result == null){
+            Step lastStep = stepDao.getGameLastStep(gauid);
+            if(lastStep != null && !lastStep.getUser().getLogin().equals(username)){
+                result = lastStep;
+            } else{
+                //We are waiting for object creation
+                myListener.waitEvent("step");
             }
         }
             return result;
