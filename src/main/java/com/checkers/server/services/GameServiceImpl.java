@@ -6,6 +6,9 @@ import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.UserDao;
+import com.checkers.server.events.GameEvent;
+import com.checkers.server.events.MyEvent;
+import com.checkers.server.events.StepEvent;
 import com.checkers.server.exceptions.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +33,9 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private Context context;
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public Game getGame(Long gauid) throws ApplicationException {
@@ -41,7 +47,12 @@ public class GameServiceImpl implements GameService {
     public Game joinGame(Long gauid) throws ApplicationException {
         Long uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
 
-        return gameDao.joinGame(gauid, uuid);
+        Game game = gameDao.joinGame(gauid, uuid);
+
+        context.getApplicationContext()
+                .publishEvent(new GameEvent(context.getApplicationContext(), game));
+
+        return game;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
@@ -67,6 +78,9 @@ public class GameServiceImpl implements GameService {
         } else if(game.getState().equals("game")){
             result = gameDao.closeGame(gauid, uuid);
         }
+
+        context.getApplicationContext()
+                .publishEvent(new GameEvent(context.getApplicationContext(), result));
 
         return result;
     }
@@ -100,6 +114,10 @@ public class GameServiceImpl implements GameService {
         game.setLastStep(new Date());
 
         gameDao.newGame(game);
+
+        context.getApplicationContext()
+                .publishEvent(new GameEvent(context.getApplicationContext(), game));
+
             return game;
     }
 
@@ -137,7 +155,12 @@ public class GameServiceImpl implements GameService {
 
         gameDao.modGame(chGame);
 
-        return gameDao.getGame(gauid);
+        Game result = gameDao.getGame(gauid);
+
+        context.getApplicationContext()
+                .publishEvent(new GameEvent(context.getApplicationContext(), result));
+
+        return result;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")

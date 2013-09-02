@@ -9,6 +9,7 @@ import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import com.checkers.server.events.MyEvent;
+import com.checkers.server.events.StepEvent;
 import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.exceptions.CheckersException;
 import com.checkers.server.listeners.MyListener;
@@ -144,7 +145,8 @@ public class StepServiceImpl implements StepService {
 
         stepDao.newStep(step);
 
-        context.getApplicationContext().publishEvent(new MyEvent(context.getApplicationContext(), "step"));
+        context.getApplicationContext()
+                .publishEvent(new StepEvent(context.getApplicationContext(), step));
 
         return step;
     }
@@ -223,7 +225,10 @@ public class StepServiceImpl implements StepService {
                 result = lastStep;
             } else{
                 //We are waiting for object creation
-                myListener.waitEvent("step");
+                Step eStep;
+                do{
+                    eStep = myListener.waitEvent(StepEvent.class).getStep();
+                }while(eStep.getGauid() != gauid);
             }
         }
             return result;
