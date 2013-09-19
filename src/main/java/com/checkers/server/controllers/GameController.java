@@ -1,7 +1,9 @@
 package com.checkers.server.controllers;
 
+import com.checkers.server.Consts;
 import com.checkers.server.beans.ExceptionMessage;
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.ListenObjects;
 import com.checkers.server.beans.Step;
 
 import com.checkers.server.exceptions.ApplicationException;
@@ -69,7 +71,7 @@ public class GameController {
    @RequestMapping(value="", params = {"field", "value"}, method = RequestMethod.GET, headers = {"Accept=application/json"})
    public @ResponseBody
    List<Game> getGamesFiltered(@RequestParam(value = "field") String field, @RequestParam(value = "value") String value){
-       log.info("Game filtering started");
+       log.info("Game filtering started with: field - " + field + " ;and value - " + value);
 
        return gameService.getGamesFiltered(field, value);
    }
@@ -96,6 +98,68 @@ public class GameController {
 
        return gameService.getGame(lGauid);
    }
+
+    /**
+     * <h3>/games/{gauid}?mode=listen&lastStepSuid={suid}&currentGameState={state}&lastMessageMuid={muid}</h3>
+     *
+     * <b>Method:</b> GET
+     * <b>Description:</b> listen game and return step object (last step in the game),
+     * game object (when game state has been changed) and message object (when a new message received)
+     * Here should used params lastStepSuid (Suid of last step that you have), currentGameState (game state that you have),
+     * and lastMessageMuid (Muid of last message that you have)
+     * <b>Allowed roles:</b> ROLE_USER (user should be involved in this game), ROLE_ADMIN
+     */
+    @RequestMapping(value="/{gauid}", params = {"mode=listen", "lastStepSuid", "currentGameState", "lastMessageMuid"},
+            method = RequestMethod.GET, headers = {"Accept=application/json"})
+    public @ResponseBody
+    Callable<ListenObjects> listenGame(@PathVariable String gauid, @RequestParam(value = "lastStepSuid") String suid,
+                    @RequestParam(value = "currentGameState") String state,
+                    @RequestParam(value = "lastMessageMuid") String muid) throws ApplicationException {
+        log.info("Listen game with GAUID: " + gauid + "; lastStepSuid: " + suid + "; currentGameState" + state +
+                "; lastMessageMuid" + muid);
+
+        final Long lGauid;
+        final Long lSuid;
+        final Long lMuid;
+        final String vState;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final String username = auth.getName();
+
+        try{
+            lGauid = Long.parseLong(gauid);
+        }catch(Exception e){
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
+        }
+
+        try{
+            lSuid = Long.parseLong(suid);
+        }catch(Exception e){
+            throw new ApplicationException(6L, "{lastStepSuid} should be id of step (positive number type)");
+        }
+
+        try{
+            lMuid = Long.parseLong(muid);
+        }catch(Exception e){
+            throw new ApplicationException(6L, "{lastMessageMuid} should be id of message (positive number type)");
+        }
+
+        if(!Consts.GAME_STATE_OPEN.equals(state) &&
+                !Consts.GAME_STATE_GAME.equals(state) &&
+                !Consts.GAME_STATE_CLOSE.equals(state)){
+            throw new ApplicationException(6L, "{currentGameState} should be game state (open, game, close)");
+        } else {
+            vState = state;
+        }
+
+        return new Callable<ListenObjects>() {
+            @Override
+            public ListenObjects call() throws Exception {
+                return gameService.listenGameAsync(username, lGauid, lSuid, vState, lMuid);
+            }
+        };
+    }
+
 
    /**
     * <h3>/games</h3>

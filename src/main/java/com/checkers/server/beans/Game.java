@@ -45,7 +45,7 @@ public class Game {
      *  game - game in process
      *  close - game closed (win or dead heat)
      */
-    @Pattern(regexp = "(open)|(game)|(close.*)", message = "Game state should be 'open', 'game' or 'close'")
+    @Pattern(regexp = "(open)|(game)|(close)", message = "Game state should be 'open', 'game' or 'close'")
     private String  state;
 
     /**

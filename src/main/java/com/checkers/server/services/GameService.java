@@ -1,6 +1,7 @@
 package com.checkers.server.services;
 
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.ListenObjects;
 import com.checkers.server.exceptions.ApplicationException;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public interface GameService {
     Game getGame(Long gauid) throws ApplicationException;
+    ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState, Long muid) throws ApplicationException, InterruptedException;
     Game joinGame(Long gauid) throws ApplicationException;
     Game closeGame(Long gauid) throws ApplicationException;
     Game newGame(Game game) throws ApplicationException;

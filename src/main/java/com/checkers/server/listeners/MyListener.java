@@ -3,6 +3,7 @@ package com.checkers.server.listeners;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
+import com.checkers.server.events.GameEvent;
 import com.checkers.server.events.MyEvent;
 import com.checkers.server.events.StepEvent;
 import org.springframework.context.ApplicationListener;
@@ -33,6 +34,7 @@ public class MyListener implements ApplicationListener<MyEvent> {
     }
 
     ConcurrentMap<MyEvent.EventName, Syncer> events = new ConcurrentHashMap<MyEvent.EventName, Syncer>();
+    Syncer anyEvent = new Syncer();
 
     @Override
     public void onApplicationEvent(MyEvent event) {
@@ -44,11 +46,22 @@ public class MyListener implements ApplicationListener<MyEvent> {
             se.notifyAll();
             se.setEvent(event);
         }
+        synchronized (anyEvent){
+            anyEvent.notifyAll();
+            anyEvent.setEvent(event);
+        }
     }
 
     private synchronized void createEventIfNoExist(MyEvent.EventName eventName){
         if(!events.containsKey(eventName)){
             events.put(eventName, new Syncer());
+        }
+    }
+
+    public MyEvent waitAnyEvent() throws InterruptedException {
+        synchronized (anyEvent){
+            anyEvent.wait();
+            return anyEvent.getEvent();
         }
     }
 
@@ -66,11 +79,11 @@ public class MyListener implements ApplicationListener<MyEvent> {
     public <E> E waitEvent(Class<E> type) throws InterruptedException {
         if (StepEvent.class.equals(type)) {
             return type.cast(waitEvent(MyEvent.EventName.STEP));
-        }/* else if (GameEvent.class.equals(type)) {
+        } else if (GameEvent.class.equals(type)) {
             return type.cast(waitEvent(MyEvent.EventName.GAME));
-        } else if (UserEvent.class.equals(type)) {
+        } /*else if (UserEvent.class.equals(type)) {
             return type.cast(waitEvent(MyEvent.EventName.USER));
-        }  */
+        }*/
 
         return null;
     }

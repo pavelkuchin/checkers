@@ -205,8 +205,6 @@ public class StepServiceImpl implements StepService {
     public Step getAsyncGameLastStep(Long gauid, String username) throws InterruptedException, ApplicationException {
         Step result = null;
 
-        Object event;
-
         User user = userDao.getUserByLogin(username);
 
         Game game = gameDao.getGame(gauid);
@@ -229,5 +227,4 @@ public class StepServiceImpl implements StepService {
         }
             return result;
     }
-
 }

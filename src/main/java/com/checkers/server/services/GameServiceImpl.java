@@ -3,13 +3,17 @@ package com.checkers.server.services;
 import com.checkers.server.Consts;
 import com.checkers.server.Context;
 import com.checkers.server.beans.Game;
+import com.checkers.server.beans.ListenObjects;
+import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
+import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import com.checkers.server.events.GameEvent;
 import com.checkers.server.events.MyEvent;
 import com.checkers.server.events.StepEvent;
 import com.checkers.server.exceptions.ApplicationException;
+import com.checkers.server.listeners.MyListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,12 +38,55 @@ public class GameServiceImpl implements GameService {
     private UserDao userDao;
 
     @Autowired
+    private StepDao stepDao;
+
+    @Autowired
+    private MyListener myListener;
+
+    @Autowired
     private Context context;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public Game getGame(Long gauid) throws ApplicationException {
         return gameDao.getGame(gauid);
+    }
+
+    @Override
+    public ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState, Long muid)
+            throws ApplicationException, InterruptedException {
+
+        Boolean flag = true;
+
+        ListenObjects result = new ListenObjects();
+
+        Game game = gameDao.getGame(gauid);
+
+        User user = userDao.getUserByLogin(username);
+
+        if(!(game.getBlackUuid() == user.getUuid() || game.getWhiteUuid() == user.getUuid())){
+            throw new ApplicationException(1L, "You are not involved in game.");
+        }
+
+        while(flag){
+            Step lastStep = stepDao.getGameLastStep(gauid);
+            Game currGame = gameDao.getGame(gauid);
+
+            if(lastStep != null && !lastStep.getSuid().equals(suid)){
+                result.setStep(lastStep);
+                flag = false;
+            }
+            if(!gameState.equals(currGame.getState())){
+                result.setGame(currGame);
+                flag = false;
+            }
+
+            if(flag){
+                myListener.waitAnyEvent();
+            }
+        }
+
+        return result;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
