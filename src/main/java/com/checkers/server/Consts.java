@@ -37,6 +37,6 @@ public class Consts {
      * 10x10 - Worldwide checkers
      */
     public static final String GAME_BOARD_RUSSIAN = "8x8";
-    public static final String GAME_BOARD_WORDWIDE = "10x10";
+    public static final String GAME_BOARD_WORLDWIDE = "10x10";
 
 }

@@ -8,14 +8,11 @@ import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
-import com.checkers.server.events.MyEvent;
 import com.checkers.server.events.StepEvent;
 import com.checkers.server.exceptions.ApplicationException;
 import com.checkers.server.exceptions.CheckersException;
 import com.checkers.server.listeners.MyListener;
-import com.checkers.server.services.referee.Referee;
-import com.checkers.server.services.referee.RussianGraphRefereeImpl;
-import com.checkers.server.services.referee.WorldwideGraphRefereeImpl;
+import com.checkers.server.services.referee.*;
 import com.checkers.server.services.referee.graph.FigureColor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
 
 /**
  *
@@ -51,6 +47,9 @@ public class StepServiceImpl implements StepService {
 
     @Autowired
     private Context context;
+
+    private RefereeCollection russianReferees = new RussianRefereeCollectionImpl(this);
+    private RefereeCollection worldwideReferees = new WorldwideRefereeCollectionImpl(this);
 
     @PostAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
@@ -117,14 +116,12 @@ public class StepServiceImpl implements StepService {
             throw new CheckersException(10L, "White should make step first");
         }
 
-        //TODO referees collection with step by step game replay
-        /*
         Referee referee = null;
 
         if(game.getBoard().equals(Consts.GAME_BOARD_RUSSIAN)){
-            referee = new RussianGraphRefereeImpl();
-        } else if(game.getBoard().equals(Consts.GAME_BOARD_WORDWIDE)){
-            referee = new WorldwideGraphRefereeImpl();
+            referee = russianReferees.getRefereeByGuid(game.getGauid());
+        } else if(game.getBoard().equals(Consts.GAME_BOARD_WORLDWIDE)){
+            referee = worldwideReferees.getRefereeByGuid(game.getGauid());
         }
 
         if(game.getBlackUuid() == user.getUuid()){
@@ -132,7 +129,6 @@ public class StepServiceImpl implements StepService {
         } else if(game.getWhiteUuid() == user.getUuid()){
             referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
-        */
 
         //Bring a little Async
         step.setSuid(null);
