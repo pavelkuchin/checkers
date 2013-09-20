@@ -6,8 +6,9 @@ package com.checkers.server.beans;
  * @author Pavel Kuchin
  */
 public class ListenObjects {
-    private Game game;
-    private Step step;
+    private Game    game;
+    private Step    step;
+    private Boolean isMessagesExist;
 
     public Game getGame() {
         return game;
@@ -23,5 +24,13 @@ public class ListenObjects {
 
     public void setStep(Step step) {
         this.step = step;
+    }
+
+    public Boolean getMessagesExist() {
+        return isMessagesExist;
+    }
+
+    public void setMessagesExist(Boolean messagesExist) {
+        isMessagesExist = messagesExist;
     }
 }

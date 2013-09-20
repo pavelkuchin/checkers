@@ -109,18 +109,15 @@ public class GameController {
      * and lastMessageMuid (Muid of last message that you have)
      * <b>Allowed roles:</b> ROLE_USER (user should be involved in this game), ROLE_ADMIN
      */
-    @RequestMapping(value="/{gauid}", params = {"mode=listen", "lastStepSuid", "currentGameState", "lastMessageMuid"},
+    @RequestMapping(value="/{gauid}", params = {"mode=listen", "lastStepSuid", "currentGameState"},
             method = RequestMethod.GET, headers = {"Accept=application/json"})
     public @ResponseBody
     Callable<ListenObjects> listenGame(@PathVariable String gauid, @RequestParam(value = "lastStepSuid") String suid,
-                    @RequestParam(value = "currentGameState") String state,
-                    @RequestParam(value = "lastMessageMuid") String muid) throws ApplicationException {
-        log.info("Listen game with GAUID: " + gauid + "; lastStepSuid: " + suid + "; currentGameState" + state +
-                "; lastMessageMuid" + muid);
+                    @RequestParam(value = "currentGameState") String state) throws ApplicationException {
+        log.info("Listen game with GAUID: " + gauid + "; lastStepSuid: " + suid + "; currentGameState" + state);
 
         final Long lGauid;
         final Long lSuid;
-        final Long lMuid;
         final String vState;
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -138,12 +135,6 @@ public class GameController {
             throw new ApplicationException(6L, "{lastStepSuid} should be id of step (positive number type)");
         }
 
-        try{
-            lMuid = Long.parseLong(muid);
-        }catch(Exception e){
-            throw new ApplicationException(6L, "{lastMessageMuid} should be id of message (positive number type)");
-        }
-
         if(!Consts.GAME_STATE_OPEN.equals(state) &&
                 !Consts.GAME_STATE_GAME.equals(state) &&
                 !Consts.GAME_STATE_CLOSE.equals(state)){
@@ -155,7 +146,7 @@ public class GameController {
         return new Callable<ListenObjects>() {
             @Override
             public ListenObjects call() throws Exception {
-                return gameService.listenGameAsync(username, lGauid, lSuid, vState, lMuid);
+                return gameService.listenGameAsync(username, lGauid, lSuid, vState);
             }
         };
     }

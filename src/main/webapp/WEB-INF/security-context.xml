@@ -39,6 +39,9 @@
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
         <security:intercept-url pattern="/**/users/*"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="PUT" />
 
+        <security:intercept-url pattern="/messages"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="GET" />
+        <security:intercept-url pattern="/messages"               access="hasAnyRole('ROLE_ADMIN,ROLE_USER')" method="POST" />
+
         <!-- ROLE_ADMIN -->
         <security:intercept-url pattern="/**/users/"                access="hasRole('ROLE_ADMIN')" method="POST"/>
         <security:intercept-url pattern="/**/users/*"               access="hasRole('ROLE_ADMIN')" method="DELETE" />

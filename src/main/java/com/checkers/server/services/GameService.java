@@ -13,7 +13,8 @@ import java.util.List;
  */
 public interface GameService {
     Game getGame(Long gauid) throws ApplicationException;
-    ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState, Long muid) throws ApplicationException, InterruptedException;
+    ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState)
+            throws ApplicationException, InterruptedException;
     Game joinGame(Long gauid) throws ApplicationException;
     Game closeGame(Long gauid) throws ApplicationException;
     Game newGame(Game game) throws ApplicationException;

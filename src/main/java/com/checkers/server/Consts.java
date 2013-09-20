@@ -39,4 +39,5 @@ public class Consts {
     public static final String GAME_BOARD_RUSSIAN = "8x8";
     public static final String GAME_BOARD_WORLDWIDE = "10x10";
 
+    public static final Long MAX_MESSAGE_LENGTH = 255L;
 }

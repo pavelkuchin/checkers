@@ -4,6 +4,7 @@ import com.checkers.server.beans.Game;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
 import com.checkers.server.events.GameEvent;
+import com.checkers.server.events.MessageEvent;
 import com.checkers.server.events.MyEvent;
 import com.checkers.server.events.StepEvent;
 import org.springframework.context.ApplicationListener;
@@ -81,9 +82,9 @@ public class MyListener implements ApplicationListener<MyEvent> {
             return type.cast(waitEvent(MyEvent.EventName.STEP));
         } else if (GameEvent.class.equals(type)) {
             return type.cast(waitEvent(MyEvent.EventName.GAME));
-        } /*else if (UserEvent.class.equals(type)) {
-            return type.cast(waitEvent(MyEvent.EventName.USER));
-        }*/
+        } else if (MessageEvent.class.equals(type)) {
+            return type.cast(waitEvent(MyEvent.EventName.MESSAGE));
+        }
 
         return null;
     }

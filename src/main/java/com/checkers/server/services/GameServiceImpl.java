@@ -7,6 +7,7 @@ import com.checkers.server.beans.ListenObjects;
 import com.checkers.server.beans.Step;
 import com.checkers.server.beans.User;
 import com.checkers.server.dao.GameDao;
+import com.checkers.server.dao.MessageDao;
 import com.checkers.server.dao.StepDao;
 import com.checkers.server.dao.UserDao;
 import com.checkers.server.events.GameEvent;
@@ -41,6 +42,9 @@ public class GameServiceImpl implements GameService {
     private StepDao stepDao;
 
     @Autowired
+    private MessageDao messageDao;
+
+    @Autowired
     private MyListener myListener;
 
     @Autowired
@@ -53,7 +57,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState, Long muid)
+    public ListenObjects listenGameAsync(String username, Long gauid, Long suid, String gameState)
             throws ApplicationException, InterruptedException {
 
         Boolean flag = true;
@@ -79,6 +83,12 @@ public class GameServiceImpl implements GameService {
             if(!gameState.equals(currGame.getState())){
                 result.setGame(currGame);
                 flag = false;
+            }
+            if(messageDao.existMessages(user.getUuid())){
+                result.setMessagesExist(true);
+                flag = false;
+            } else {
+                result.setMessagesExist(false);
             }
 
             if(flag){
