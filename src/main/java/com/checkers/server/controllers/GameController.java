@@ -219,6 +219,33 @@ public class GameController {
         return game;
     }
 
+    /**
+     * <h3>/games/{gauid}?action=deadheat</h3>
+     *
+     * <b>Method:</b> PUT
+     * <b>Description:</b> request for deadheat - both players should send this request for effect
+     * <b>Allowed roles:</b> ROLE_USER, ROLE_ADMIN
+     */
+    @RequestMapping(value="/{gauid}", params = "action=deadheat", method = RequestMethod.PUT, headers = {"Accept=application/json"})
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody
+    Game deadheatGame(@PathVariable String gauid) throws Exception {
+        log.info("Game deadheat process initiated for: \"" + gauid + "\"");
+
+        Game game = null;
+        Long lGauid;
+
+        try{
+            lGauid = Long.parseLong(gauid);
+        } catch(Exception e){
+            throw new ApplicationException(6L, "{gauid} should be id of game (positive number type)");
+        }
+
+        game = gameService.deadheatGame(lGauid);
+
+        return game;
+    }
+
    /**
     * <h3>/games/{gauid}</h3>
     *

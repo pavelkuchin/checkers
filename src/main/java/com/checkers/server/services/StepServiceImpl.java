@@ -130,7 +130,7 @@ public class StepServiceImpl implements StepService {
             referee.checkStep(step.getStep(), FigureColor.WHITE);
         }
 
-        //Bring a little Async
+       //Bring a little Async
         step.setSuid(null);
 
         step.setUuid(null);
@@ -140,6 +140,15 @@ public class StepServiceImpl implements StepService {
         step.setUser(user);
 
         stepDao.newStep(step);
+
+        GameResult gameResult= referee.checkGameStatus();
+
+        if(!gameResult.equals(GameResult.CONTINUE)){
+            game.setState(Consts.GAME_STATE_CLOSE);
+            game.setResolution(gameResult.toString());
+
+            gameDao.modGame(game);
+        }
 
         context.getApplicationContext()
                 .publishEvent(new StepEvent(context.getApplicationContext(), step));

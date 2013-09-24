@@ -16,6 +16,7 @@ public interface GameDao {
     Game modGame(Game chGame);
     Game joinGame(Long gauid, Long uuid) throws ApplicationException;
     Game closeGame(Long gauid, Long uuid) throws ApplicationException;
+    Game deadHeatGame(Long gauid) throws ApplicationException;
     void delGame(Long gauid);
 
     List<Game> getGames();

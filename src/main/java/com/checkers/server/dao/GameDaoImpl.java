@@ -4,6 +4,7 @@ import com.checkers.server.Consts;
 import com.checkers.server.beans.Game;
 import com.checkers.server.beans.User;
 import com.checkers.server.exceptions.ApplicationException;
+import com.checkers.server.services.referee.GameResult;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -134,10 +135,10 @@ public class GameDaoImpl implements GameDao {
             if(game.getState().equals(Consts.GAME_STATE_GAME)){
                 if(uuid == game.getBlackUuid()){
                     game.setState(Consts.GAME_STATE_CLOSE);
-                    game.setResolution("white win; black capitulated;");
+                    game.setResolution(GameResult.LOSING_BLACK_SURRENDER.toString());
                 } else if(uuid == game.getWhiteUuid()){
                     game.setState(Consts.GAME_STATE_CLOSE);
-                    game.setResolution("black win; white capitulated;");
+                    game.setResolution(GameResult.LOSING_WHITE_SURRENDER.toString());
                 }
                 em.merge(game);
             }
@@ -146,6 +147,26 @@ public class GameDaoImpl implements GameDao {
         } catch (Exception e){
             //Catch any exception
             log.error("closeGame" + e.getMessage(), e);
+        }
+
+        return game;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Game deadHeatGame(Long gauid) throws ApplicationException {
+        Game game = null;
+
+        try{
+            game = this.getGame(gauid);
+            game.setState(Consts.GAME_STATE_CLOSE);
+            game.setResolution(GameResult.DEADHEAT_PLAYERS.toString());
+            em.merge(game);
+        } catch (ApplicationException le){
+            throw le;
+        } catch (Exception e){
+            //Catch any exception
+            log.error("deadheatGame" + e.getMessage(), e);
         }
 
         return game;

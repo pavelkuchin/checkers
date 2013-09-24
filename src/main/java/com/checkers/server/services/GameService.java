@@ -17,6 +17,7 @@ public interface GameService {
             throws ApplicationException, InterruptedException;
     Game joinGame(Long gauid) throws ApplicationException;
     Game closeGame(Long gauid) throws ApplicationException;
+    Game deadheatGame(Long gauid) throws ApplicationException;
     Game newGame(Game game) throws ApplicationException;
     Game modGame(Long gauid, Game game) throws ApplicationException;
     List<Game> getGames();

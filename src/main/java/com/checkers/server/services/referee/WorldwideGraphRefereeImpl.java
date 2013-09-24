@@ -14,4 +14,9 @@ public class WorldwideGraphRefereeImpl implements Referee {
     public Boolean checkStep(String step, FigureColor color) throws CheckersException {
         return null;
     }
+
+    @Override
+    public GameResult checkGameStatus() {
+        return null;
+    }
 }

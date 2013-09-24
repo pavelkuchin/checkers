@@ -11,4 +11,5 @@ import com.checkers.server.services.referee.graph.FigureColor;
  */
 public interface Referee {
     public Boolean checkStep(String step, FigureColor color) throws CheckersException;
+    public GameResult checkGameStatus();
 }

@@ -20,6 +20,18 @@ public class RussianGraphRefereeImpl implements Referee {
     Map<RussianCoords, Figure> white;
     Map<RussianCoords, Figure> black;
 
+    /// steps without fight
+    private int counter1;
+
+    /// if one player has three kings another one king - steps without fight
+    private int counter2;
+
+    /// if one player has three kings another one king on big way - steps without fight
+    private int counter3;
+
+    /// One player has two king or one king and one check another player has one king - steps without fight
+    private int counter4;
+
     public RussianGraphRefereeImpl() throws CheckersException {
         Cell<RussianCoords> cell;
         Figure  figure;
@@ -517,6 +529,8 @@ public class RussianGraphRefereeImpl implements Referee {
                 white.get(toCoord).setType(FigureType.KING);
             }
 
+            counter1++;
+
             // Step with fight
         } else if(step.contains(":")){
 
@@ -626,9 +640,180 @@ public class RussianGraphRefereeImpl implements Referee {
 
             graph.getFigure(new RussianCoords(steps[steps.length - 1])).setFighter(false);
             graph.commitTransaction();
+
+            counter1 = 0;
+        }
+
+        if(checkCondition2(black, white) || checkCondition2(white, black)){
+            counter2++;
+        } else {
+            counter2 = 0;
+        }
+
+        if(checkCondition3(black, white) || checkCondition3(white, black)){
+            counter3++;
+        } else {
+            counter3 = 0;
+        }
+
+        if(checkCondition4(black, white) || checkCondition4(white, black)){
+            counter4++;
+        } else {
+            counter4 = 0;
         }
 
         return true;
+    }
+
+    /// if one player has three kings another one king
+    boolean checkCondition2(Map<RussianCoords, Figure> figures1, Map<RussianCoords, Figure> figures2){
+        if(figures1.size() == 3 && figures2.size() == 1){
+            for(Figure f : figures1.values()){
+                if(f.getType() != FigureType.KING){
+                    return false;
+                }
+            }
+            if(figures2.values().iterator().next().getType() != FigureType.KING){
+                return false;
+            }
+                return true;
+        }
+
+        return false;
+    }
+
+    /// if one player has three kings another one king on big way
+    boolean checkCondition3(Map<RussianCoords, Figure> figures1, Map<RussianCoords, Figure> figures2){
+        if(figures1.size() == 3 && figures2.size() == 1){
+            for(Figure f : figures1.values()){
+                if(f.getType() != FigureType.KING){
+                    return false;
+                }
+            }
+
+            Figure f = figures2.values().iterator().next();
+            Coords c = f.getCell().getCoords();
+            if(f.getType() != FigureType.KING || !c.getX().equals(c.getY())){
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /// One player has two king or one king and one check another player has one king
+    boolean checkCondition4(Map<RussianCoords, Figure> figures1, Map<RussianCoords, Figure> figures2){
+        if(figures1.size() == 2 && figures2.size() == 1){
+            boolean flag = false;
+
+            for(Figure f : figures1.values()){
+                if(f.getType() == FigureType.KING){
+                    flag = true;
+                }
+            }
+
+            if(!flag){
+                return false;
+            }
+
+            Figure f = figures2.values().iterator().next();
+            if(f.getType() != FigureType.KING){
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    boolean isAllLocked(Map<RussianCoords, Figure> figures){
+        for(Figure f : figures.values()){
+            if(f.getCell().getLeftUp() != null){
+                if(f.getCell().getLeftUp().getFigure() != null){
+                    if(f.getCell().getLeftUp().getLeftUp() != null &&
+                            f.getCell().getLeftUp().getLeftUp().getFigure() == null){
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            if(f.getCell().getLeftDown() != null){
+                if(f.getCell().getLeftDown().getFigure() != null){
+                    if(f.getCell().getLeftDown().getLeftDown() != null &&
+                            f.getCell().getLeftDown().getLeftDown().getFigure() == null){
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            if(f.getCell().getRightUp() != null){
+                if(f.getCell().getRightUp().getFigure() != null){
+                    if(f.getCell().getRightUp().getRightUp() != null &&
+                            f.getCell().getRightUp().getRightUp().getFigure() == null){
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            if(f.getCell().getRightDown() != null){
+                if(f.getCell().getRightDown().getFigure() != null){
+                    if(f.getCell().getRightDown().getRightDown() != null &&
+                            f.getCell().getRightDown().getRightDown().getFigure() == null){
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public GameResult checkGameStatus() {
+        //Losing section
+        if(black.isEmpty()){
+            return GameResult.LOSING_BLACK_DESTROYED;
+        }
+        if(white.isEmpty()){
+            return GameResult.LOSING_WHITE_DESTROYED;
+        }
+
+        if(isAllLocked(black)){
+            return GameResult.LOSING_BLACK_LOCKED;
+        }
+        if(isAllLocked(white)){
+            return GameResult.LOSING_WHITE_LOCKED;
+        }
+
+        //Dead Heat section
+        if(counter1 >= 32){
+            return GameResult.DEADHEAT_WITHOUT_FIGHT_32;
+        }
+
+        if(counter2 >= 15){
+            return GameResult.DEADHEAT_KING_3_AND_KING_1_15;
+        }
+
+        if(counter3 >= 5){
+            return GameResult.DEADHEAT_KING_3_AND_KING_1_ON_BIG_WAY_5;
+        }
+
+        if(counter4 >= 10){
+            return GameResult.DEADHEAT_FIGURE_2_AND_KING_1_10;
+        }
+
+        //TODO DEADHEAT_THE_SAME_COMBINATION_3_TIMES
+
+        return GameResult.CONTINUE;
     }
 
     private String f(Integer x, Integer y){

@@ -21,9 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -49,6 +47,8 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private Context context;
+
+    private Map<Long, Long> deadheatRequests = new HashMap<Long, Long>();
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
@@ -138,6 +138,43 @@ public class GameServiceImpl implements GameService {
 
         context.getApplicationContext()
                 .publishEvent(new GameEvent(context.getApplicationContext(), result));
+
+        return result;
+    }
+
+    @Override
+    public Game deadheatGame(Long gauid) throws ApplicationException {
+        Game result = null;
+
+        Long uuid = userDao.getUserByLogin(Context.getAuthLogin()).getUuid();
+
+        Game game   = gameDao.getGame(gauid);
+
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        if(authorities.contains(Consts.ROLE_USER)){
+            if(!(game.getBlackUuid() == uuid || game.getWhiteUuid() == uuid)){
+                throw new ApplicationException(1L, "You are not involved in game.");
+            }
+        }
+
+        if(!game.getState().equals(Consts.GAME_STATE_GAME)){
+            throw new ApplicationException(8L, "Incorrect game state.");
+        }
+
+        if(deadheatRequests.containsKey(gauid)){
+            if(deadheatRequests.get(gauid).equals(uuid)){
+                throw new ApplicationException(10L, "You have already sent dead heat request.");
+            }
+            result = gameDao.deadHeatGame(gauid);
+        } else {
+            deadheatRequests.put(gauid, uuid);
+            result = game;
+        }
+
+        context.getApplicationContext()
+                .publishEvent(new GameEvent(context.getApplicationContext(), game));
 
         return result;
     }
