@@ -629,13 +629,13 @@ public class RussianGraphRefereeImpl implements Referee {
                     }
                 }
 
+                if(canFigureFight(graph.getFigure(new RussianCoords(steps[steps.length - 1])), true)){
+                    throw new CheckersException(19L, "You have another step to fight");
+                }
+
             } catch(CheckersException ce){
                 graph.rollbackTransaction();
                 throw ce;
-            }
-
-            if(canFigureFight(graph.getFigure(new RussianCoords(steps[steps.length - 1])), true)){
-                throw new CheckersException(19L, "You have another step to fight");
             }
 
             graph.getFigure(new RussianCoords(steps[steps.length - 1])).setFighter(false);
