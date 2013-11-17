@@ -52,8 +52,13 @@ public class GameDaoImpl implements GameDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void newGame(Game game) {
+    public void newGame(Game game) throws ApplicationException {
         try{
+
+            if(getGamesFiltered("name", game.getName()).size() != 0){
+                throw new ApplicationException(11L, "Object with same name (or email) already exists.");
+            }
+
             if(game.getWhite() != null){
                 game.setWhiteUuid(game.getWhite().getUuid());
             } else{
@@ -73,6 +78,8 @@ public class GameDaoImpl implements GameDao {
             }
 
             em.persist(game);
+        } catch (ApplicationException le){
+            throw le;
         } catch(Exception e){
             //Catch any exception
             log.error("newGame: " + e.getMessage(), e);

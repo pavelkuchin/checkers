@@ -37,7 +37,7 @@ public class StepDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 101");
         game.setDescription("Game description");
 
         game.setState("game");
@@ -75,7 +75,7 @@ public class StepDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 202");
         game.setDescription("Game description");
 
         game.setState("game");

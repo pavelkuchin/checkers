@@ -11,7 +11,7 @@ import java.util.List;
  * @author Pavel Kuchin
  */
 public interface UserDao {
-    void newUser(User user);
+    void newUser(User user) throws ApplicationException;
 
     User getUser(Long uuid) throws ApplicationException;
 

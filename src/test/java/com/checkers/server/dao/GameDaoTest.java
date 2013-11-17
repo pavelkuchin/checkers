@@ -34,7 +34,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 1");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -60,7 +60,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 2");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -89,7 +89,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 3");
         game.setDescription("Game description");
 
         game.setState("game");
@@ -119,7 +119,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 4");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -140,12 +140,12 @@ public class GameDaoTest {
     }
 
     @Test
-    public void newGameLongAsObject(){
+    public void newGameLongAsObject() throws ApplicationException {
         Game game = new Game();
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 5");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -172,7 +172,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 6");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -207,7 +207,7 @@ public class GameDaoTest {
 
         game.setGauid(null);
 
-        game.setName("Game name");
+        game.setName("Game name 7");
         game.setDescription("Game description");
 
         game.setState("open");
@@ -259,7 +259,7 @@ public class GameDaoTest {
 
             game.setGauid(null);
 
-            game.setName("Game name");
+            game.setName("Game name "+i+i);
             game.setDescription("Game description");
 
             game.setState("open");
@@ -291,7 +291,7 @@ public class GameDaoTest {
     }
 
     @Test
-    public void getGamesFiltered(){
+    public void getGamesFiltered() throws ApplicationException {
         //Creating three games for this user in the loop
         for(int i = 0; i < 3; i++){
             Game game = new Game();

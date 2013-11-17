@@ -34,13 +34,23 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void newUser(User user) {
+    public void newUser(User user) throws ApplicationException {
         try{
+
+            List<User> u = em.createQuery("SELECT u FROM User u WHERE u.login=?1 OR u.email=?2")
+                    .setParameter(1, user.getLogin())
+                    .setParameter(2, user.getEmail()).getResultList();
+
+            if(u.size() != 0){
+                throw new ApplicationException(11L, "Object with same name (or email) already exists.");
+            }
 
             user.setPassword(encoder.encode(user.getPassword()));
 
             em.persist(user);
-        }catch (Exception e){
+        } catch (ApplicationException le){
+            throw le;
+        } catch (Exception e){
             //Catch any exception
             log.error("newUser: " + e.getMessage(), e);
         }

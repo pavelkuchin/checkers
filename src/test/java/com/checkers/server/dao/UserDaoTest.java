@@ -24,17 +24,17 @@ public class UserDaoTest {
     UserDao userDao;
 
     @Test
-    public void newUser(){
+    public void newUser() throws ApplicationException {
         User user = new User();
 
         user.setUuid(null);
 
-        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setLogin("Konstantin.Konstantinopolskiy1");
         user.setFirstName("Konstantin");
         user.setLastName("Konstantinopolskiy");
         user.setPassword("jgu*Gg(m574mLU");
 
-        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+        user.setEmail("Konstantin.Konstantinopolskiy1@gmail.com");
 
         user.setEnabled(true);
 
@@ -55,12 +55,12 @@ public class UserDaoTest {
 
         user.setUuid(null);
 
-        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setLogin("Konstantin.Konstantinopolskiy2");
         user.setFirstName("Konstantin");
         user.setLastName("Konstantinopolskiy");
         user.setPassword("jgu*Gg(m574mLU");
 
-        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+        user.setEmail("Konstantin.Konstantinopolskiy2@gmail.com");
 
         user.setEnabled(true);
 
@@ -87,12 +87,12 @@ public class UserDaoTest {
 
         user.setUuid(null);
 
-        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setLogin("Konstantin.Konstantinopolskiy3");
         user.setFirstName("Konstantin");
         user.setLastName("Konstantinopolskiy");
         user.setPassword("jgu*Gg(m574mLU");
 
-        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+        user.setEmail("Konstantin.Konstantinopolskiy3@gmail.com");
 
         user.setEnabled(true);
 
@@ -116,12 +116,12 @@ public class UserDaoTest {
 
         user.setUuid(null);
 
-        user.setLogin("Konstantin.Konstantinopolskiy");
+        user.setLogin("Konstantin.Konstantinopolskiy4");
         user.setFirstName("Konstantin");
         user.setLastName("Konstantinopolskiy");
         user.setPassword("jgu*Gg(m574mLU");
 
-        user.setEmail("Konstantin.Konstantinopolskiy@gmail.com");
+        user.setEmail("Konstantin.Konstantinopolskiy4@gmail.com");
 
         user.setEnabled(true);
 

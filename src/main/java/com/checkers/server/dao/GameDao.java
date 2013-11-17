@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface GameDao {
     Game getGame(Long gauid) throws ApplicationException;
-    void newGame(Game game);
+    void newGame(Game game) throws ApplicationException;
     Game modGame(Game chGame);
     Game joinGame(Long gauid, Long uuid) throws ApplicationException;
     Game closeGame(Long gauid, Long uuid) throws ApplicationException;
